@@ -9,13 +9,23 @@ import {
 
 import React from "react";
 
-function CardButton() {
+type cardData = {
+  isVideoLive: boolean;
+};
+function CardButton({ isVideoLive }: cardData) {
   return (
-    <Card
-      isFooterBlurred
-      className="w-full h-[300px] "
-    >
-      <CardHeader className="absolute z-10 top-1 flex-col items-start">
+    <Card isFooterBlurred className="w-full h-[300px] md:h-[400px]">
+      <CardHeader className="absolute z-10 top-1 flex-col items-start ">
+        {isVideoLive && (
+          <div className="px-4 py-[0.2px] rounded bg-red-500 flex items-center gap-2">
+            <h2 className="text-lg font-bold">Live</h2>
+
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
+            </span>
+          </div>
+        )}
         <p className="text-tiny text-white/60 uppercase font-bold">
           Your day your way
         </p>
@@ -25,6 +35,7 @@ function CardButton() {
       </CardHeader>
       <Image
         removeWrapper
+        isZoomed
         alt="Relaxing app background"
         className="z-0 w-full h-full object-cover"
         src="https://nextui.org/images/card-example-5.jpeg"
@@ -41,8 +52,12 @@ function CardButton() {
             <p className="text-tiny text-white/60">Get a good night's sleep.</p>
           </div>
         </div>
-        <Button radius="full" size="sm">
-          Get App
+        <Button
+          radius="full"
+          size="sm"
+          className={`${isVideoLive && "bg-gray-500"}`}
+        >
+          {isVideoLive ? "Watch" : "Subscribe"}
         </Button>
       </CardFooter>
     </Card>

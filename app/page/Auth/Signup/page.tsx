@@ -8,13 +8,10 @@ function Page() {
   return (
     <div className="flex flex-col lg:flex-row h-[100vh]">
       {/* Sign-up form */}
-      <div className="lg:w-6/12 w-full overflow-y-auto flex flex-col items-center justify-center  p-4">
-        <div className="w-full flex justify-center mb-4">
+      <div className="lg:w-6/12 w-full  h-full overflow-y-auto flex flex-col items-center md:justify-center  p-4">
           <Link href={"/page/Home"}>
             <Image src={"/logo/vbox.png"} width={100} height={100} alt="logo" />
           </Link>{" "}
-        </div>
-        <div className="flex-1 w-full flex flex-col items-center justify-center gap-4">
           <p className="text-4xl text-white">Welcome!</p>
           {/* Container with fixed max width for the form */}
           <div className="w-full ">
@@ -31,7 +28,6 @@ function Page() {
               </Link>
             </p>
           </div>
-        </div>
       </div>
 
       {/* Background Image */}

@@ -16,9 +16,22 @@ function Header() {
   // states
   const [isMenuBarOpen, setIsMenuBarOpen] = useState(false);
   const pages = [
-    { name: "Home", link: "/" },
-    { name: "VOD", link: "/" },
-    { name: "Categories", link: "/" },
+    { name: "Home", link: "/page/Home" },
+    { name: "VOD", link: "/page/videoOnDemand" },
+    { name: "Categories", link: {
+      dropDown1:{
+        name:"", 
+        link:""
+      },
+      dropDown2:{
+        name:"", 
+        link:""
+      },
+      dropDown3:{
+        name:"", 
+        link:""
+      },
+    } },
     { name: "Live Events", link: "/" },
     { name: "Channels", link: "/" },
   ];
