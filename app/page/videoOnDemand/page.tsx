@@ -8,22 +8,7 @@ type data = {
   name: string;
 };
 function page() {
-  // Reference to the scrollable container
-  const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to the left
-  const handleScrollLeft = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -200, behavior: "smooth" });
-    }
-  };
-
-  // Scroll to the right
-  const handleScrollRight = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 200, behavior: "smooth" });
-    }
-  };
   // sports, lifestyle , documentaries, tech, news, films , fashion, tv shows, podcasts, personal development , adult education, health &fitness , comedy , tv series, kids entertainment, kids education, culture and tradition, international
   const data: data[] = [
     {
@@ -120,44 +105,7 @@ function page() {
         </div>
       </div>
 
-      {/* filter */}
-      <div className="p-6 w-full bg-black">
-        <div className="relative w-full">
-          {/* Left Scroll Button */}
-          <button
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-500 border border-white shadow-lg p-2 rounded-full"
-            onClick={handleScrollLeft}
-          >
-            <ChevronLeft />
-          </button>
-
-          {/* Horizontal Scrollable Buttons Container */}
-          <div
-            ref={scrollRef}
-            className="flex overflow-x-auto space-x-4 scrollbar-hide px-12 items-center"
-            style={{ scrollBehavior: "smooth" }}
-          >
-            {data.map((items, index) => (
-              <div>
-                <button
-                  key={index}
-                  className="whitespace-nowrap bg-gray-500 text-white py-2 px-4 rounded-full"
-                >
-                  {items.name}
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* Right Scroll Button */}
-          <button
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-500 border border-white shadow-lg p-2 rounded-full"
-            onClick={handleScrollRight}
-          >
-            <ChevronRight />
-          </button>
-        </div>
-      </div>
+     
     </HomeLayoutWrapper>
   );
 }

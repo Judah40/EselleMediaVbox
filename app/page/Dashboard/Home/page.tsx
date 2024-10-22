@@ -4,7 +4,7 @@ import React from "react";
 type headerData = {
   name: string;
   icon: React.ReactNode;
-  value: Number;
+  value: number;
   description: string;
 };
 const page = () => {

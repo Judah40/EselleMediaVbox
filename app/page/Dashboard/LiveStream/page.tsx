@@ -11,9 +11,7 @@ import {
 } from "lucide-react";
 import React from "react";
 
-type liveStreamCardDataType = {};
 const page = () => {
-  const liveStreamCardData = [];
   return (
     <div className="flex-1 w-full h-full flex items-center flex-col ">
       {/* live stream buttons */}
