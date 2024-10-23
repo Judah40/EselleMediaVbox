@@ -1,8 +1,8 @@
 import CardButton from "@/app/components/buttons/CardButton";
 import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { FaLongArrowAltRight } from "react-icons/fa";
 
 function page() {
   return (
@@ -14,7 +14,7 @@ function page() {
           backgroundPosition: "center",
           backgroundSize: "cover",
         }}
-        className="flex w-full h-[80vh]"
+        className="flex w-full h-[700px]"
       >
         <div
           className={`w-full bg-black h-full  bg-opacity-60 flex md:flex-row    flex-col-reverse items-center justify-center gap-8 `}
@@ -38,20 +38,20 @@ function page() {
 
       {/* preview of live gmae */}
       <div className="md:p-12 p-4 gap-4 flex-col flex">
-        <p className="text-2xl font-semibold">Live Now</p>
+        <div className="flex items-center gap-4">
+          <p className="text-2xl font-semibold">Live Now</p>
+          <Link href={{}} className="flex items-center gap-2 group ">
+            <p className="text-cyan-500  text-sm hidden group-hover:block">
+              View All
+            </p>
+            <ChevronRight color="#06b6d4" />{" "}
+          </Link>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-4 ">
           <CardButton isVideoLive={true} />
           <CardButton isVideoLive={true} />
           <CardButton isVideoLive={true} />
           <CardButton isVideoLive={true} />
-        </div>
-        <div className="w-full flex justify-end">
-          <Link href={""} className="flex items-center gap-4">
-            <p className="text-cyan-500 hover:text-cyan-700">View All</p>
-            <div className="w-8 h-8 rounded-full bg-cyan-500 flex items-center justify-center border border-white">
-              <FaLongArrowAltRight size={24} />
-            </div>
-          </Link>
         </div>
       </div>
       {/* advert section */}
@@ -73,12 +73,12 @@ function page() {
           </div>
           <div className="w-10/12">
             <p className="text-center font-medium italic">
-            &quot;Experience the thrill of live events as they happen, or enjoy the
-              flexibility to catch up on what you missed at your own pace.
-              Whether it&quot;s a high-energy concert, a thrilling sports match, or
-              an exclusive talk show, you’re always in control. Tune in live or
-              hit play when it suits you – the entertainment is always on, just
-              for you.&quot;
+              &quot;Experience the thrill of live events as they happen, or
+              enjoy the flexibility to catch up on what you missed at your own
+              pace. Whether it&quot;s a high-energy concert, a thrilling sports
+              match, or an exclusive talk show, you’re always in control. Tune
+              in live or hit play when it suits you – the entertainment is
+              always on, just for you.&quot;
             </p>
           </div>
         </div>
@@ -86,27 +86,27 @@ function page() {
 
       {/* subscriptions */}
       <div className="md:p-12 p-4 gap-4 flex-col flex bg-white text-black">
-        <p className="text-2xl font-semibold">Subscribe to Various Channels</p>
+        <div className="flex items-center gap-4">
+          <p className="text-2xl font-semibold">
+            Subscribe to Various Channels
+          </p>
+          <Link href={{}} className="flex items-center gap-2 group ">
+            <p className="text-cyan-500  text-sm hidden group-hover:block">
+              View All
+            </p>
+            <ChevronRight color="#06b6d4" />{" "}
+          </Link>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-4 ">
           <CardButton isVideoLive={false} />
           <CardButton isVideoLive={false} />
           <CardButton isVideoLive={false} />
           <CardButton isVideoLive={false} />
         </div>
-        <div className="w-full flex justify-end">
-          <Link href={""} className="flex items-center gap-4">
-            <p className="text-cyan-500 hover:text-cyan-700">View All</p>
-            <div className="w-8 h-8 rounded-full bg-cyan-500 flex items-center justify-center border border-white">
-              <FaLongArrowAltRight size={24} />
-            </div>
-          </Link>
-        </div>
       </div>
 
       {/* FAQ */}
-      <div className="md:p-12 p-4 gap-4 flex-col flex">
-       
-      </div>
+      <div className="md:p-12 p-4 gap-4 flex-col flex"></div>
     </HomeLayoutWrapper>
   );
 }

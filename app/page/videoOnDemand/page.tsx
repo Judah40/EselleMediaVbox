@@ -3,68 +3,10 @@
 import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
 import React from "react";
 
-// type data = {
-//   name: string;
-// };
-function page() {
 
+function page() {
   // sports, lifestyle , documentaries, tech, news, films , fashion, tv shows, podcasts, personal development , adult education, health &fitness , comedy , tv series, kids entertainment, kids education, culture and tradition, international
-  // const data: data[] = [
-  //   {
-  //     name: "sports",
-  //   },
-  //   {
-  //     name: "lifestyle",
-  //   },
-  //   {
-  //     name: "documentaries",
-  //   },
-  //   {
-  //     name: "tech",
-  //   },
-  //   {
-  //     name: "news",
-  //   },
-  //   {
-  //     name: "films",
-  //   },
-  //   {
-  //     name: "fashion",
-  //   },
-  //   {
-  //     name: "tv shows",
-  //   },
-  //   {
-  //     name: "podcasts",
-  //   },
-  //   {
-  //     name: "personal development ",
-  //   },
-  //   {
-  //     name: "adult education",
-  //   },
-  //   {
-  //     name: "health & fitness",
-  //   },
-  //   {
-  //     name: "comedy",
-  //   },
-  //   {
-  //     name: "tv series",
-  //   },
-  //   {
-  //     name: "kids entertainment",
-  //   },
-  //   {
-  //     name: "kids education",
-  //   },
-  //   {
-  //     name: "culture and tradition",
-  //   },
-  //   {
-  //     name: "international",
-  //   },
-  // ];
+
   return (
     <HomeLayoutWrapper>
       {/* header */}
@@ -74,7 +16,7 @@ function page() {
           backgroundPosition: "center",
           backgroundSize: "cover",
         }}
-        className="flex w-full h-[60vh]"
+        className="flex w-full h-[600px]"
       >
         <div
           className={`w-full bg-black h-full  bg-opacity-60 flex md:flex-row    flex-col-reverse items-center justify-center gap-8 `}
@@ -103,8 +45,6 @@ function page() {
           </div>
         </div>
       </div>
-
-     
     </HomeLayoutWrapper>
   );
 }
