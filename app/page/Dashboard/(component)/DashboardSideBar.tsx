@@ -2,12 +2,9 @@
 
 import React from "react";
 import {
-  Calendar,
   Home,
   Inbox,
   LogOut,
-  Search,
-  Settings,
   Tv,
   Video,
 } from "lucide-react";

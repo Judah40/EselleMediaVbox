@@ -73,12 +73,12 @@ function page() {
           </div>
           <div className="w-10/12">
             <p className="text-center font-medium italic">
-              "Experience the thrill of live events as they happen, or enjoy the
+            &quot;Experience the thrill of live events as they happen, or enjoy the
               flexibility to catch up on what you missed at your own pace.
-              Whether it's a high-energy concert, a thrilling sports match, or
+              Whether it&quot;s a high-energy concert, a thrilling sports match, or
               an exclusive talk show, you’re always in control. Tune in live or
               hit play when it suits you – the entertainment is always on, just
-              for you."{" "}
+              for you.&quot;
             </p>
           </div>
         </div>

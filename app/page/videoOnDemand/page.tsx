@@ -1,71 +1,70 @@
 "use client";
 
 import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import React, { useRef } from "react";
+import React from "react";
 
-type data = {
-  name: string;
-};
+// type data = {
+//   name: string;
+// };
 function page() {
 
   // sports, lifestyle , documentaries, tech, news, films , fashion, tv shows, podcasts, personal development , adult education, health &fitness , comedy , tv series, kids entertainment, kids education, culture and tradition, international
-  const data: data[] = [
-    {
-      name: "sports",
-    },
-    {
-      name: "lifestyle",
-    },
-    {
-      name: "documentaries",
-    },
-    {
-      name: "tech",
-    },
-    {
-      name: "news",
-    },
-    {
-      name: "films",
-    },
-    {
-      name: "fashion",
-    },
-    {
-      name: "tv shows",
-    },
-    {
-      name: "podcasts",
-    },
-    {
-      name: "personal development ",
-    },
-    {
-      name: "adult education",
-    },
-    {
-      name: "health & fitness",
-    },
-    {
-      name: "comedy",
-    },
-    {
-      name: "tv series",
-    },
-    {
-      name: "kids entertainment",
-    },
-    {
-      name: "kids education",
-    },
-    {
-      name: "culture and tradition",
-    },
-    {
-      name: "international",
-    },
-  ];
+  // const data: data[] = [
+  //   {
+  //     name: "sports",
+  //   },
+  //   {
+  //     name: "lifestyle",
+  //   },
+  //   {
+  //     name: "documentaries",
+  //   },
+  //   {
+  //     name: "tech",
+  //   },
+  //   {
+  //     name: "news",
+  //   },
+  //   {
+  //     name: "films",
+  //   },
+  //   {
+  //     name: "fashion",
+  //   },
+  //   {
+  //     name: "tv shows",
+  //   },
+  //   {
+  //     name: "podcasts",
+  //   },
+  //   {
+  //     name: "personal development ",
+  //   },
+  //   {
+  //     name: "adult education",
+  //   },
+  //   {
+  //     name: "health & fitness",
+  //   },
+  //   {
+  //     name: "comedy",
+  //   },
+  //   {
+  //     name: "tv series",
+  //   },
+  //   {
+  //     name: "kids entertainment",
+  //   },
+  //   {
+  //     name: "kids education",
+  //   },
+  //   {
+  //     name: "culture and tradition",
+  //   },
+  //   {
+  //     name: "international",
+  //   },
+  // ];
   return (
     <HomeLayoutWrapper>
       {/* header */}

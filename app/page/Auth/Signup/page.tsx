@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
 import SignupForm from "@/app/components/forms/SignupForm";
 

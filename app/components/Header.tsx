@@ -6,9 +6,9 @@ import React, { useEffect, useState } from "react";
 import { IoMenu, IoClose } from "react-icons/io5";
 
 function Header() {
-  //get screen size
-  const { innerWidth } = window;
   const handleScreenWidthResponsiveness = () => {
+    //get screen size
+    const { innerWidth } = window;
     if (innerWidth < 768) {
       setIsMenuBarOpen(false);
     }
@@ -45,7 +45,7 @@ function Header() {
     // Cleanup the event listener on component unmount
     return () =>
       window.removeEventListener("resize", handleScreenWidthResponsiveness);
-  }, []);
+  });
   return (
     <div className="absolute   w-full">
       <div className="flex w-full">

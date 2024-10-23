@@ -37,7 +37,7 @@ function page() {
           {/* Sign up section  */}
           <div>
             <p className="text-white text-center">
-              Don't have an account?{" "}
+              Don&lsquo;t have an account?{" "}
               <Link
                 href={"/page/Auth/Signup"}
                 className="underline text-cyan-500"
