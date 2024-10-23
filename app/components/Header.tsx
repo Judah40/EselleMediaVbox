@@ -93,7 +93,7 @@ function Header() {
       </div>
 
       {isMenuBarOpen && (
-        <div className="w-full p-6 bg-white text-black">
+        <div className="w-full p-6 bg-white text-black z-50">
           <ul className="gap-20 flex flex-col items-center">
             {pages.map((items, index) => (
               <li key={index}>
