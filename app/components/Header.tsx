@@ -6,10 +6,11 @@ import React, { useEffect, useState } from "react";
 import { IoMenu, IoClose } from "react-icons/io5";
 
 function Header() {
-  const handleScreenWidthResponsiveness = () => {
+  const handleScreenWidthResponsiveness =async () => {
     //get screen size
-    const { innerWidth } = window;
-    if (innerWidth < 768) {
+    const { innerWidth } =await window;
+    console.log(innerWidth)
+    if (innerWidth > 768) {
       setIsMenuBarOpen(false);
     }
   };
@@ -45,13 +46,13 @@ function Header() {
     // Cleanup the event listener on component unmount
     return () =>
       window.removeEventListener("resize", handleScreenWidthResponsiveness);
-  });
+  },[isMenuBarOpen]);
   return (
     <div className="absolute   w-full">
       <div className="flex w-full">
         <Image src={"/logo/vbox.png"} width={100} height={100} alt="logo" />
         <div className="hidden md:block md:flex-1  md:w-full  md:items-center md:justify-center h-[100px]">
-          <ul className="gap-16 flex flex-row items-center  h-full justify-end px-6">
+          <ul className="gap-10 flex flex-row items-center  h-full justify-end px-6">
             {pages.map((items, index) => (
               <li key={index}>
                 <Link href={""} className="hover:underline">
