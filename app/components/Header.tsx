@@ -5,11 +5,25 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { IoMenu, IoClose } from "react-icons/io5";
 
+// {
+//   dropDown1:{
+//     name:"",
+//     link:""
+//   },
+//   dropDown2:{
+//     name:"",
+//     link:""
+//   },
+//   dropDown3:{
+//     name:"",
+//     link:""
+//   },
+// }
 function Header() {
-  const handleScreenWidthResponsiveness =async () => {
+  const handleScreenWidthResponsiveness = async () => {
     //get screen size
-    const { innerWidth } =await window;
-    console.log(innerWidth)
+    const { innerWidth } = await window;
+    console.log(innerWidth);
     if (innerWidth > 768) {
       setIsMenuBarOpen(false);
     }
@@ -19,20 +33,7 @@ function Header() {
   const pages = [
     { name: "Home", link: "/page/Home" },
     { name: "VOD", link: "/page/videoOnDemand" },
-    { name: "Categories", link: {
-      dropDown1:{
-        name:"", 
-        link:""
-      },
-      dropDown2:{
-        name:"", 
-        link:""
-      },
-      dropDown3:{
-        name:"", 
-        link:""
-      },
-    } },
+    { name: "Categories", link: "" },
     { name: "Live Events", link: "/" },
     { name: "Channels", link: "/" },
   ];
@@ -46,7 +47,7 @@ function Header() {
     // Cleanup the event listener on component unmount
     return () =>
       window.removeEventListener("resize", handleScreenWidthResponsiveness);
-  },[isMenuBarOpen]);
+  }, [isMenuBarOpen]);
   return (
     <div className="absolute   w-full">
       <div className="flex w-full">
@@ -55,7 +56,7 @@ function Header() {
           <ul className="gap-10 flex flex-row items-center  h-full justify-end px-6">
             {pages.map((items, index) => (
               <li key={index}>
-                <Link href={""} className="hover:underline">
+                <Link href={items.link} className="hover:underline">
                   {items.name}
                 </Link>
               </li>
@@ -96,11 +97,17 @@ function Header() {
           <ul className="gap-20 flex flex-col items-center">
             {pages.map((items, index) => (
               <li key={index}>
-                <Link href={""} className="hover:underline">
+                <Link href={items.link} className="hover:underline">
                   {items.name}
                 </Link>
               </li>
             ))}
+            <Link
+              href={"/page/Auth/Signin"}
+              className="bg-yellow-700 px-4 py-2 rounded hover:bg-yellow-500"
+            >
+              Sign in
+            </Link>
           </ul>
         </div>
       )}
