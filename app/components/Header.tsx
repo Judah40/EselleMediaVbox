@@ -3,6 +3,7 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoMenu, IoClose } from "react-icons/io5";
 
@@ -66,9 +67,13 @@ const data: data[] = [
   },
 ];
 function Header() {
+  const path = usePathname().split("/")[2];
+
   const handleScreenWidthResponsiveness = async () => {
     //get screen size
+
     const { innerWidth } = await window;
+
     console.log(innerWidth);
     if (innerWidth > 768) {
       setIsMenuBarOpen(false);
@@ -77,11 +82,11 @@ function Header() {
   // states
   const [isMenuBarOpen, setIsMenuBarOpen] = useState(false);
   const pages = [
-    { name: "Home", link: "/page/Home" },
-    { name: "VOD", link: "/page/videoOnDemand" },
+    { name: "Home", link: "/page/Home", path: "Home" },
+    { name: "VOD", link: "/page/videoOnDemand", path: "videoOnDemand" },
     { name: "Categories", link: "" },
-    { name: "Live Events", link: "/page/Live" },
-    { name: "Channels", link: "/" },
+    { name: "Live Events", link: "/page/Live", path: "Live" },
+    { name: "Channels", link: "/page/Channels", path: "Channels" },
   ];
 
   useEffect(() => {
@@ -94,6 +99,10 @@ function Header() {
     return () =>
       window.removeEventListener("resize", handleScreenWidthResponsiveness);
   }, [isMenuBarOpen]);
+
+  useEffect(() => {
+    console.log(path);
+  }, []);
   return (
     <div className="absolute   w-full">
       <div className="flex w-full">
@@ -104,7 +113,9 @@ function Header() {
               <li key={index} className="">
                 <Link
                   href={items.link}
-                  className="hover:underline group peer  flex-col"
+                  className={`hover:underline group peer ${
+                    path === items.path && "underline"
+                  } flex-col`}
                 >
                   <div className="flex flex-col">
                     <div className="flex items-center ">
@@ -123,12 +134,14 @@ function Header() {
                   </div>
                 </Link>
                 {items.name === "Categories" && (
-                  <div className="p-2  absolute z-50 hidden hover:grid  bg-black peer-hover:grid grid-cols-2 gap-2">
+                  <div className="p-2  absolute z-50 hidden hover:grid border-[0.2px] border-gray-700 rounded  bg-black peer-hover:grid grid-cols-2 gap-2">
                     {data.map((value, index) => (
                       <Link
                         href={""}
                         key={index}
-                        className="text-white rounded hover:underline p-2 "
+                        className={`text-white ${
+                          path === items.path && "underline"
+                        }  rounded hover:underline p-2 `}
                       >
                         {value.name}
                       </Link>
