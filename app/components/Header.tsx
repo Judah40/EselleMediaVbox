@@ -80,7 +80,7 @@ function Header() {
     { name: "Home", link: "/page/Home" },
     { name: "VOD", link: "/page/videoOnDemand" },
     { name: "Categories", link: "" },
-    { name: "Live Events", link: "/" },
+    { name: "Live Events", link: "/page/Live" },
     { name: "Channels", link: "/" },
   ];
 

@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="bg-black">
       <NextUIProvider>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}

@@ -1,10 +1,8 @@
-import {
-  Card,
-  CardHeader,
-  CardFooter,
-  Image,
-  Button,
-} from "@nextui-org/react";
+'use client'
+
+
+import { Card, CardHeader, CardFooter, Image, Button } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 
 import React from "react";
 
@@ -12,6 +10,7 @@ type cardData = {
   isVideoLive: boolean;
 };
 function CardButton({ isVideoLive }: cardData) {
+  const router = useRouter();
   return (
     <Card isFooterBlurred className="w-full h-[300px] md:h-[400px]">
       <CardHeader className="absolute z-10 top-1 flex-col items-start ">
@@ -48,12 +47,17 @@ function CardButton({ isVideoLive }: cardData) {
           />
           <div className="flex flex-col">
             <p className="text-tiny text-white/60">Breathing App</p>
-            <p className="text-tiny text-white/60">Get a good nights sleep.</p>
+            <p className="text-tiny text-white/60">Get a good night's sleep.</p>
           </div>
         </div>
         <Button
           radius="full"
           size="sm"
+          onPress={() => {
+            if (isVideoLive) {
+              router.push(`/page/Live/1`);
+            }
+          }}
           className={`${isVideoLive && "bg-gray-500"}`}
         >
           {isVideoLive ? "Watch" : "Subscribe"}
