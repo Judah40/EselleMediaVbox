@@ -1,8 +1,10 @@
 "use client";
 
+import LiveCard from "@/app/components/buttons/LiveCard";
 import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 import React from "react";
-
 
 function page() {
   // sports, lifestyle , documentaries, tech, news, films , fashion, tv shows, podcasts, personal development , adult education, health &fitness , comedy , tv series, kids entertainment, kids education, culture and tradition, international
@@ -43,6 +45,24 @@ function page() {
               </button>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="p-8">
+        <div className="flex items-center gap-1">
+          <p className="text-2xl font-semibold">Live Now</p>
+          <Link href={{}} className="flex items-center gap-2 group ">
+            <p className="text-cyan-500  text-sm hidden group-hover:block">
+              View All
+            </p>
+            <ChevronRight color="#06b6d4" />{" "}
+          </Link>
+        </div>
+        <div className=" grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-2">
+          <LiveCard />
+          <LiveCard />
+          <LiveCard />
+          <LiveCard />
         </div>
       </div>
     </HomeLayoutWrapper>

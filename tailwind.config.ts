@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import { nextui } from "@nextui-org/react";
+const withMT = require("@material-tailwind/react/utils/withMT");
 
 const config: Config = {
     darkMode: ["class"],
