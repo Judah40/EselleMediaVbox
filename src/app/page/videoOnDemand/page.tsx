@@ -1,7 +1,7 @@
 "use client";
 
-import LiveCard from "@/app/components/buttons/LiveCard";
-import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
+import LiveCard from "@/src/app/components/buttons/LiveCard";
+import HomeLayoutWrapper from "@/src/app/layouts/HomeLayoutWrapper";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import React from "react";

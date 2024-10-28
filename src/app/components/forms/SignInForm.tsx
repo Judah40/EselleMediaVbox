@@ -1,24 +1,50 @@
 "use client";
 
 // components/forms/SignInForm.tsx
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { signInValidationSchema } from "@/app/lib/signInValidation";
-import Link from "next/link";
+import { signInValidationSchema } from "@/src/app/lib/signInValidation";
+import "rsuite/dist/rsuite.min.css";
+import { Loader } from "rsuite";
 
+import Link from "next/link";
+import { handleUserLogin } from "../../api/AuthApi/api";
+
+type response = {
+  message: string;
+  userType: string;
+  token: string;
+};
 type UserFormValues = {
   email: string;
   password: string;
 };
 const SignInForm = () => {
+  const [isSignInLoading, setIsSignInLoadin] = useState<boolean>(false);
+  const [responseMessage, setResponseMessage] = useState<string | null>(null);
   const initialValues: UserFormValues = {
     email: "",
     password: "",
   };
 
-  const handleSubmit = (values: UserFormValues) => {
+  const handleSubmit = async (
+    values: UserFormValues,
+    { setSubmitting }: any
+  ) => {
+    setIsSignInLoadin(true);
     console.log("Form data", values);
     // Add logic for sign-in or API call here
+    await handleUserLogin(values)
+      .then((response) => {
+        console.log(response);
+        setIsSignInLoadin(false);
+        setResponseMessage(response.data.message);
+      })
+      .catch((error) => {
+        console.error(error.response.data.error);
+        setIsSignInLoadin(false);
+        setResponseMessage(error.response.data.error);
+      });
   };
 
   return (
@@ -29,6 +55,17 @@ const SignInForm = () => {
     >
       {() => (
         <Form className="w-full items-center justify-center flex flex-col   gap-4">
+          {responseMessage && (
+            <div
+              className={`${
+                responseMessage === "Password is Invalid."
+                  ? "bg-red-500"
+                  : responseMessage === "Login successful" && "bg-green-200 "
+              } p-4 w-full lg:w-8/12 bg-opacity-40 flex items-center justify-center rounded border-white border`}
+            >
+              {responseMessage && responseMessage}
+            </div>
+          )}
           <div className="form-control flex flex-col w-full lg:w-8/12 ">
             <label htmlFor="email">Email</label>
             <Field
@@ -36,7 +73,7 @@ const SignInForm = () => {
               id="email"
               name="email"
               placeholder="Enter your email"
-              className=" p-3 rounded"
+              className=" p-3 rounded text-black"
             />
             <ErrorMessage
               name="email"
@@ -52,7 +89,7 @@ const SignInForm = () => {
               id="password"
               name="password"
               placeholder="Enter your password"
-              className=" p-3 rounded"
+              className=" p-3 rounded text-black"
             />
             <ErrorMessage
               name="password"
@@ -77,7 +114,7 @@ const SignInForm = () => {
             type="submit"
             className="w-full lg:w-8/12 bg-cyan-500 p-3 rounded"
           >
-            Sign In
+            {isSignInLoading ? <Loader /> : "Sign In"}
           </button>
         </Form>
       )}

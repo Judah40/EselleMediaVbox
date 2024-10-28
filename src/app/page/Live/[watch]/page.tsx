@@ -3,9 +3,9 @@
 import React from "react";
 import ReactPlayer from "react-player";
 import "react-chat-elements/dist/main.css";
-import Chatlist from "@/app/components/Chatlist";
-import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
-import SearchInput from "@/app/components/inputs/SearchInput";
+import Chatlist from "@/src/app/components/Chatlist";
+import HomeLayoutWrapper from "@/src/app/layouts/HomeLayoutWrapper";
+import SearchInput from "@/src/app/components/inputs/SearchInput";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
 import { IoIosShareAlt } from "react-icons/io";
 
@@ -25,7 +25,6 @@ const page = () => {
             <ReactPlayer
               controls
               light
-              
               pip
               width="100%"
               height="100%"

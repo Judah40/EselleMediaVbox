@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { signUpValidationSchema } from "@/app/lib/signupValidation";
+import { signUpValidationSchema } from "@/src/app/lib/signupValidation";
 
 export type UserFormValues = {
   userName: string;

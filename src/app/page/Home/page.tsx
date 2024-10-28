@@ -1,5 +1,5 @@
-import CardButton from "@/app/components/buttons/CardButton";
-import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
+import CardButton from "@/src/app/components/buttons/CardButton";
+import HomeLayoutWrapper from "@/src/app/layouts/HomeLayoutWrapper";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import React from "react";

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import { FcGoogle } from "react-icons/fc";
-import SignInForm from "@/app/components/forms/SignInForm";
+import SignInForm from "@/src/app/components/forms/SignInForm";
 import Link from "next/link";
 
 function page() {

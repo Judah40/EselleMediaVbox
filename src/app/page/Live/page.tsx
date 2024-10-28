@@ -1,7 +1,7 @@
-import LiveCard from "@/app/components/buttons/LiveCard";
-import { MUIdropdown } from "@/app/components/dropdowns/MUIdropdown";
-import SearchInput from "@/app/components/inputs/SearchInput";
-import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
+import LiveCard from "@/src/app/components/buttons/LiveCard";
+import { MUIdropdown } from "@/src/app/components/dropdowns/MUIdropdown";
+import SearchInput from "@/src/app/components/inputs/SearchInput";
+import HomeLayoutWrapper from "@/src/app/layouts/HomeLayoutWrapper";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -41,7 +41,7 @@ function page() {
         </div>
       </div>
 
-            {/* content 2 */}
+      {/* content 2 */}
 
       <div className="p-4">
         <div className="flex items-center gap-1">
@@ -60,7 +60,7 @@ function page() {
           <LiveCard />
         </div>
       </div>
-            {/* content 3 */}
+      {/* content 3 */}
 
       <div className="p-4">
         <div className="flex items-center gap-1">

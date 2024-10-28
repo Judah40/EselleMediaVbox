@@ -1,29 +1,39 @@
-import LiveCard from "@/app/components/buttons/LiveCard";
-import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
-import { ChevronRight } from "lucide-react";
+import LiveCard from "@/src/app/components/buttons/LiveCard";
+import HomeLayoutWrapper from "@/src/app/layouts/HomeLayoutWrapper";
+import {
+  Baby,
+  ChevronRight,
+  Church,
+  FerrisWheel,
+  Film,
+  GraduationCap,
+  Medal,
+  Music,
+  PersonStanding,
+  Projector,
+  Shell,
+  Store,
+} from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
 interface genre {
   name: String;
+  icon: React.ReactNode;
 }
 function page() {
   const tvGenres: genre[] = [
-    { name: "Entertainment" },
-    { name: "Music" },
-    { name: "Sports" },
-    { name: "Children's" },
-    { name: "Documentary" },
-    { name: "Religious" },
-    { name: "Shopping" },
-    { name: "Educational" },
-    { name: "Lifestyle" },
-    { name: "Movie" },
-    { name: "Cultural" },
-    { name: "Cultural" },
-    { name: "Cultural" },
-    { name: "Cultural" },
-    { name: "Cultural" },
+    { name: "Entertainment", icon: <FerrisWheel /> },
+    { name: "Music", icon: <Music /> },
+    { name: "Sports", icon: <Medal /> },
+    { name: "Children's", icon: <Baby /> },
+    { name: "Documentary", icon: <Film /> },
+    { name: "Religious", icon: <Church /> },
+    { name: "Shopping", icon: <Store /> },
+    { name: "Educational", icon: <GraduationCap /> },
+    { name: "Lifestyle", icon: <Shell /> },
+    { name: "Movie", icon: <Projector /> },
+    { name: "Cultural", icon: <PersonStanding /> },
   ];
   return (
     <HomeLayoutWrapper>
@@ -59,14 +69,15 @@ function page() {
       </div>
 
       {/* genre */}
-      <div className="py-4 flex overflow-x-auto ml-8 gap-4 scrollbar-hide">
+      <div className="py-4 flex overflow-x-auto ml-8 gap-6 scrollbar-hide">
         {tvGenres.map((genre, index) => (
-          <div
+          <button
             key={index}
-            className="w-full p-4   rounded-lg  bg-gray-800 bg-opacity-50  "
+            className="w-full p-4 flex gap-2  rounded-lg  bg-gray-800 bg-opacity-50 hover:bg-gray-600 "
           >
             <p>{genre.name}</p>
-          </div>
+            <div>{genre.icon}</div>
+          </button>
         ))}
       </div>
 
