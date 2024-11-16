@@ -13,6 +13,9 @@ const nextConfig = {
       },
     ];
   },
+  images: {
+    domains: ["vbox-esselle-media.s3.eu-north-1.amazonaws.com"],
+  },
 };
 
 export default nextConfig;
