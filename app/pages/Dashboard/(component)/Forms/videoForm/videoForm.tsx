@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { FormValues } from "./form.types";
 import { validationSchema } from "./validation";
@@ -14,7 +14,6 @@ const VideoForm: React.FC<videoProps> = ({ isComplete }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isVideoUploading, setIsVideoUploading] = useState<boolean>(false);
   const [uploadingPercentage, setUploadingPercentage] = useState<number>(0);
-
 
   const initialValues: FormValues = {
     content: "",
@@ -58,6 +57,7 @@ const VideoForm: React.FC<videoProps> = ({ isComplete }) => {
           banner: values.banner,
           fullVideo: values.fullVideo,
         };
+        // console.log(values.tags);
         handleCreatePost(data, (progressEvent) => {
           if (progressEvent.total) {
             const percentCompleted = Math.round(
@@ -66,7 +66,7 @@ const VideoForm: React.FC<videoProps> = ({ isComplete }) => {
             setUploadingPercentage(percentCompleted);
           }
         })
-          .then((post) => {
+          .then(() => {
             setIsLoading(false);
             alert("post successfully sent");
             setIsVideoUploading(false);
@@ -122,9 +122,12 @@ const VideoForm: React.FC<videoProps> = ({ isComplete }) => {
               name="tags"
               options={tagOptions}
               className="text-black"
-              onChange={(selectedOptions) =>
-                setFieldValue("tags", selectedOptions)
-              }
+              onChange={(selectedOptions) => {
+                const newTags = selectedOptions
+                  ? selectedOptions.map((option) => option.value)
+                  : [];
+                setFieldValue("tags", newTags);
+              }}
             />
 
             <ErrorMessage

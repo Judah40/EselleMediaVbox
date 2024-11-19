@@ -8,21 +8,33 @@ import VideoForm from "../(component)/Forms/videoForm/videoForm";
 import { handleGetAllPosts } from "@/app/api/PostApi/api";
 import { PostVideoData } from "./videos.types";
 import Link from "next/link";
+import SkeletonCard from "../(component)/Skeleton";
+// import Link from "next/link";
 
 const Page = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [vidoesPosted, setVideoPosted] = useState<PostVideoData[]>([]);
+  const [isLVideoLoading, setIsVideoLoading] = useState<boolean>(true);
   ////////////////////////////////////////////////////////////////////////
   //GET ALL VIDEOS
   useEffect(() => {
+    // setIsVideoLoading(true);
     handleGetAllPosts()
       .then((values) => {
         console.log(values.post);
+        for (let i = 0; i < values.post.length; i++) {
+          console.log(values.post[i].tags.length);
+          for (let j = 0; j < values.post[i].tags.length; j++) {
+            console.log(typeof values.post[i].tags[j]);
+          }
+        }
         const { post } = values;
         setVideoPosted(post);
+        setIsVideoLoading(false);
       })
       .catch((err) => {
         console.log(err);
+        setIsVideoLoading(false);
       });
   }, []);
   return (
@@ -32,7 +44,7 @@ const Page = () => {
         <div className="inset-0 z-50 bg-black overflow-y-auto md:justify-center items-center flex flex-col fixed w-full flex-1 bg-opacity-50">
           <div className="bg-black flex border w-11/12 lg:w-6/12 border-gray-700 shadow shadow-white items-center flex-col py-12 rounded">
             <div className="w-11/12 font-bold flex items-center py-4">
-              <p className="text-xl">Go LIve</p>
+              <p className="text-xl">Upload Video</p>
               <div className="flex-1 flex justify-end">
                 <button
                   onClick={() => {
@@ -96,33 +108,41 @@ const Page = () => {
         </div>
       </div>
       {/* body */}
-      <div className="grid  grid-cols-2 md:grid-cols-3 2xl:grid-cols-4">
-        {vidoesPosted.map((video, index) => (
-          <div
-            key={index}
-            className="rounded-lg bg-white  flex flex-col items-center justify-center h-64 w-full sm:w-48 md:w-56 lg:w-64"
-          >
-            <img
-              className="object-cover w-full h-4/6"
-              src={video.thumbnailUrl}
-              alt="thumbnail"
-            />
-            <div>
-              <p className="text-sm text-gray-600">{video.caption}</p>
-            </div>
-            <Link
-              href={{
-                pathname: `/pages/Dashboard/Videos/video/${video.id}`,
-              }}
-              className="w-11/12 p-2 rounded hover:bg-cyan-600 bg-cyan-500"
-            >
-              View More
-            </Link>
+      <section className="py-10 ">
+        {isLVideoLoading ? (
+          <SkeletonCard />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
+            {vidoesPosted.map((video, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-300 "
+              >
+                <img
+                  src={video.bannerUrl}
+                  alt="videos"
+                  className="rounded-t-lg w-full h-48 object-cover"
+                />
+                <div className="p-4 text-center">
+                  <h3 className="text-lg text-black font-semibold mb-2">
+                    {video.caption}
+                  </h3>
+                  <Link
+                    href={`/pages/Dashboard/Videos/video/${video.id}`}
+                    className="bg-[#189AA7] text-white px-4 py-2 rounded-lg hover:bg-[#F9ECE4] transition duration-400"
+                  >
+                    View More
+                  </Link>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        )}
+      </section>
     </div>
   );
 };
 
 export default Page;
+
+//       pathname: `/pages/Dashboard/Videos/video/${video.id}`,

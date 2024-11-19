@@ -49,3 +49,10 @@ export const handleGetSinglePost = async (id: number) => {
   const response = await apiClient.get(`/post/${id}`);
   return response;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//GET POST BY GENRE
+export const handleGetPostByGenre = async (genre: string) => {
+  const response = await apiClient.get(`/post/genre/${genre}`);
+  return response;
+}

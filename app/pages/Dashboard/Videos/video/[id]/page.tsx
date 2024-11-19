@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { handleGetSinglePost } from "@/app/api/PostApi/api";
 import { useParams } from "next/navigation";
@@ -18,7 +19,7 @@ const Page = () => {
       .catch((error) => {
         console.log(error.response.data);
       });
-  });
+  }, []);
   if (!id) {
     return <div>No Video Available</div>;
   }

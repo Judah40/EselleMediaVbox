@@ -5,11 +5,14 @@ export const validationSchema = Yup.object({
     content: Yup.string().required('Content is required'),
     caption: Yup.string().required('Caption is required'),
     tags: Yup.array()
-    .of(Yup.object().shape({
-      value: Yup.string().oneOf(data.map(d => d.name), 'Invalid tag').required(),
-      label: Yup.string().required()
-    }))
-    .min(1, 'At least one tag is required'),    location: Yup.string().required('Location is required'),
+    .of(
+      Yup.string()
+        .oneOf(data.map(option => option.name), 'Invalid tag') // Ensure the tag is a valid option
+        .required('Tag is required') // Ensure each tag is not empty
+    )
+    .min(1, 'At least one tag is required') // Optional: Ensure at least one tag is selected
+    .required('Tags are required'), // Optional: Ensure the tags array itself is not empty
+  
     thumbnail: Yup.mixed<File>()
       .required('Thumbnail is required')
       .test('fileType', 'Thumbnail must be an image (jpg, jpeg, or png)', (value) => {

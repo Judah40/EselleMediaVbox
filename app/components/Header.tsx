@@ -6,19 +6,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoMenu, IoClose } from "react-icons/io5";
-import {
-  // handleGetUserProfilePicture,
-} from "../api/AuthApi/api";
+import // handleGetUserProfilePicture,
+"../api/AuthApi/api";
 import DropdownUi from "./dropdowns/HeaderIconDropwodn/dropdown";
 import { data } from "../api/DummyData/data";
 import { userAuth } from "@/useContext";
 
-
-
-
-
 function Header() {
-  const {username} = userAuth()
+  const { username } = userAuth();
   const path = usePathname().split("/")[2];
 
   const handleScreenWidthResponsiveness = async () => {
@@ -52,8 +47,6 @@ function Header() {
     return () =>
       window.removeEventListener("resize", handleScreenWidthResponsiveness);
   }, [isMenuBarOpen]);
-
-  
 
   return (
     <div className="absolute z-50  w-full">
@@ -89,7 +82,7 @@ function Header() {
                   <div className="p-2  absolute z-50 hidden hover:grid border-[0.2px] border-gray-700 rounded  bg-black peer-hover:grid grid-cols-2 gap-2">
                     {data.map((value, index) => (
                       <Link
-                        href={""}
+                        href={`/pages/Category/${value.name}`}
                         key={index}
                         className={`text-white ${
                           path === items.path && "underline"

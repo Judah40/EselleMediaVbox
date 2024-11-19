@@ -6,7 +6,7 @@ import "react-chat-elements/dist/main.css";
 // import Chatlist from "@/src/app/components/Chatlist";
 import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
 import SearchInput from "@/app/components/inputs/SearchInput";
-import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { ThumbsUp } from "lucide-react";
 import { IoIosShareAlt } from "react-icons/io";
 import Hls from "hls.js";
 import { getCookie } from "@/app/api/config";
@@ -129,11 +129,11 @@ const page = () => {
         liveId: "157f2eba-7751-4336-872a-b834c5d39840",
       };
       await handleSendComment(data)
-        .then((Response) => {
+        .then(() => {
           setComments((previousComments) => [...previousComments, chatMessage]);
           setMessage("");
         })
-        .catch((err) => {
+        .catch(() => {
           alert("Error sending message");
         });
     }
