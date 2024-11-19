@@ -30,7 +30,7 @@ function SignupForm() {
   };
 
   const handleSubmit = (values: UserFormValues) => {
-    // console.log("Form Submitted with values: ", values);
+    console.log("Form Submitted with values: ", values);
   };
 
   return (

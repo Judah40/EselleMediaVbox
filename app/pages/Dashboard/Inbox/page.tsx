@@ -34,7 +34,10 @@ const page = () => {
         {/* inboxs */}
         <div className="p-2">
           {data.map((data, index) => (
-            <button className="w-full flex gap-2 hover:shadow-lg hover:rounded  hover:bg-gray-200 p-2 border-b">
+            <button
+              key={index}
+              className="w-full flex gap-2 hover:shadow-lg hover:rounded  hover:bg-gray-200 p-2 border-b"
+            >
               <div>
                 {/* check single */}
                 <input type="checkbox" className="w-4 h-4" />

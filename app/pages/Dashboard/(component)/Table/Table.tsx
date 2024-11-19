@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useMemo, useState } from "react";
 import {
   MaterialReactTable,
@@ -6,14 +7,11 @@ import {
   useMaterialReactTable,
   type MRT_ColumnDef,
 } from "material-react-table";
-import { Users } from "./table.types";
 import { Box } from "@mui/material";
 //Material UI Imports
 import {
-  Button,
   ListItemIcon,
   MenuItem,
-  Typography,
   lighten,
 } from "@mui/material";
 import { AccountCircle, Send, Close, CheckBox } from "@mui/icons-material";
@@ -35,7 +33,7 @@ const Table = () => {
         console.log(values.data.data);
         setAllUsers(values.data.data);
       })
-      .catch((error) => {});
+      .catch(() => {});
   }, []);
 
   const columns = useMemo<MRT_ColumnDef<User>[]>(
@@ -49,7 +47,7 @@ const Table = () => {
             accessorFn: (user) => `${user.firstName} ${user.lastName}`,
             header: "Name",
             id: "name",
-            Cell: ({ renderedCellValue, row }) => (
+            Cell: ({ renderedCellValue }) => (
               <Box
                 sx={{
                   display: "flex",

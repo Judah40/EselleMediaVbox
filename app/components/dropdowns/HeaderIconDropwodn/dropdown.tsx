@@ -8,24 +8,22 @@ import {
   Avatar,
 } from "@nextui-org/react";
 import {
-  handleGetUserProfile,
-  handleGetUserProfilePicture,
+  
   handleLogout,
 } from "@/app/api/AuthApi/api";
-import { useEffect, useState } from "react";
 import { userAuth } from "@/useContext";
-type userProfileType = {
-  address: string;
-  dateOfBirth: string;
-  email: string;
-  firstName: string;
-  gender: string;
-  isActive: boolean;
-  lastName: string;
-  phoneNumber: string;
-  profile_picture: string;
-  username: string;
-};
+// type userProfileType = {
+//   address: string;
+//   dateOfBirth: string;
+//   email: string;
+//   firstName: string;
+//   gender: string;
+//   isActive: boolean;
+//   lastName: string;
+//   phoneNumber: string;
+//   profile_picture: string;
+//   username: string;
+// };
 export default function DropdownUi() {
   const { username, userProfilePicture } = userAuth();
   // const [userProfilePicture, setUserProfilePicture] = useState<string>("");

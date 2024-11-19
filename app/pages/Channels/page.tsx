@@ -18,7 +18,7 @@ import Link from "next/link";
 import React from "react";
 
 interface genre {
-  name: String;
+  name: string;
   icon: React.ReactNode;
 }
 function page() {

@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import LiveModal from "../(component)/Modals/LiveModal";
-import { CircleX, Plus, Radio, Search } from "lucide-react";
+import { CircleX, Radio, Search } from "lucide-react";
 
-const page = () => {
+const Page = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="flex-1 w-full  flex items-center  flex-col ">
@@ -53,4 +53,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
