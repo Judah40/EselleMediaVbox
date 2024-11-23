@@ -257,7 +257,7 @@ function page() {
               and FIFA.{" "}
             </p>
             <p className="text-gray-500">
-              The SLFA's goals include improving the game of football,
+              The SLFA&apos;s goals include improving the game of football,
               regulating it, and promoting its unifying, educational, cultural,
               and humanitarian values. The SLFA does this through youth and
               development programs.{" "}
