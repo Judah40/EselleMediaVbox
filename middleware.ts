@@ -28,6 +28,10 @@ export async function middleware(request: NextRequest) {
   if(apiResponse.ok && pages==="Live" && path.length===4){
     return NextResponse.next()
   }
+  if(apiResponse.ok && pages==="Extras" && path.length===4){
+    return NextResponse.next()
+  }
+
   if(!apiResponse.ok && pages==="Live" && path.length===3){
     return NextResponse.next()
   }
@@ -46,5 +50,5 @@ export async function middleware(request: NextRequest) {
  
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ['/pages/Dashboard/:path*', '/pages/Auth/:path*','/pages/Live/:path*' ],
+  matcher: ['/pages/Dashboard/:path*', '/pages/Auth/:path*','/pages/Live/:path*', '/pages/Extras/:path*' ],
 }
