@@ -6,10 +6,10 @@ import Table from "../../(component)/Table/Table";
 import { PiExportBold } from "react-icons/pi";
 import { Plus } from "lucide-react";
 import { Spinner } from "@nextui-org/react";
-
+import { useParams } from "next/navigation";
 
 const Page = () => {
-  // const { Status } = useParams();
+  const { Status } = useParams();
   const [screenSize, setScreenSize] = useState<number | null>(null);
   // const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -64,7 +64,7 @@ const Page = () => {
                 : `${screenSize - 300}px`,
           }}
         >
-          <Table  />
+          <Table id={Number(Status)} />
         </div>
       )}
     </div>

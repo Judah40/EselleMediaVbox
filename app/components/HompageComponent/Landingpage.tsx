@@ -47,7 +47,7 @@ const Landingpage: React.FC<BackgroundMeduaProps> = ({
 
   const handleVideoEnd = () => setShowBanner(true);
   return (
-    <div className="flex w-full h-[600px] relative">
+    <div className="flex w-full h-[700px]  relative">
       {showBanner ? (
         <div
           style={{
@@ -66,7 +66,7 @@ const Landingpage: React.FC<BackgroundMeduaProps> = ({
         />
       )}
       <div
-        className={`w-full bg-black h-full  bg-opacity-60 flex md:flex-row z-10   flex-col-reverse items-center justify-center gap-8 `}
+        className={`w-full bg-black h-full  pt-16 bg-opacity-60 flex md:flex-row z-10 bg-gradient-to-t from-black via-transparent to-black   flex-col-reverse items-center justify-center gap-8 `}
       >
         <div className="w-full    px-6 md:px-14">
           <div className="md:w-96 gap-6 flex flex-col">

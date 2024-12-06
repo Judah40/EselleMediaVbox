@@ -7,24 +7,12 @@ import {
   User,
   Avatar,
 } from "@nextui-org/react";
-import {
-  
-  handleLogout,
-} from "@/app/api/AuthApi/api";
+import { handleLogout } from "@/app/api/AuthApi/api";
 import { userAuth } from "@/useContext";
-// type userProfileType = {
-//   address: string;
-//   dateOfBirth: string;
-//   email: string;
-//   firstName: string;
-//   gender: string;
-//   isActive: boolean;
-//   lastName: string;
-//   phoneNumber: string;
-//   profile_picture: string;
-//   username: string;
-// };
+import { useRouter } from "next/navigation";
+
 export default function DropdownUi() {
+  const router = useRouter();
   const { username, userProfilePicture } = userAuth();
   // const [userProfilePicture, setUserProfilePicture] = useState<string>("");
 
@@ -83,7 +71,14 @@ export default function DropdownUi() {
               />
             ) : null}
           </DropdownItem>
-          <DropdownItem key="dashboard">Dashboard</DropdownItem>
+          <DropdownItem
+            key="dashboard"
+            onClick={() => {
+              router.push("/pages/Dashboard");
+            }}
+          >
+            Dashboard
+          </DropdownItem>
           <DropdownItem key="settings">Settings</DropdownItem>
         </DropdownSection>
         <DropdownSection aria-label="Help & Feedback">

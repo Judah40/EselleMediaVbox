@@ -11,7 +11,7 @@ function HomeLayoutWrapper({ children }: HomeLayoutWrapperProps) {
     <div>
       <Header />
       {children}
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

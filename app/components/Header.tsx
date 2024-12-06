@@ -3,7 +3,7 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { IoMenu, IoClose } from "react-icons/io5";
 import // handleGetUserProfilePicture,
@@ -15,7 +15,7 @@ import { userAuth } from "@/useContext";
 function Header() {
   const { username } = userAuth();
   const path = usePathname().split("/")[2];
-
+  const router = useRouter();
   const handleScreenWidthResponsiveness = async () => {
     //get screen size
 
@@ -28,7 +28,7 @@ function Header() {
   };
   // states
   const [isMenuBarOpen, setIsMenuBarOpen] = useState(false);
-
+  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const pages = [
     { name: "Home", link: "/pages/Home", path: "Home" },
     { name: "VOD", link: "/pages/videoOnDemand", path: "videoOnDemand" },
@@ -53,9 +53,9 @@ function Header() {
       <div className="flex w-full  md:px-6">
         <Image src={"/logo/vbox.png"} width={100} height={100} alt="logo" />
         <div className="hidden md:block md:flex-1  md:w-full  md:items-center md:justify-center ">
-          <ul className="gap-10 flex flex-row items-center  h-full justify-end px-6">
+          <ul className="gap-8 flex flex-row items-center  h-full justify-end px-6">
             {pages.map((items, index) => (
-              <li key={index} className="">
+              <li key={index} className="text-sm">
                 <Link
                   href={items.link}
                   className={`hover:underline hover:decoration-white group peer ${
@@ -100,9 +100,9 @@ function Header() {
             ) : (
               <Link
                 href={"/pages/Auth/Signin"}
-                className="bg-yellow-700 px-4 py-2 rounded hover:bg-yellow-500 text-white"
+                className="bg-yellow-700 px-4 py-2 rounded text-sm hover:bg-yellow-500 text-white"
               >
-                Sign in
+                <p className="text-sm">Sign in</p>
               </Link>
             )}
           </ul>
@@ -132,20 +132,57 @@ function Header() {
 
       {isMenuBarOpen && (
         <div className="w-full p-6 bg-white text-black z-50 absolute">
-          <ul className="gap-16 flex flex-col items-center">
+          <ul className="gap-4 flex flex-col w-full ">
             {pages.map((items, index) => (
-              <li key={index}>
-                <Link href={items.link} className="hover:underline ">
-                  {items.name}
-                </Link>
+              <li key={index} className="w-full ">
+                <button
+                  onClick={() => {
+                    if (items.name !== "Categories") {
+                      router.push(items.link);
+                    } else {
+                      setIsDropDownOpen(!isDropDownOpen);
+                    }
+                  }}
+                  className="hover:shadow border-b  w-full  rounded p-4  flex items-start justify-center flex-1"
+                >
+                  <p>{items.name}</p>
+                  <div className="flex-1 flex justify-end ">
+                    {items.name === "Categories" ? (
+                      isDropDownOpen ? (
+                        <ChevronUp size={18} color="black" />
+                      ) : (
+                        <ChevronDown size={18} color="black" />
+                      )
+                    ) : null}
+                  </div>
+                </button>
+                {isDropDownOpen && items.name === "Categories" && (
+                  <div className="flex flex-col bg-cyan-50 gap-2 my-2">
+                    {data.map((value, index) => (
+                      <Link
+                        href={`/pages/Category/${value.name}`}
+                        key={index}
+                        className={`bg-cyan-100 ${
+                          path === items.path && "underline"
+                        }  rounded  shadow hover:shadow-l py-2 px-4 `}
+                      >
+                        {value.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </li>
             ))}
-            <Link
-              href={"/pages/Auth/Signin"}
-              className="bg-yellow-700 px-4 py-2 rounded hover:bg-yellow-500"
-            >
-              Sign in
-            </Link>
+            <button
+            onClick={()=>{
+              router.push("/pages/Auth/Signin");
+
+            }}
+              // href={"/pages/Auth/Signin"}
+              className="bg-yellow-700 px-4 py-2 outline-none rounded hover:bg-yellow-500 w-auto"
+              >
+              <p>Sign in</p>
+            </button>
           </ul>
         </div>
       )}

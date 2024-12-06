@@ -1,5 +1,7 @@
-import React from "react";
-import { Switch, Divider } from "@nextui-org/react";
+"use client";
+
+import React, { useState } from "react";
+import { Switch, Divider, Spinner } from "@nextui-org/react";
 import {
   BellDot,
   Calendar,
@@ -10,8 +12,12 @@ import {
   UsersRound,
   Video,
 } from "lucide-react";
+import { handleCreateApiKey } from "@/app/api/LiveApi/api";
+import { useRouter } from "next/navigation";
 
 const LiveModal = () => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   //+
   return (
     <div className="w-11/12 grid grid-cols-1 md:grid-cols-2 gap-4 ">
@@ -48,8 +54,26 @@ const LiveModal = () => {
           <Switch defaultSelected aria-label="Automatic updates" />
         </div>
         {/* btn */}
-        <button className="w-full p-3 rounded bg-gray-500 text-white">
-          Go live
+        <button
+          onClick={() => {
+            setIsLoading(true);
+            handleCreateApiKey()
+              .then((response) => {
+                console.log(response.data.streamKey);
+                const streamKey = response.data.streamKey;
+                setIsLoading(false);
+                router.push(
+                  `/pages/Dashboard/LiveStream/Livedata/${streamKey}`
+                );
+              })
+              .catch((error) => {
+                console.log(error.response);
+                setIsLoading(false);
+              });
+          }}
+          className="w-full p-3 rounded bg-gray-500 text-white"
+        >
+          {isLoading ? <Spinner /> : <p>Go live</p>}
         </button>
       </div>
       {/* card 2 ie: to schedule live live  */}

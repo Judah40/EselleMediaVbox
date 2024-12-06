@@ -3,8 +3,8 @@ import { apiClient } from "../../config"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //GET ALL USERS
-export const handleGetAllUsers =async ()=>{
-    const response = await apiClient.get("admin/user")
+export const handleGetAllUsers =async (id:number)=>{
+    const response = await apiClient.get(`admin/user/${id}`);
     return response
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////

@@ -9,11 +9,7 @@ import {
 } from "material-react-table";
 import { Box } from "@mui/material";
 //Material UI Imports
-import {
-  ListItemIcon,
-  MenuItem,
-  lighten,
-} from "@mui/material";
+import { ListItemIcon, MenuItem, lighten } from "@mui/material";
 import { AccountCircle, Send, Close, CheckBox } from "@mui/icons-material";
 import { User } from "../../types/users.types";
 import {
@@ -22,13 +18,13 @@ import {
   handleGetAllUsers,
 } from "@/app/api/AdminApi/usersApi/api";
 
-const Table = () => {
+const Table = ({ id }: { id: number }) => {
   const [data, setAllUsers] = useState<User[]>([]);
 
   ////////////////////////////////////////////////////////////////
   //API REQUEST USEEFFECT
   useEffect(() => {
-    handleGetAllUsers()
+    handleGetAllUsers(id)
       .then((values) => {
         console.log(values.data.data);
         setAllUsers(values.data.data);

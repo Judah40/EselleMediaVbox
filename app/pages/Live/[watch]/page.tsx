@@ -218,13 +218,7 @@ const page = () => {
                 </button>
                 <p className="text-xs">{aboutStream?.likeCount} likes</p>
               </div>
-              {/* dislikes */}
-              {/* <div className="flex items-center gap-2">
-                <button>
-                  <ThumbsDown />
-                </button>
-                <p className="text-xs">1.2k dislikes</p>
-              </div> */}
+
               {/* share */}
               <CopyToClipboard
                 text={`http://localhost:3000/pages/Live/${"157f2eba-7751-4336-872a-b834c5d39840"}`}

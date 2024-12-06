@@ -1,11 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LiveModal from "../(component)/Modals/LiveModal";
 import { CircleX, Radio, Search } from "lucide-react";
+import { handleGetAllLiveStreams } from "@/app/api/LiveApi/api";
+import { ResponseCardProps } from "./live.types";
+import ResponseCard from "../(component)/LiveComponents/cards";
 
 const Page = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [livesStreams, setLivesStreams] = useState<ResponseCardProps[]>();
+  useEffect(() => {
+    handleGetAllLiveStreams()
+      .then((values) => {
+        console.log(values.data.data);
+        setLivesStreams(values.data.data);
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
+  }, []);
   return (
     <div className="flex-1 w-full  flex items-center  flex-col ">
       {/* Modal Opening  */}
@@ -48,6 +62,13 @@ const Page = () => {
           <Radio color="black" />
           <p className="text-black text-xs">Go Live</p>
         </button>
+      </div>
+
+      <div className=" min-h-screen p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {livesStreams &&
+          livesStreams.map((data, index) => (
+            <ResponseCard key={index} {...data} />
+          ))}
       </div>
     </div>
   );
