@@ -9,7 +9,7 @@ import { validationSchema } from "../validation";
 import { handleGoLive } from "@/app/api/LiveApi/api";
 import Select from "react-select";
 import { data } from "@/app/api/DummyData/data";
-import CopyToClipboard from "react-copy-to-clipboard";
+// import CopyToClipboard from "react-copy-to-clipboard";
 
 const Page = () => {
   const router = useRouter();
@@ -111,7 +111,7 @@ const Page = () => {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            {({ values, setFieldValue }) => (
+            {({  setFieldValue }) => (
               <Form className="space-y-4 ">
                 {/* Title */}
                 <div>

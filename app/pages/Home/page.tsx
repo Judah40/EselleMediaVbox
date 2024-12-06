@@ -4,7 +4,6 @@ import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
 import React, { useEffect } from "react";
 import { handleUserAuthentication } from "../../api/AuthApi/api";
 import Landingpage from "../../components/HompageComponent/Landingpage";
-import { Movie } from "@/app/components/cards/cards.types";
 import ChampionsLeague from "@/app/components/HompageComponent/FootballSection";
 import GenreSection from "@/app/components/HompageComponent/genresCards";
 import VodSection from "@/app/components/HompageComponent/VodSections";

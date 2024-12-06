@@ -30,7 +30,7 @@ const Table = ({ id }: { id: number }) => {
         setAllUsers(values.data.data);
       })
       .catch(() => {});
-  }, []);
+  });
 
   const columns = useMemo<MRT_ColumnDef<User>[]>(
     () => [
