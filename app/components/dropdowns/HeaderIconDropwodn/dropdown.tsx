@@ -8,14 +8,15 @@ import {
   Avatar,
 } from "@nextui-org/react";
 import { handleLogout } from "@/app/api/AuthApi/api";
-import { userAuth } from "@/useContext";
+import { UserAuth } from "@/useContext";
 import { useRouter } from "next/navigation";
 
 export default function DropdownUi() {
   const router = useRouter();
-  const { username, userProfilePicture } = userAuth();
+  const { username, userProfilePicture } = UserAuth();
   // const [userProfilePicture, setUserProfilePicture] = useState<string>("");
 
+  console.log(userProfilePicture);
   return (
     <Dropdown
       showArrow
@@ -71,15 +72,18 @@ export default function DropdownUi() {
               />
             ) : null}
           </DropdownItem>
+
           <DropdownItem
             key="dashboard"
             onClick={() => {
-              router.push("/pages/Dashboard");
+              if (username?.role === "User") {
+                return router.push("/pages/Settings");
+              }
+              return router.push("/pages/Dashboard");
             }}
           >
-            Dashboard
+            {username?.role === "User" ? <p>Settings</p> : <p>Dashboard</p>}
           </DropdownItem>
-          <DropdownItem key="settings">Settings</DropdownItem>
         </DropdownSection>
         <DropdownSection aria-label="Help & Feedback">
           <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>

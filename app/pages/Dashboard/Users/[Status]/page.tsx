@@ -56,7 +56,7 @@ const Page = () => {
       </div>
       {screenSize && (
         <div
-          className={`overflow-x-auto bg-red-500 flex-1 flex justify-center`}
+          className={`overflow-x-auto  flex-1 flex justify-center`}
           style={{
             width:
               screenSize < 768

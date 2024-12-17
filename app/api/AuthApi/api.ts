@@ -1,3 +1,4 @@
+import { Reg } from "@/app/types/context";
 import { apiClient } from "../config";
 import Cookies from "js-cookie";
 
@@ -17,26 +18,34 @@ export const handleUserLogin = (data:signInValueTypes)=>{
 
 /////////////////////////////////////////////////////////////////////////////////////
 //SIGN UP API 
-type signUpValueTypes = {
+export type signUpValueTypes = {
     firstName:string,
     middleName:string,
     lastName:string,
     username:string,
-    dateOfBirth:Date,
+    dateOfBirth:string,
     gender:"Male"|"Female",
     email:string,
     address:string,
     phoneNumber:string
 }
+/////////////////////////////////////////////////////////////////////////////////////
+//PASSWORD SETUP
+type passwordSetupValueTypes = {
+    password:string,
+    confirmPassword:string
+}
+export const handleSettingUpPassword = (datas:passwordSetupValueTypes)=>{
+    const data ={
+        password:datas.password
+    }
+    const response = apiClient.post("/auth/password-setup", data)
+    return response
 
-export const handleUserRegistration= async(data:signUpValueTypes)=>{
-    try {
+}
+export const handleUserRegistration= async(data:Reg)=>{
         const response = await apiClient.post("/auth/register", data)
         return response
-        
-    } catch (error) {
-        return error
-    }
 }
 /////////////////////////////////////////////////////////////////////////////////////
 //GET USER PROFILE INFO
@@ -52,6 +61,36 @@ export const handleGetUserProfilePicture = async()=>{
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
+//ADD FAVROITES
+
+type favoritesType = {
+    name:string,
+  
+}
+export type favoritesArray ={
+    name:favoritesType[]
+}
+
+export const handleAddingFavorites = async(favorite : favoritesArray[])=>{
+    // console.log(favorite);
+    const data ={
+        favorites: favorite
+    }
+    const response = await apiClient.post("/favorite/create", data)
+    return response
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+//VERIFY OTP
+export const handleOTPVerification = async(otp:string)=>{
+    const data = {
+        OTP:otp
+    }
+    const response = await apiClient.post("/auth/verify-OTP", data)
+    return response
+}
+/////////////////////////////////////////////////////////////////////////////////////
 //LOGOUT USER 
 export const handleLogout = async()=>{
     const removeToken = await Cookies.remove("token")
@@ -59,6 +98,16 @@ export const handleLogout = async()=>{
     return {removeToken, removeUserType}
 }
 
+/////////////////////////////////////////////////////////////////////////////////////
+//UPLOAD PROFILE PICTURE
+export const handleUploadProfilePicture = async(file:File)=>{
+    const formData = new FormData()
+    formData.append("profile_picture", file)
+    const response = await apiClient.post("/auth/profile-picture", formData, {headers:{
+        'Content-Type': 'multipart/form-data', // Set content type for file uploads
+    }})
+    return response
+}
 /////////////////////////////////////////////////////////////////////////////////////
 //AUTHENTICATE USER 
 export const handleUserAuthentication = async()=>{

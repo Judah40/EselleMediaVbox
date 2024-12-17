@@ -7,14 +7,20 @@ import {
   ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import {
   handleGetUserProfile,
   handleGetUserProfilePicture,
+  handleUserRegistration,
 } from "./app/api/AuthApi/api";
-import { authContextType, Reg, success, user, users } from "./app/types/context";
-const url = process.env.NEXT_PUBLIC_BASE_URL;
-
+import {
+  authContextType,
+  Reg,
+  success,
+  user,
+  users,
+} from "./app/types/context";
+import { handleGetAllPosts } from "./app/api/PostApi/api";
+import { Post } from "./app/pages/Home/home.data";
 
 //context initliaization
 const userContext = createContext<authContextType>({} as authContextType);
@@ -25,15 +31,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const router = useRouter();
   const [username, setUser] = useState<users | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [superuser, setsuperuser] = useState(false);
   const [userProfilePicture, setUserProfilePicture] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState<success | null>(null);
+
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    handleGetAllPosts()
+      .then((posts) => {
+        // console.log(posts.post);
+        setPosts(posts.post);
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      })
+      .finally(() => {});
+  }, []);
   //resgiter or sign up
   const signup = async (newUser: Reg) => {
     setIsLoading(true);
-    const data = {
+    const data: Reg = {
       firstName: newUser.firstName,
       middleName: newUser.middleName,
       lastName: newUser.lastName,
@@ -44,15 +63,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       address: newUser.address,
       phoneNumber: newUser.phoneNumber,
     };
+    await handleUserRegistration(data)
+      .then((response) => {
+        console.log(response.data);
+        router.push("/pages/Auth/OTPInput");
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+        alert(`"Error", ${error.response.data.message}`);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
   //login provider for user authentication
   const loginAuthUser = async (newUser: user) => {
     setIsLoading(true);
 
-    let data = JSON.stringify({
-      username: newUser.username,
-      password: newUser.password,
-    });
+    // let data = JSON.stringify({
+    //   username: newUser.username,
+    //   password: newUser.password,
+    // });
   };
   //logout provider for user authentication
   const logout = () => {
@@ -65,7 +96,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     handleGetUserProfile()
       .then((value) => {
-        // console.log(value.data.user);
+        console.log(value.data.user.role);
         setUser(value.data.user);
       })
       .catch(() => {
@@ -74,7 +105,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
     handleGetUserProfilePicture()
       .then((value) => {
-        // console.log(value.data.profilePictureUrl);
+        console.log("my url is " + value.data.profilePictureUrl);
         setUserProfilePicture(value.data.profilePictureUrl);
       })
       .catch(() => {
@@ -94,13 +125,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         isLoading,
         setIsAuthenticated,
         signup,
+        posts,
       }}
     >
       {children}
     </userContext.Provider>
   );
 };
-export const userAuth = () => {
+export const UserAuth = () => {
   const context = useContext(userContext);
   if (context == undefined) {
     throw new Error("useAuth must be used within an AuthProvider");

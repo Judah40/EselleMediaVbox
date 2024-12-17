@@ -14,7 +14,7 @@ const nextConfig = {
     ];
   },
   images: {
-    domains: ["vbox-esselle-media.s3.eu-north-1.amazonaws.com"],
+    domains: ["vbox-esselle-media-new-bucket.s3.eu-north-1.amazonaws.com"],
   },
 };
 

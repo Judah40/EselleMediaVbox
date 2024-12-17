@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { handleUserAuthentication } from "../../api/AuthApi/api";
 import Landingpage from "../../components/HompageComponent/Landingpage";
 import ChampionsLeague from "@/app/components/HompageComponent/FootballSection";
@@ -11,42 +11,121 @@ import ShowsSection from "@/app/components/HompageComponent/TrensingShowsSection
 import TopShowsSection from "@/app/components/HompageComponent/TopShowsSections";
 import NewsSection from "@/app/components/HompageComponent/NewsSection";
 import LeagueTableSection from "@/app/components/HompageComponent/LeagueTableSection";
+import Modal from "@/app/components/Modal";
+import { Bookmark, MessageSquare, Play, ThumbsUp } from "lucide-react";
+import { handleGetAllPosts, handleGetSinglePost } from "@/app/api/PostApi/api";
+import { Post } from "./home.data";
+import { UserAuth } from "@/useContext";
 
 function page() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [singlePost, setSinglePost] = useState<Post>();
+  const closeModal = (open: boolean): void => {
+    setIsModalOpen(open);
+  };
+  const OpenModal = (open: boolean): void => {
+    setIsModalOpen(open);
+  };
+  const { posts } = UserAuth();
+
   useEffect(() => {
-    handleUserAuthentication()
-      .then(() => {
-        // console.log(user);
+    // if (posts && posts[0].id) {
+    handleGetSinglePost(1)
+      .then((post) => {
+        console.log(post.data.post);
+        setSinglePost(post.data.post);
       })
-      .catch(() => {
-        // console.log(err.response.data);
-      });
+      .catch((error) => {
+        console.log(error.response.data);
+      })
+      .finally(() => {});
+    // }
   }, []);
 
   return (
     <HomeLayoutWrapper>
       {/* header */}
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <div
+          style={{
+            backgroundImage: `url(/backgrounds/homeBackground.jpg)`,
+            backgroundPosition: "center",
+            backgroundSize: "cover",
+          }}
+          className="w-full bg-red-500 h-[400px] md:h-[700px] rounded-t-lg "
+        >
+          <div className="w-full h-full bg-black bg-gradient-to-b from-transparent via-transparent to-black bg-opacity-50 relative">
+            <div className="bottom-12 md:left-6 mx-auto left-0 right-0  px-4 absolute flex flex-col md:flex-row gap-2">
+              <button className="px-4 flex hover:bg-gray-100 items-centerm justify-center gap-2   py-2  border rounded md:w-48  bg-white text-black">
+                <Play color="black" />
+
+                <p>Play</p>
+              </button>
+              <button className="px-4 flex text-white items-centerm justify-center gap-2  py-2  border rounded md:w-48  ">
+                <div className="">
+                  <Bookmark />
+                </div>
+                <p>Add To Watchlist</p>
+              </button>
+            </div>
+            <div className="absolute md:right-6 md:bottom-12 right-0   bottom-0 flex mx-auto items-center gap-4">
+              <div className="flex items-center gap-2">
+                <ThumbsUp />
+                <p>233</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <MessageSquare /> <p>233</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full  text-sm py-4 bg-black px-4 gap-3 flex flex-col">
+            <div className="flex md:items-center w-full md:flex-row flex-col">
+              <div className="flex items-center gap-2">
+                <p className="font-bold">Title:</p>
+                <p className="text-gray-300">Snake in the monkey Shadow</p>
+              </div>
+              <div className="flex-1 flex md:justify-end">
+                <p className="font-bold">Genre:</p>
+                <p className="text-gray-300">Action, Thriller, Sports</p>
+              </div>
+            </div>
+            <div>
+              <p className="font-bold"> Description:</p>
+              <p className="text-gray-300">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam, quis nostrud exercitation ullamco laboris
+                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+                sunt in culpa qui officia deserunt mollit anim id est laborum.
+              </p>
+            </div>
+          </div>
+        </div>
+      </Modal>
       <Landingpage
-        videoUrl="/backgrounds/backgroundVidoe.mp4"
-        imageUrl="/backgrounds/homeBackground.jpg"
+        videoUrl={singlePost?.videoUrl}
+        imageUrl={singlePost?.bannerUrl}
       />
       {/* mutiple genre section */}
-      <GenreSection />
+      <GenreSection onClose={OpenModal} />
       {/* vod section */}
-      <VodSection />
+      <VodSection onClose={OpenModal} />
       {/* Shows section */}
-      <ShowsSection />
+      <ShowsSection onClose={OpenModal} />
       {/* preview of live gmae */}
       {/* fooball */}
-      <ChampionsLeague />
+      <ChampionsLeague onClose={OpenModal} />
       {/* FAQ */}
       {/* preview of live gmae */}
-      <NewsSection />
+      <NewsSection onClose={OpenModal} />
       {/* league table */}
-      <LeagueTableSection />
+      <LeagueTableSection onClose={OpenModal} />
       {/* top shows section */}
-      <TopShowsSection />
+      <TopShowsSection onClose={OpenModal} />
     </HomeLayoutWrapper>
   );
 }

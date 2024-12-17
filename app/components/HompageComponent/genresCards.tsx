@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
+// import { useRouter } from "next/navigation";
 import React, { useRef } from "react";
 
 interface MovieCategory {
@@ -81,9 +82,11 @@ const categories: MovieCategory[] = [
   },
 ];
 
-const GenreSection: React.FC = () => {
+const GenreSection: React.FC<{
+  onClose: (value: boolean) => void;
+}> = ({ onClose }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
+  // const router = useRouter();
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({ left: -300, behavior: "smooth" });
@@ -100,7 +103,7 @@ const GenreSection: React.FC = () => {
     <section className="bg-black text-white py-10 px-4">
       <div className="container mx-auto">
         {/* Title Section */}
-        <div className="mb-8">
+        <div className="mb-8 text-center">
           <h2 className="text-3xl font-bold mb-2">
             Explore our wide variety of categories
           </h2>
@@ -145,19 +148,27 @@ const GenreSection: React.FC = () => {
                 {/* Movie Cards */}
                 <div className="grid grid-cols-2 gap-2">
                   {category.movies.map((movie, idx) => (
-                    <div
+                    <button
+                      onProgress={() => {
+                        onClose(true);
+                      }}
                       key={idx}
                       className="w-full hover:scale-110 transition ease-in-out h-24 bg-cover bg-center rounded-lg"
                       style={{ backgroundImage: `url(${movie})` }}
-                    ></div>
+                    ></button>
                   ))}
                 </div>
 
                 <div className="flex justify-between mt-4">
                   <h3 className="text-sm mb-4">{category.name}</h3>
-                  <a href="#" className="text-white hover:underline">
+                  <button
+                    onClick={() => {
+                      // router.push({})
+                    }}
+                    className="text-white hover:underline"
+                  >
                     →
-                  </a>
+                  </button>
                 </div>
               </div>
             ))}

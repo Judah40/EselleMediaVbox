@@ -3,12 +3,12 @@ import React from "react";
 import NewsLiveCard from "../cards/NewsLiveCard";
 import { movies } from "@/app/api/DummyData/Movies";
 
-const NewsSection = () => {
-    const scroll = (direction: string) => {
-        const container = document.getElementById("netflix-row");
-        const scrollAmount = direction === "left" ? -800 : 800;
-        container?.scrollBy({ left: scrollAmount, behavior: "smooth" });
-      };
+const NewsSection = ({ onClose }: { onClose: (value: boolean) => void }) => {
+  const scroll = (direction: string) => {
+    const container = document.getElementById("netflix-row");
+    const scrollAmount = direction === "left" ? -800 : 800;
+    container?.scrollBy({ left: scrollAmount, behavior: "smooth" });
+  };
   return (
     <div className=" py-4 gap-4 flex-col relative flex">
       <div className="p-12 ">

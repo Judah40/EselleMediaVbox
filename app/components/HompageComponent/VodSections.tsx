@@ -48,7 +48,8 @@ const movies: Movie[] = [
   // Add more movies as needed...
 ];
 
-const VodSection: React.FC = () => {
+const VodSection: React.FC< { onClose: (value: boolean) => void;
+}> = ({ onClose }) => {
   const [selectedMovie, setSelectedMovie] = useState<Movie>(movies[0]);
 
   return (

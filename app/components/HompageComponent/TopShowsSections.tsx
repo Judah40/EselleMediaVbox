@@ -60,7 +60,9 @@ const movies: Movie[] = [
 
 const genres = ["All Genre", "Action", "Drama", "Fantasy"];
 
-const TopShowsSection: React.FC = () => {
+const TopShowsSection: React.FC<{ onClose: (value: boolean) => void }> = ({
+  onClose,
+}) => {
   const [selectedGenre, setSelectedGenre] = useState("All Genre");
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(movies[0]);
 

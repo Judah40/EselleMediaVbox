@@ -57,4 +57,7 @@ type data = {
     {
       name: "international",
     },
+    {
+      name: "Music",
+    },
   ];

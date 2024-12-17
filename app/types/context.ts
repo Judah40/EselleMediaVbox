@@ -1,3 +1,5 @@
+import { Post } from "../pages/Home/home.data";
+
 export type success = {
     status: string;
     message: string;
@@ -14,6 +16,7 @@ export type success = {
     phoneNumber: string;
     profile_picture: string;
     username: string;
+    role: string;
   };
   export type user = {
     username: string;
@@ -41,4 +44,5 @@ export type success = {
     isLoading: boolean;
     success: success | null;
     userProfilePicture: string | null;
+    posts: Post[];
   }

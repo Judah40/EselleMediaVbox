@@ -36,7 +36,11 @@ const scroll = (direction: string) => {
   container?.scrollBy({ left: scrollAmount, behavior: "smooth" });
 };
 
-export default function ChampionsLeague() {
+export default function ChampionsLeague({
+  onClose,
+}: {
+  onClose: (value: boolean) => void;
+}) {
   return (
     <div
       className="relative bg-cover bg-center h-[80vh] md:h-[600px]"

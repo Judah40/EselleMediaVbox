@@ -10,10 +10,10 @@ import // handleGetUserProfilePicture,
 "../api/AuthApi/api";
 import DropdownUi from "./dropdowns/HeaderIconDropwodn/dropdown";
 import { data } from "../api/DummyData/data";
-import { userAuth } from "@/useContext";
+import { UserAuth } from "@/useContext";
 
 function Header() {
-  const { username } = userAuth();
+  const { username } = UserAuth();
   const path = usePathname().split("/")[2];
   const router = useRouter();
   const handleScreenWidthResponsiveness = async () => {

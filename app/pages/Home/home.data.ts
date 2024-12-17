@@ -55,4 +55,19 @@ type FootballTable = {
       points: 23,
     },
   ];
+
+  export type Post = {
+    id: number;
+    postId: string;
+    content: string;
+    thumbnailUrl: string;
+    bannerUrl: string;
+    caption: string;
+    likeCount: number;
+    commentCount: number;
+    tags: string[]; // Assuming this is an array of strings.
+    location: string;
+    videoUrl?:string;
+  };
+  
 export default leagueTable  

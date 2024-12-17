@@ -119,7 +119,7 @@ const Page = () => {
                   <Field
                     name="title"
                     type="text"
-                    className="border p-2 w-full text-black"
+                    className="border p-2 w-full text-black rounded"
                   />
                   <ErrorMessage
                     name="title"
@@ -134,7 +134,7 @@ const Page = () => {
                   <Field
                     name="description"
                     as="textarea"
-                    className="border p-2 w-full h-40 text-black"
+                    className="border p-2 w-full h-40 text-black rounded"
                   />
                   <ErrorMessage
                     name="description"
@@ -149,7 +149,7 @@ const Page = () => {
                   <Field
                     name="location"
                     type="text"
-                    className="border p-2 w-full text-black"
+                    className="border p-2 w-full text-black rounded"
                   />
                   <ErrorMessage
                     name="location"
@@ -188,7 +188,7 @@ const Page = () => {
                   type="submit"
                   className="bg-blue-500 text-white px-4 py-2 rounded"
                 >
-                  {isLoading ? <Spinner /> : <p>Submit</p>}
+                  {isLoading ? <Spinner /> : <p>Go Live</p>}
                 </button>
               </Form>
             )}
@@ -197,9 +197,9 @@ const Page = () => {
 
         <div className="p-4">
           <h2>Stream Key</h2>
-          <div className="flex items-center gap-2 w-full bg-gray-400 ps-2 ">
+          <div className="flex items-center gap-2 rounded w-full bg-gray-400 ps-2 ">
             <p>{key}</p>
-            <button onClick={handleCopy} className="bg-gray-500 p-2">
+            <button onClick={handleCopy} className="bg-gray-500 p-2 rounded-r">
               copy
             </button>
           </div>
