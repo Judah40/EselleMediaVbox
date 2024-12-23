@@ -56,3 +56,10 @@ export const handleGetPostByGenre = async (genre: string) => {
   const response = await apiClient.get(`/post/genre/${genre}`);
   return response;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//GET ALL POST BY GENRE
+export const handleGetAllPostsByGenre = async () => {
+  const response = await apiClient.get("/post/genre");
+  return response
+}
