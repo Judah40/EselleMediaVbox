@@ -8,11 +8,13 @@ import { Bookmark, Play } from "lucide-react";
 interface BackgroundMediaProps {
   videoUrl?: string;
   imageUrl?: string;
+  playMainVideo: (video: boolean) => void;
 }
 
 const LandingPage: React.FC<BackgroundMediaProps> = ({
   videoUrl,
   imageUrl,
+  playMainVideo,
 }) => {
   const [showBanner, setShowBanner] = useState<boolean>(true);
   const [isVideoReady, setIsVideoReady] = useState<boolean>(false);
@@ -165,7 +167,10 @@ const LandingPage: React.FC<BackgroundMediaProps> = ({
             </div>
             <div className="flex items-center space-x-6">
               <button
-                onClick={() => router.push("/pages/Auth/Signup")}
+                onClick={() => {
+                  // router.push("/pages/Auth/Signup")
+                  playMainVideo(true);
+                }}
                 className="px-4 text-xs flex items-center justify-center gap-2 bg-yellow-700 py-4 hover:bg-yellow-600 rounded w-40"
               >
                 <Play />

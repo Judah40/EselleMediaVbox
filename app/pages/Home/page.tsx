@@ -2,7 +2,7 @@
 "use client";
 import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
 import React, { useEffect, useState } from "react";
-import { handleUserAuthentication } from "../../api/AuthApi/api";
+// import { handleUserAuthentication } from "../../api/AuthApi/api";
 import Landingpage from "../../components/HompageComponent/Landingpage";
 import ChampionsLeague from "@/app/components/HompageComponent/FootballSection";
 import GenreSection from "@/app/components/HompageComponent/genresCards";
@@ -13,9 +13,9 @@ import NewsSection from "@/app/components/HompageComponent/NewsSection";
 import LeagueTableSection from "@/app/components/HompageComponent/LeagueTableSection";
 import Modal from "@/app/components/Modal";
 import { Bookmark, MessageSquare, Play, ThumbsUp } from "lucide-react";
-import { handleGetAllPosts, handleGetSinglePost } from "@/app/api/PostApi/api";
+import { handleGetSinglePost } from "@/app/api/PostApi/api";
 import { Post } from "./home.data";
-import { UserAuth } from "@/useContext";
+// import { UserAuth } from "@/useContext";
 
 function page() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -27,7 +27,10 @@ function page() {
   const OpenModal = (open: boolean): void => {
     setIsModalOpen(open);
   };
-  const { posts } = UserAuth();
+  const playVideo = (open: boolean): void => {
+    setIsModalOpen(open);
+  };
+  // const { posts } = UserAuth();
 
   useEffect(() => {
     // if (posts && posts[0].id) {
@@ -37,7 +40,7 @@ function page() {
         setSinglePost(post.data.post);
       })
       .catch((error) => {
-        console.log(error.response.data);
+        console.log("this is my error" + error.response.data);
       })
       .finally(() => {});
     // }
@@ -49,7 +52,7 @@ function page() {
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <div
           style={{
-            backgroundImage: `url(/backgrounds/homeBackground.jpg)`,
+            backgroundImage: `url(${singlePost?.bannerUrl})`,
             backgroundPosition: "center",
             backgroundSize: "cover",
           }}
@@ -72,10 +75,10 @@ function page() {
             <div className="absolute md:right-6 md:bottom-12 right-0   bottom-0 flex mx-auto items-center gap-4">
               <div className="flex items-center gap-2">
                 <ThumbsUp />
-                <p>233</p>
+                <p>{singlePost?.likeCount}</p>
               </div>
               <div className="flex items-center gap-2">
-                <MessageSquare /> <p>233</p>
+                <MessageSquare /> <p>{singlePost?.commentCount}</p>
               </div>
             </div>
           </div>
@@ -84,29 +87,31 @@ function page() {
             <div className="flex md:items-center w-full md:flex-row flex-col">
               <div className="flex items-center gap-2">
                 <p className="font-bold">Title:</p>
-                <p className="text-gray-300">Snake in the monkey Shadow</p>
+                <p className="text-gray-300">{singlePost?.caption}</p>
               </div>
               <div className="flex-1 flex md:justify-end">
                 <p className="font-bold">Genre:</p>
-                <p className="text-gray-300">Action, Thriller, Sports</p>
+                {
+                  singlePost?.tags.map((tag, index)=>(
+                    <p key={index} className="text-gray-300">
+                      {tag}
+                    </p>
+
+                  ))
+                }
               </div>
             </div>
             <div>
               <p className="font-bold"> Description:</p>
               <p className="text-gray-300">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
+               {singlePost?.content}
               </p>
             </div>
           </div>
         </div>
       </Modal>
       <Landingpage
+        playMainVideo={playVideo}
         videoUrl={singlePost?.videoUrl}
         imageUrl={singlePost?.bannerUrl}
       />

@@ -1,86 +1,21 @@
+import { handleGetAllPostsByGenre } from "@/app/api/PostApi/api";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 // import { useRouter } from "next/navigation";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-interface MovieCategory {
-  name: string;
-  movies: string[];
-}
-
-const categories: MovieCategory[] = [
-  {
-    name: "Action",
-    movies: [
-      "/flash-background.jpeg",
-      "/poison-background.jpeg",
-      "/rainy-night-background.jpeg",
-      "/flash-background.jpeg",
-    ],
-  },
-  {
-    name: "Adventure",
-    movies: [
-      "/flash-background.jpeg",
-      "/poison-background.jpeg",
-      "/rainy-night-background.jpeg",
-      "/flash-background.jpeg",
-    ],
-  },
-  {
-    name: "Comedy",
-    movies: [
-      "/flash-background.jpeg",
-      "/poison-background.jpeg",
-      "/rainy-night-background.jpeg",
-      "/flash-background.jpeg",
-    ],
-  },
-  {
-    name: "Drama",
-    movies: [
-      "/flash-background.jpeg",
-      "/poison-background.jpeg",
-      "/rainy-night-background.jpeg",
-      "/flash-background.jpeg",
-    ],
-  },
-  {
-    name: "Horror",
-    movies: [
-      "/flash-background.jpeg",
-      "/poison-background.jpeg",
-      "/rainy-night-background.jpeg",
-      "/flash-background.jpeg",
-    ],
-  },
-  {
-    name: "Horror",
-    movies: [
-      "/flash-background.jpeg",
-      "/poison-background.jpeg",
-      "/rainy-night-background.jpeg",
-      "/flash-background.jpeg",
-    ],
-  },
-  {
-    name: "Horror",
-    movies: [
-      "/flash-background.jpeg",
-      "/poison-background.jpeg",
-      "/rainy-night-background.jpeg",
-      "/flash-background.jpeg",
-    ],
-  },
-  {
-    name: "Horror",
-    movies: [
-      "/flash-background.jpeg",
-      "/poison-background.jpeg",
-      "/rainy-night-background.jpeg",
-      "/flash-background.jpeg",
-    ],
-  },
-];
+type Data = {
+  [tag: string]: Array<{
+    id: number;
+    postId: string;
+    content: string;
+    thumbnailUrl: string;
+    bannerUrl: string;
+    caption: string;
+    likeCount: number;
+    commentCount: number;
+    location: string;
+  }>;
+};
 
 const GenreSection: React.FC<{
   onClose: (value: boolean) => void;
@@ -99,6 +34,17 @@ const GenreSection: React.FC<{
     }
   };
 
+  const [posts, setPosts] = useState<Data>();
+
+  useEffect(() => {
+    handleGetAllPostsByGenre()
+      .then((response) => {
+        console.log(response.data.data);
+        setPosts(response.data.data);
+      })
+      .catch(() => {})
+      .finally(() => {});
+  }, []);
   return (
     <section className="bg-black text-white py-10 px-4">
       <div className="container mx-auto">
@@ -140,38 +86,42 @@ const GenreSection: React.FC<{
             ref={scrollContainerRef}
             className="flex overflow-x-auto gap-6 scrollbar-hide py-4"
           >
-            {categories.map((category, index) => (
-              <div
-                key={index}
-                className="bg-neutral-950 border-[0.2px] border-gray-700 p-4 rounded-lg min-w-[240px] flex-shrink-0"
-              >
-                {/* Movie Cards */}
-                <div className="grid grid-cols-2 gap-2">
-                  {category.movies.map((movie, idx) => (
-                    <button
-                      onProgress={() => {
-                        onClose(true);
-                      }}
-                      key={idx}
-                      className="w-full hover:scale-110 transition ease-in-out h-24 bg-cover bg-center rounded-lg"
-                      style={{ backgroundImage: `url(${movie})` }}
-                    ></button>
-                  ))}
-                </div>
+            {posts && Object.keys(posts).length > 0 ? (
+              Object.entries(posts).map(([tag, posts]) => (
+                <div
+                  key={tag}
+                  className="bg-neutral-950 border-[0.2px] border-gray-700 p-4 rounded-lg min-w-[240px] flex-shrink-0"
+                >
+                  {/* Movie Cards */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {posts.map((movie, idx) => (
+                      <button
+                        onProgress={() => {
+                          onClose(true);
+                        }}
+                        key={idx}
+                        className="w-full hover:scale-110 transition ease-in-out h-24 bg-cover bg-center rounded-lg"
+                        style={{ backgroundImage: `url(${movie.bannerUrl})` }}
+                      ></button>
+                    ))}
+                  </div>
 
-                <div className="flex justify-between mt-4">
-                  <h3 className="text-sm mb-4">{category.name}</h3>
-                  <button
-                    onClick={() => {
-                      // router.push({})
-                    }}
-                    className="text-white hover:underline"
-                  >
-                    →
-                  </button>
+                  <div className="flex justify-between mt-4">
+                    <h3 className="text-sm mb-4">{tag.toUpperCase()}</h3>
+                    <button
+                      onClick={() => {
+                        // router.push({})
+                      }}
+                      className="text-white hover:underline"
+                    >
+                      →
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p>Loading posts...</p>
+            )}
           </div>
         </div>
       </div>
