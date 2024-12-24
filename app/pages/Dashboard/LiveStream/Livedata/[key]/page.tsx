@@ -33,7 +33,7 @@ const Page = () => {
   const textToCopy = Array.isArray(key) ? key.join(",") : key; // Convert to string if it's an array
   const handleSubmit = (values: FormValues) => {
     setIsLoading(true);
-    console.log("Form submitted with values:", values);
+
     const data = {
       title: values.title,
       description: values.description,
@@ -88,9 +88,7 @@ const Page = () => {
       }
     }
   }, [key, streamUrl]);
-  useEffect(() => {
-    console.log(key);
-  }, [key]);
+  useEffect(() => {}, [key]);
   return (
     <div>
       {" "}
@@ -111,7 +109,7 @@ const Page = () => {
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            {({  setFieldValue }) => (
+            {({ setFieldValue }) => (
               <Form className="space-y-4 ">
                 {/* Title */}
                 <div>

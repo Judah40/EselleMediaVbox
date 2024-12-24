@@ -21,19 +21,14 @@ const Page = () => {
     // setIsVideoLoading(true);
     handleGetAllPosts()
       .then((values) => {
-        console.log(values.post);
         for (let i = 0; i < values.post.length; i++) {
-          console.log(values.post[i].tags.length);
-          for (let j = 0; j < values.post[i].tags.length; j++) {
-            console.log(typeof values.post[i].tags[j]);
-          }
+          for (let j = 0; j < values.post[i].tags.length; j++) {}
         }
         const { post } = values;
         setVideoPosted(post);
         setIsVideoLoading(false);
       })
       .catch((err) => {
-        console.log(err);
         setIsVideoLoading(false);
       });
   }, []);

@@ -26,15 +26,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-black">
-      <AuthProvider>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black  text-white`}
+      >
         <NextUIProvider>
-          <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black  text-white`}
-          >
-            {children}
-          </body>
+          <AuthProvider>{children}</AuthProvider>
         </NextUIProvider>
-      </AuthProvider>
+      </body>
     </html>
   );
 }

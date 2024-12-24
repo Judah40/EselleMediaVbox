@@ -45,7 +45,7 @@ apiClient.interceptors.request.use(
 //         //PASSING ERROR TO THE NEXT CATCH() BLOCK
 //         if(error.response){
 //             if(error.response.status===500){
-//                 console.log("Server Error Please try again later")
+//                 
 //             }
 //         }
 //         return Promise.reject(error)

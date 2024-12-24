@@ -27,11 +27,11 @@ const SignInForm = () => {
     // { setSubmitting }: any
   ) => {
     setIsSignInLoadin(true);
-    // console.log("Form data", values);
+    //
     // Add logic for sign-in or API call here
     await handleUserLogin(values)
       .then((response) => {
-        // console.log(response.data.token);
+        //
         setIsSignInLoadin(false);
         setResponseMessage(response.data.message);
         Cookies.set("token", response.data.token);

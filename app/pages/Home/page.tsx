@@ -36,12 +36,9 @@ function page() {
     // if (posts && posts[0].id) {
     handleGetSinglePost(1)
       .then((post) => {
-        console.log(post.data.post);
         setSinglePost(post.data.post);
       })
-      .catch((error) => {
-        console.log("this is my error" + error.response.data);
-      })
+      .catch((error) => {})
       .finally(() => {});
     // }
   }, []);
@@ -91,21 +88,16 @@ function page() {
               </div>
               <div className="flex-1 flex md:justify-end">
                 <p className="font-bold">Genre:</p>
-                {
-                  singlePost?.tags.map((tag, index)=>(
-                    <p key={index} className="text-gray-300">
-                      {tag}
-                    </p>
-
-                  ))
-                }
+                {singlePost?.tags.map((tag, index) => (
+                  <p key={index} className="text-gray-300">
+                    {tag}
+                  </p>
+                ))}
               </div>
             </div>
             <div>
               <p className="font-bold"> Description:</p>
-              <p className="text-gray-300">
-               {singlePost?.content}
-              </p>
+              <p className="text-gray-300">{singlePost?.content}</p>
             </div>
           </div>
         </div>

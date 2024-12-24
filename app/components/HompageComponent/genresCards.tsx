@@ -39,7 +39,6 @@ const GenreSection: React.FC<{
   useEffect(() => {
     handleGetAllPostsByGenre()
       .then((response) => {
-        console.log(response.data.data);
         setPosts(response.data.data);
       })
       .catch(() => {})

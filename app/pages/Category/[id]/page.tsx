@@ -17,12 +17,10 @@ const Page = () => {
     //+
     handleGetPostByGenre(id as string)
       .then((posts) => {
-        console.log(posts.data.post);
         setVideos(posts.data.post);
         setIsVideoLoading(false);
       })
       .catch((error) => {
-        console.log(error.response.data);
         setVideos([]);
         setIsVideoLoading(false);
       }); //+

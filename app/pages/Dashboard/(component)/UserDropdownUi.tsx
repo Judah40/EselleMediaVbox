@@ -33,7 +33,7 @@ export default function DropdownUi() {
   useEffect(() => {
     handleGetUserProfilePicture()
       .then((value) => {
-        // console.log(value.data.profilePictureUrl);
+        //
         setUserProfilePicture(value.data.profilePictureUrl);
       })
       .catch(() => {
@@ -41,7 +41,7 @@ export default function DropdownUi() {
       });
     handleGetUserProfile()
       .then((value) => {
-        // console.log(value.data.user);
+        //
         setUserProfile(value.data.user);
       })
       .catch(() => {

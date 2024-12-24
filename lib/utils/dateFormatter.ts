@@ -22,7 +22,7 @@ export function formatDate(date: string): string {
 
 // Example usage:
 // const formattedDate = formatDate('2024-10-28T00:23:39.002Z');
-// console.log(formattedDate);  // Output: "October 28th 2024"
+//   // Output: "October 28th 2024"
 
 // const invalidDate = formatDate('invalid-date-string');
-// console.log(invalidDate);  // Output: "Invalid date"
+//   // Output: "Invalid date"

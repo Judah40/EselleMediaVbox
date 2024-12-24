@@ -24,8 +24,6 @@ function SignupForm() {
   };
 
   const handleSubmit = (values: Reg) => {
-    console.log(values);
-    console.log("Form Submitted with values: ", values);
     const data: Reg = {
       firstName: values.firstName,
       middleName: values.middleName,

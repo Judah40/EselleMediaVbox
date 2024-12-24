@@ -112,12 +112,12 @@ const LandingPage: React.FC<BackgroundMediaProps> = ({
   // Additional video event handlers for play state
   const handlePlay = useCallback(() => {
     setIsPlaying(true);
-    console.log("Video is playing"); // Debug log
+    // Debug log
   }, []);
 
   const handlePause = useCallback(() => {
     setIsPlaying(false);
-    console.log("Video is paused"); // Debug log
+    // Debug log
   }, []);
 
   return (

@@ -13,12 +13,9 @@ const Page = () => {
   useEffect(() => {
     handleGetSinglePost(Number(id))
       .then((posts) => {
-        console.log(posts.data.post);
         setSinglePost(posts.data.post);
       })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
+      .catch((error) => {});
   }, []);
   if (!id) {
     return <div>No Video Available</div>;

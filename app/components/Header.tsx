@@ -21,7 +21,7 @@ function Header() {
 
     const { innerWidth } = await window;
 
-    // console.log(innerWidth);
+    //
     if (innerWidth > 768) {
       setIsMenuBarOpen(false);
     }
@@ -174,13 +174,12 @@ function Header() {
               </li>
             ))}
             <button
-            onClick={()=>{
-              router.push("/pages/Auth/Signin");
-
-            }}
+              onClick={() => {
+                router.push("/pages/Auth/Signin");
+              }}
               // href={"/pages/Auth/Signin"}
               className="bg-yellow-700 px-4 py-2 outline-none rounded hover:bg-yellow-500 w-auto"
-              >
+            >
               <p>Sign in</p>
             </button>
           </ul>

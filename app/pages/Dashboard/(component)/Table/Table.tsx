@@ -26,7 +26,6 @@ const Table = ({ id }: { id: number }) => {
   useEffect(() => {
     handleGetAllUsers(id)
       .then((values) => {
-        console.log(values.data.data);
         setAllUsers(values.data.data);
       })
       .catch(() => {});

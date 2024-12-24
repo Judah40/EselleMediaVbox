@@ -1,4 +1,9 @@
-import React, { useState } from "react";
+import { data } from "@/app/api/DummyData/data";
+import { handleGetPostByGenre } from "@/app/api/PostApi/api";
+import { Post } from "@/app/pages/Home/home.data";
+import { UserAuth } from "@/useContext";
+import { Spinner } from "@nextui-org/react";
+import React, { useEffect, useState } from "react";
 
 interface Movie {
   id: number;
@@ -58,19 +63,25 @@ const movies: Movie[] = [
   },
 ];
 
-const genres = ["All Genre", "Action", "Drama", "Fantasy"];
-
 const TopShowsSection: React.FC<{ onClose: (value: boolean) => void }> = ({
   onClose,
 }) => {
-  const [selectedGenre, setSelectedGenre] = useState("All Genre");
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(movies[0]);
+  const { posts } = UserAuth();
+  const [selectedGenre, setSelectedGenre] = useState("comedy");
+  const [selectedMovie, setSelectedMovie] = useState<Post | null>(posts[0]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [Posts, setPosts] = useState<Post[]>(posts);
+  const handleGetPost = async (genre: string) => {
+    setIsLoading(true);
+    handleGetPostByGenre(genre)
+      .then((response) => {})
+      .catch((error) => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
-  const filteredMovies =
-    selectedGenre === "All Genre"
-      ? movies
-      : movies.filter((movie) => movie.genre.includes(selectedGenre));
-
+  useEffect(() => {}, []);
   return (
     <section className="bg-black text-white py-10 px-4">
       <div className="container mx-auto">
@@ -78,17 +89,17 @@ const TopShowsSection: React.FC<{ onClose: (value: boolean) => void }> = ({
 
         {/* Genres */}
         <div className="flex gap-4 mb-6">
-          {genres.map((genre) => (
+          {data.slice(0, 3).map((genre) => (
             <button
-              key={genre}
-              onClick={() => setSelectedGenre(genre)}
+              key={genre.name}
+              onClick={() => handleGetPost(genre.name)}
               className={`px-4 py-2 rounded-full ${
-                selectedGenre === genre
+                selectedGenre === genre.name
                   ? "bg-white text-black"
                   : "bg-gray-800 text-gray-400"
               }`}
             >
-              {genre}
+              {genre.name}
             </button>
           ))}
         </div>
@@ -100,19 +111,27 @@ const TopShowsSection: React.FC<{ onClose: (value: boolean) => void }> = ({
               <>
                 <div
                   className="h-60 bg-cover bg-center rounded-lg"
-                  style={{ backgroundImage: `url(${selectedMovie.poster})` }}
+                  style={{
+                    backgroundImage: `url(${selectedMovie.thumbnailUrl})`,
+                  }}
                 ></div>
                 <div
                   className="h-60 bg-cover bg-center rounded-lg"
-                  style={{ backgroundImage: `url(${selectedMovie.poster})` }}
+                  style={{
+                    backgroundImage: `url(${selectedMovie.thumbnailUrl})`,
+                  }}
                 ></div>
                 <div
                   className="h-60 bg-cover bg-center rounded-lg"
-                  style={{ backgroundImage: `url(${selectedMovie.poster})` }}
+                  style={{
+                    backgroundImage: `url(${selectedMovie.thumbnailUrl})`,
+                  }}
                 ></div>
                 <div
                   className="h-60 bg-cover bg-center rounded-lg"
-                  style={{ backgroundImage: `url(${selectedMovie.poster})` }}
+                  style={{
+                    backgroundImage: `url(${selectedMovie.thumbnailUrl})`,
+                  }}
                 ></div>
               </>
             )}
@@ -120,7 +139,8 @@ const TopShowsSection: React.FC<{ onClose: (value: boolean) => void }> = ({
 
           {/* Right List */}
           <div className="flex-1">
-            {filteredMovies.map((movie, index) => (
+            {isLoading && <Spinner color="white" size="sm" />}
+            {Posts.slice(0, 4).map((movie, index) => (
               <div
                 key={movie.id}
                 className={`p-4 rounded-lg mb-4 cursor-pointer ${
@@ -131,12 +151,9 @@ const TopShowsSection: React.FC<{ onClose: (value: boolean) => void }> = ({
                 onClick={() => setSelectedMovie(movie)}
               >
                 <h3 className="font-bold">
-                  #{index + 1} {movie.title}
+                  #{index + 1} {movie.caption}
                 </h3>
-                <p className="text-sm">
-                  {movie.rating} ★ ({movie.year}) | {movie.duration} |{" "}
-                  {movie.genre.join(" | ")}
-                </p>
+                <p className="text-sm">{/* {movie.genre.join(" | ")} */}</p>
               </div>
             ))}
           </div>

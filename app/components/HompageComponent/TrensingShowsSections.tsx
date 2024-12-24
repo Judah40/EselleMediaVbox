@@ -1,9 +1,14 @@
 import { movie } from "@/app/api/DummyData/Movies";
-import React from "react";
+import { handleGetAllPosts } from "@/app/api/PostApi/api";
+import { UserAuth } from "@/useContext";
+import React, { useEffect, useState } from "react";
 
 const ShowsSection: React.FC<{ onClose: (value: boolean) => void }> = ({
   onClose,
 }) => {
+  const [values, setValues] = useState();
+  const { posts } = UserAuth();
+
   return (
     <section className="bg-neutral-950 text-white py-10 px-4 ">
       <div className="px-4 mx-auto container">
@@ -15,23 +20,32 @@ const ShowsSection: React.FC<{ onClose: (value: boolean) => void }> = ({
           </p>
         </div>
         <div className="flex gap-4 overflow-x-auto scrollbar-hide ">
-          {movie.map((movie, index) => (
+          {posts.map((movie, index) => (
             <button
               onClick={() => {
-                onClose(true);
+                // onClose(true);
+                //
               }}
               key={index}
               className="min-w-[200px] z-20 flex-shrink-0 bg-gray-800 rounded-lg shadow-lg hover:scale-105 transition-transform"
             >
               <div
                 className="h-60 bg-cover bg-center rounded-t-lg"
-                style={{ backgroundImage: `url(${movie.poster})` }}
+                style={{ backgroundImage: `url(${movie.bannerUrl})` }}
               ></div>
               <div className="p-4">
-                <h3 className="text-lg font-semibold">{movie.title}</h3>
-                <p className="text-sm text-gray-400">
-                  {movie.rating} ★ | {movie.genre}
-                </p>
+                <h3 className="text-lg font-semibold">{movie.caption}</h3>
+                <div className="flex items-center  justify-center gap-1">
+                  {JSON.parse(movie.tags[0])
+                    .slice(0, 2)
+                    .map((values, index) => {
+                      return (
+                        <p key={index} className="text-sm text-gray-400">
+                          {values}
+                        </p>
+                      );
+                    })}
+                </div>
               </div>
             </button>
           ))}

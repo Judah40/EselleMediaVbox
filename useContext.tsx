@@ -41,12 +41,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     handleGetAllPosts()
       .then((posts) => {
-        // console.log(posts.post);
+        //
         setPosts(posts.post);
       })
-      .catch((error) => {
-        console.log(error.response.data);
-      })
+      .catch((error) => {})
       .finally(() => {});
   }, []);
   //resgiter or sign up
@@ -65,11 +63,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     };
     await handleUserRegistration(data)
       .then((response) => {
-        console.log(response.data);
+        //
         router.push("/pages/Auth/OTPInput");
       })
       .catch((error) => {
-        console.log(error.response.data);
+        //
         alert(`"Error", ${error.response.data.message}`);
       })
       .finally(() => {
@@ -96,7 +94,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     handleGetUserProfile()
       .then((value) => {
-        console.log(value.data.user.role);
+        //
         setUser(value.data.user);
       })
       .catch(() => {
@@ -105,7 +103,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
     handleGetUserProfilePicture()
       .then((value) => {
-        console.log("my url is " + value.data.profilePictureUrl);
+        //
         setUserProfilePicture(value.data.profilePictureUrl);
       })
       .catch(() => {

@@ -13,12 +13,9 @@ const Page = () => {
   useEffect(() => {
     handleGetAllLiveStreams()
       .then((values) => {
-        console.log(values.data.data);
         setLivesStreams(values.data.data);
       })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
+      .catch((error) => {});
   }, []);
   return (
     <div className="flex-1 w-full  flex items-center  flex-col ">

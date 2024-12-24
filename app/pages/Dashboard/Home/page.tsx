@@ -1,55 +1,52 @@
-'use client'
+"use client";
 
-import {  AlertTriangle, Play, Server, Users } from "lucide-react";
+import { AlertTriangle, Play, Server, Users } from "lucide-react";
 import React from "react";
 import StatCard from "../(component)/DashboardComponents/StatCard";
 import ViewerChart from "../(component)/DashboardComponents/ViewerChart";
 import AlertFeed from "../(component)/DashboardComponents/AlertFeed";
 
-
 const page = () => {
   const viewerData = [
-    { time: '00:00', viewers: 15000 },
-    { time: '04:00', viewers: 12000 },
-    { time: '08:00', viewers: 18000 },
-    { time: '12:00', viewers: 25000 },
-    { time: '16:00', viewers: 30000 },
-    { time: '20:00', viewers: 28000 },
+    { time: "00:00", viewers: 15000 },
+    { time: "04:00", viewers: 12000 },
+    { time: "08:00", viewers: 18000 },
+    { time: "12:00", viewers: 25000 },
+    { time: "16:00", viewers: 30000 },
+    { time: "20:00", viewers: 28000 },
   ];
 
   const alerts = [
     {
       id: 1,
-      message: 'High memory usage detected',
-      level: 'critical' as const,
-      time: '2m ago',
-      isRead: false
+      message: "High memory usage detected",
+      level: "critical" as const,
+      time: "2m ago",
+      isRead: false,
     },
     {
       id: 2,
-      message: 'CDN latency spike',
-      level: 'warning' as const,
-      time: '15m ago',
-      isRead: true
+      message: "CDN latency spike",
+      level: "warning" as const,
+      time: "15m ago",
+      isRead: true,
     },
     {
       id: 3,
-      message: 'System update available',
-      level: 'info' as const,
-      time: '1h ago',
-      isRead: true
-    }
+      message: "System update available",
+      level: "info" as const,
+      time: "1h ago",
+      isRead: true,
+    },
   ];
 
-  const handleAlertClick = (alert: AlertItem) => {
-    console.log('Alert clicked:', alert);
-  };
+  const handleAlertClick = (alert: AlertItem) => {};
 
   return (
     <div className="flex-1 w-full h-full  flex items-center flex-col">
       {/* header */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      <StatCard
+        <StatCard
           title="Active Users"
           value="24,892"
           trend="up"
@@ -85,19 +82,19 @@ const page = () => {
           iconBgColor="bg-red-100"
           iconColor="text-red-600"
         />
-      {/* Add more StatCards as needed */}
-    </div>
+        {/* Add more StatCards as needed */}
+      </div>
 
-    <ViewerChart
-      data={viewerData}
-      title="Live Viewer Count"
-      className="col-span-1 lg:col-span-2"
-    />
-     <AlertFeed
-      alerts={alerts}
-      onAlertClick={handleAlertClick}
-      className="col-span-1"
-    />
+      <ViewerChart
+        data={viewerData}
+        title="Live Viewer Count"
+        className="col-span-1 lg:col-span-2"
+      />
+      <AlertFeed
+        alerts={alerts}
+        onAlertClick={handleAlertClick}
+        className="col-span-1"
+      />
     </div>
   );
 };

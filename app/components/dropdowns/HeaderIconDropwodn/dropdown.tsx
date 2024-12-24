@@ -16,7 +16,7 @@ export default function DropdownUi() {
   const { username, userProfilePicture } = UserAuth();
   // const [userProfilePicture, setUserProfilePicture] = useState<string>("");
 
-  console.log(userProfilePicture);
+  //
   return (
     <Dropdown
       showArrow

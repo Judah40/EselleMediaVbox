@@ -110,16 +110,13 @@ const OTPInput: React.FC<OTPInputProps> = ({ onComplete, length = 6 }) => {
     if (onComplete) {
       onComplete(otpValue);
     }
-    console.log(otpValue);
     await handleOTPVerification(otpValue)
       .then((response) => {
-        console.log(response.data);
         Cookies.set("token", response.data.token);
 
         router.push("/pages/Auth/PasswordSetup");
       })
       .catch((error) => {
-        console.log(error.response.data);
       })
       .finally(() => {
         setIsLoading(false);
@@ -192,7 +189,6 @@ const OTPInput: React.FC<OTPInputProps> = ({ onComplete, length = 6 }) => {
                 className="text-blue-400 hover:text-blue-300 focus:outline-none"
                 onClick={() => {
                   // Handle resend logic here
-                  console.log("Resend code");
                 }}
               >
                 Resend

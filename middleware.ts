@@ -14,11 +14,11 @@ export async function middleware(request: NextRequest) {
       'Content-Type': 'application/json', // Specify content type
     },
   });
-  console.log(userType)
+  // 
 
   const pages = pathname.split('/')[2]
   const path = pathname.split('/')
-  console.log(path.length)
+  // 
   if(!apiResponse.ok && pages==="Auth"){
     return NextResponse.next()
   }
@@ -40,7 +40,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
   if(!apiResponse.ok && pages==="Live" && path.length===4){
-    console.log("hi")
+    // 
     return NextResponse.redirect(new URL('/pages/Auth/Signin', request.url))
   }
   return NextResponse.redirect(new URL('/pages/Home', request.url))

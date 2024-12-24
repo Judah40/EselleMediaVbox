@@ -72,7 +72,7 @@ export type favoritesArray ={
 }
 
 export const handleAddingFavorites = async(favorite : favoritesArray[])=>{
-    // console.log(favorite);
+    // 
     const data ={
         favorites: favorite
     }

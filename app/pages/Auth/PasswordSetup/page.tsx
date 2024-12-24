@@ -103,11 +103,9 @@ const PasswordSetup = () => {
     });
 
     if (Object.keys(validationErrors).length === 0) {
-      console.log("Form submitted:", formData);
       // Handle form submission here
       await handleSettingUpPassword(formData)
         .then((response) => {
-          console.log(response.data);
           router.push("/pages/Extras/Favorites");
         })
         .catch((error) => {

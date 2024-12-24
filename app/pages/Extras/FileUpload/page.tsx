@@ -13,23 +13,19 @@ const Page = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const handleNext = async () => {
-    // console.log("Selected items:", Array.from(selected));
+    //
     // Handle navigation logic here
 
     setIsLoading(true);
 
     await handleUploadProfilePicture(profilePicUpload[0])
       .then((response) => {
-        console.log(response.data);
         router.push("/");
       })
-      .catch((error) => {
-        console.log(error.response.data);
-      })
+      .catch((error) => {})
       .finally(() => {
         setIsLoading(false);
       });
-    console.log("object");
   };
 
   const handleSkip = () => {
@@ -39,12 +35,10 @@ const Page = () => {
   const [profilePicUpload, setProfilePictureUpload] = useState<File[]>([]);
   const handleGetProfilePicture = (profilePicture: File[]) => {
     setProfilePictureUpload(profilePicture);
-    // console.log(profilePicture);
+    //
   };
 
-  useEffect(() => {
-    console.log(profilePicUpload.length);
-  });
+  useEffect(() => {});
   return (
     <div className="w-full h-screen items-center justify-center flex flex-col">
       <Link href={"/"} className="absolute top-4 md:left-4">

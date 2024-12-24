@@ -15,7 +15,7 @@ export const createSocketConnection = (token: string) => {
 
   // Add any other socket event handlers if needed
   socket.on("connect", () => {
-    console.log("Connected to the server with socket ID:", socket.id);
+    
   });
 
   socket.on("connect_error", (err: Error) => {
@@ -44,12 +44,12 @@ export const createSocketConnection = (token: string) => {
     
 //     // Add any other socket event handlers if needed
 //     socket.on("connect", () => {
-//         console.log("Connected to the server with socket ID:", socket.id);
+//         
 //     });
     
 //     socket.on("connect_error", (err) => {
 //         console.error("Connection Error:", err.message);
-//         // console.log("this is the toke:",token);
+//         // 
 //     });
 //     return socket
 // }

@@ -79,20 +79,15 @@ const page = () => {
     //GET ALL COMMENTS
     handleGetAllComments("157f2eba-7751-4336-872a-b834c5d39840")
       .then((comments) => {
-        console.log(comments.data.data);
         setComments(comments.data.data);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
 
     handleGetStreamData("157f2eba-7751-4336-872a-b834c5d39840")
       .then((data) => {
-        console.log(data.data.data);
         setAboutStream(data.data.data);
       })
       .catch((error) => {
-        console.log(error);
         setAboutStream({
           commentCount: 0,
           description: "",
@@ -197,11 +192,9 @@ const page = () => {
                     handleLikeLive("157f2eba-7751-4336-872a-b834c5d39840");
                     handleGetStreamData("157f2eba-7751-4336-872a-b834c5d39840")
                       .then((data) => {
-                        console.log(data.data.data);
                         setAboutStream(data.data.data);
                       })
                       .catch((error) => {
-                        console.log(error);
                         setAboutStream({
                           commentCount: 0,
                           description: "",

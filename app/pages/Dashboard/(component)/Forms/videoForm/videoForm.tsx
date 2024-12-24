@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { FormValues } from "./form.types";
 import { validationSchema } from "./validation";
@@ -47,7 +47,6 @@ const VideoForm: React.FC<videoProps> = ({ isComplete }) => {
       onSubmit={(values) => {
         setIsVideoUploading(true);
         setIsLoading(true);
-        console.log(values);
         const data = {
           content: values.content,
           caption: values.caption,
@@ -57,7 +56,7 @@ const VideoForm: React.FC<videoProps> = ({ isComplete }) => {
           banner: values.banner,
           fullVideo: values.fullVideo,
         };
-        // console.log(values.tags);
+        //
         handleCreatePost(data, (progressEvent) => {
           if (progressEvent.total) {
             const percentCompleted = Math.round(
@@ -75,7 +74,6 @@ const VideoForm: React.FC<videoProps> = ({ isComplete }) => {
           .catch((error) => {
             setIsLoading(false);
             alert("Error sending post");
-            console.log(error);
             setIsVideoUploading(false);
           });
       }}

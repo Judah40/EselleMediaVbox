@@ -59,7 +59,6 @@ const LiveModal = () => {
             setIsLoading(true);
             handleCreateApiKey()
               .then((response) => {
-                console.log(response.data.streamKey);
                 const streamKey = response.data.streamKey;
                 setIsLoading(false);
                 router.push(
@@ -67,7 +66,6 @@ const LiveModal = () => {
                 );
               })
               .catch((error) => {
-                console.log(error.response);
                 setIsLoading(false);
               });
           }}

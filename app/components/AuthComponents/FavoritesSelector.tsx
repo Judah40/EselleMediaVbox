@@ -39,15 +39,15 @@ const FavoritesSelector = () => {
       selectedName
     ) as favoritesArray[];
     if (favorites.length > 0) {
-      console.log("Selected items:", Array.from(selectedName));
+      //
       await handleAddingFavorites(favorites)
         .then((response) => {
-          console.log(response.data.message);
+          //
           alert(response.data.message);
           router.push("/pages/Extras/FileUpload");
         })
         .catch((error) => {
-          console.log(error.response.data.message);
+          //
           alert(error.response.data.message);
         })
         .finally(() => {
