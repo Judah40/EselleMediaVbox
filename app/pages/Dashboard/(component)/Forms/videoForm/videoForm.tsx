@@ -71,7 +71,7 @@ const VideoForm: React.FC<videoProps> = ({ isComplete }) => {
             setIsVideoUploading(false);
             isComplete(true);
           })
-          .catch((error) => {
+          .catch(() => {
             setIsLoading(false);
             alert("Error sending post");
             setIsVideoUploading(false);

@@ -15,7 +15,7 @@ const Page = () => {
       .then((values) => {
         setLivesStreams(values.data.data);
       })
-      .catch((error) => {});
+      .catch(() => {});
   }, []);
   return (
     <div className="flex-1 w-full  flex items-center  flex-col ">

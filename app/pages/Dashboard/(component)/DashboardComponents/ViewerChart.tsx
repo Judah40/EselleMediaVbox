@@ -26,11 +26,15 @@ const ViewerChart: React.FC<ViewerChartProps> = ({
   title,
   className = ''
 }) => {
-  const formatYAxis = (value: number) => {
-    if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
-    if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
-    return value;
+  const formatYAxis = (value: number | string): string => {
+    if (typeof value === 'number') {
+      if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
+      if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
+      return value.toString();
+    }
+    return value.toString();
   };
+  
 
   return (
     <div className={`bg-white p-4 rounded-lg shadow ${className} w-full`}>

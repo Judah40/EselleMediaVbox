@@ -65,7 +65,7 @@ const LiveModal = () => {
                   `/pages/Dashboard/LiveStream/Livedata/${streamKey}`
                 );
               })
-              .catch((error) => {
+              .catch(() => {
                 setIsLoading(false);
               });
           }}

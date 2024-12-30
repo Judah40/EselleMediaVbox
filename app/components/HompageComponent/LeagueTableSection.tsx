@@ -2,11 +2,13 @@ import leagueTable from "@/app/pages/Home/home.data";
 import Image from "next/image";
 import React from "react";
 
-const LeagueTableSection = ({
-  onClose,
-}: {
-  onClose: (value: boolean) => void;
-}) => {
+const LeagueTableSection = (
+//   {
+//   onClose,
+// }: {
+//   onClose: (value: boolean) => void;
+// }
+) => {
   return (
     <div className="w-full p-4 bg-white flex flex-col items-center">
       {/* table */}

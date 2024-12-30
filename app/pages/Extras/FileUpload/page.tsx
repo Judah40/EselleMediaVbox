@@ -19,10 +19,10 @@ const Page = () => {
     setIsLoading(true);
 
     await handleUploadProfilePicture(profilePicUpload[0])
-      .then((response) => {
+      .then(() => {
         router.push("/");
       })
-      .catch((error) => {})
+      .catch(() => {})
       .finally(() => {
         setIsLoading(false);
       });

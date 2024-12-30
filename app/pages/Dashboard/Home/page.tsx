@@ -40,7 +40,10 @@ const page = () => {
     },
   ];
 
-  const handleAlertClick = (alert: AlertItem) => {};
+  const handleAlertClick = (
+    // alert: AlertItem
+
+  ) => {};
 
   return (
     <div className="flex-1 w-full h-full  flex items-center flex-col">

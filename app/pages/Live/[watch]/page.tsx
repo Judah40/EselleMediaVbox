@@ -11,7 +11,7 @@ import { IoIosShareAlt } from "react-icons/io";
 import Hls from "hls.js";
 import { getCookie } from "@/app/api/config";
 import { createSocketConnection } from "@/app/api/WebSocketApi/socketApi";
-import { userAuth } from "@/useContext";
+import { UserAuth } from "@/useContext";
 import Image from "next/image";
 import {
   handleGetAllComments,
@@ -25,7 +25,7 @@ import { MdSearchOff } from "react-icons/md";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
 const page = () => {
-  const { username, userProfilePicture } = userAuth();
+  const { username, userProfilePicture } = UserAuth();
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const videoRef = useRef<HTMLVideoElement>(null);
   const [tokens, setToken] = useState<string>();
@@ -81,13 +81,13 @@ const page = () => {
       .then((comments) => {
         setComments(comments.data.data);
       })
-      .catch((error) => {});
+      .catch(() => {});
 
     handleGetStreamData("157f2eba-7751-4336-872a-b834c5d39840")
       .then((data) => {
         setAboutStream(data.data.data);
       })
-      .catch((error) => {
+      .catch(() => {
         setAboutStream({
           commentCount: 0,
           description: "",
@@ -194,7 +194,7 @@ const page = () => {
                       .then((data) => {
                         setAboutStream(data.data.data);
                       })
-                      .catch((error) => {
+                      .catch(() => {
                         setAboutStream({
                           commentCount: 0,
                           description: "",

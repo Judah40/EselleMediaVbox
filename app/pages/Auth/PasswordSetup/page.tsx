@@ -105,7 +105,7 @@ const PasswordSetup = () => {
     if (Object.keys(validationErrors).length === 0) {
       // Handle form submission here
       await handleSettingUpPassword(formData)
-        .then((response) => {
+        .then(() => {
           router.push("/pages/Extras/Favorites");
         })
         .catch((error) => {

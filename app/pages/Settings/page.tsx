@@ -3,9 +3,7 @@
 import React, { useState } from "react";
 import {
   Camera,
-  Lock,
   User,
-  Heart,
   CreditCard,
   ChevronRight,
   Upload,
@@ -22,7 +20,6 @@ import {
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Link from "next/link";
 import Image from "next/image";
 

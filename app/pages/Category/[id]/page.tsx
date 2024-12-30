@@ -20,7 +20,7 @@ const Page = () => {
         setVideos(posts.data.post);
         setIsVideoLoading(false);
       })
-      .catch((error) => {
+      .catch(() => {
         setVideos([]);
         setIsVideoLoading(false);
       }); //+

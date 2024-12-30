@@ -38,7 +38,7 @@ function page() {
       .then((post) => {
         setSinglePost(post.data.post);
       })
-      .catch((error) => {})
+      .catch(() => {})
       .finally(() => {});
     // }
   }, []);
@@ -115,12 +115,18 @@ function page() {
       <ShowsSection onClose={OpenModal} />
       {/* preview of live gmae */}
       {/* fooball */}
-      <ChampionsLeague onClose={OpenModal} />
+      <ChampionsLeague 
+      // onClose={OpenModal}
+       />
       {/* FAQ */}
       {/* preview of live gmae */}
-      <NewsSection onClose={OpenModal} />
+      <NewsSection
+      //  onClose={OpenModal}
+       />
       {/* league table */}
-      <LeagueTableSection onClose={OpenModal} />
+      <LeagueTableSection
+      //  onClose={OpenModal}
+        />
       {/* top shows section */}
       <TopShowsSection onClose={OpenModal} />
     </HomeLayoutWrapper>

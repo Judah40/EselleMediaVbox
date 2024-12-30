@@ -28,7 +28,7 @@ const Page = () => {
         setVideoPosted(post);
         setIsVideoLoading(false);
       })
-      .catch((err) => {
+      .catch(() => {
         setIsVideoLoading(false);
       });
   }, []);

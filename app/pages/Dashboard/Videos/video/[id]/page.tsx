@@ -15,7 +15,7 @@ const Page = () => {
       .then((posts) => {
         setSinglePost(posts.data.post);
       })
-      .catch((error) => {});
+      .catch(() => {});
   }, []);
   if (!id) {
     return <div>No Video Available</div>;

@@ -5,67 +5,12 @@ import { UserAuth } from "@/useContext";
 import { Spinner } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 
-interface Movie {
-  id: number;
-  title: string;
-  genre: string[];
-  rating: number;
-  year: number;
-  duration: string;
-  poster: string;
-}
 
-const movies: Movie[] = [
-  {
-    id: 1,
-    title: "Spider-Man: No Way Home",
-    genre: ["Action", "Fantasy"],
-    rating: 4.2,
-    year: 2024,
-    duration: "1 hour 55 minutes",
-    poster: "/rainy-night-background.jpeg",
-  },
-  {
-    id: 2,
-    title: "Inception",
-    genre: ["Action", "Drama"],
-    rating: 4.8,
-    year: 2010,
-    duration: "2 hours 28 minutes",
-    poster: "/poison-background.jpeg",
-  },
-  {
-    id: 3,
-    title: "Parasite",
-    genre: ["Drama"],
-    rating: 4.6,
-    year: 2019,
-    duration: "2 hours 12 minutes",
-    poster: "/flash-background.jpeg",
-  },
-  {
-    id: 4,
-    title: "The Godfather",
-    genre: ["Drama"],
-    rating: 4.9,
-    year: 1972,
-    duration: "2 hours 55 minutes",
-    poster: "/poison-background.jpeg",
-  },
-  {
-    id: 5,
-    title: "The Dark Knight",
-    genre: ["Action"],
-    rating: 4.7,
-    year: 2008,
-    duration: "2 hours 32 minutes",
-    poster: "/rainy-night-background.jpeg",
-  },
-];
-
-const TopShowsSection: React.FC<{ onClose: (value: boolean) => void }> = ({
-  onClose,
-}) => {
+const TopShowsSection: React.FC<{ onClose: (value: boolean) => void }> = (
+//   {
+//   onClose,
+// }
+) => {
   const { posts } = UserAuth();
   const [selectedGenre, setSelectedGenre] = useState("comedy");
   const [selectedMovie, setSelectedMovie] = useState<Post | null>(posts[0]);
@@ -75,18 +20,16 @@ const TopShowsSection: React.FC<{ onClose: (value: boolean) => void }> = ({
     setIsLoading(true);
     handleGetPostByGenre(genre)
       .then((response) => {
-        console.log(response.data.post);
         setPosts(response.data.post)
         setSelectedGenre(genre)
       })
-      .catch((error) => {})
+      .catch(() => {})
       .finally(() => {
         setIsLoading(false);
       });
   };
 
   useEffect(() => {
-    console.log(posts);
   }, [posts]);
   return (
     <section className="bg-black text-white py-10 px-4">

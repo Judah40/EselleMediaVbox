@@ -3,7 +3,9 @@ import React from "react";
 import NewsLiveCard from "../cards/NewsLiveCard";
 import { movies } from "@/app/api/DummyData/Movies";
 
-const NewsSection = ({ onClose }: { onClose: (value: boolean) => void }) => {
+const NewsSection = (
+  // { onClose }: { onClose: (value: boolean) => void }
+) => {
   const scroll = (direction: string) => {
     const container = document.getElementById("netflix-row");
     const scrollAmount = direction === "left" ? -800 : 800;
