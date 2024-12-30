@@ -69,19 +69,25 @@ const TopShowsSection: React.FC<{ onClose: (value: boolean) => void }> = ({
   const { posts } = UserAuth();
   const [selectedGenre, setSelectedGenre] = useState("comedy");
   const [selectedMovie, setSelectedMovie] = useState<Post | null>(posts[0]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [Posts, setPosts] = useState<Post[]>(posts);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [Posts, setPosts] = useState<Post[]>();
   const handleGetPost = async (genre: string) => {
     setIsLoading(true);
     handleGetPostByGenre(genre)
-      .then((response) => {})
+      .then((response) => {
+        console.log(response.data.post);
+        setPosts(response.data.post)
+        setSelectedGenre(genre)
+      })
       .catch((error) => {})
       .finally(() => {
         setIsLoading(false);
       });
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    console.log(posts);
+  }, [posts]);
   return (
     <section className="bg-black text-white py-10 px-4">
       <div className="container mx-auto">
@@ -107,30 +113,38 @@ const TopShowsSection: React.FC<{ onClose: (value: boolean) => void }> = ({
         <div className="flex flex-col md:flex-row flex-wrap gap-6">
           {/* Left Grid */}
           <div className="flex-1 grid grid-cols-2 gap-2">
-            {selectedMovie && (
+            {(selectedMovie || posts[0]) && (
               <>
                 <div
                   className="h-60 bg-cover bg-center rounded-lg"
                   style={{
-                    backgroundImage: `url(${selectedMovie.thumbnailUrl})`,
+                    backgroundImage: `url(${
+                      selectedMovie?.thumbnailUrl || posts[0].thumbnailUrl
+                    })`,
                   }}
                 ></div>
                 <div
                   className="h-60 bg-cover bg-center rounded-lg"
                   style={{
-                    backgroundImage: `url(${selectedMovie.thumbnailUrl})`,
+                    backgroundImage: `url(${
+                      selectedMovie?.thumbnailUrl || posts[0].thumbnailUrl
+                    })`,
                   }}
                 ></div>
                 <div
                   className="h-60 bg-cover bg-center rounded-lg"
                   style={{
-                    backgroundImage: `url(${selectedMovie.thumbnailUrl})`,
+                    backgroundImage: `url(${
+                      selectedMovie?.thumbnailUrl || posts[0].thumbnailUrl
+                    })`,
                   }}
                 ></div>
                 <div
                   className="h-60 bg-cover bg-center rounded-lg"
                   style={{
-                    backgroundImage: `url(${selectedMovie.thumbnailUrl})`,
+                    backgroundImage: `url(${
+                      selectedMovie?.thumbnailUrl || posts[0].thumbnailUrl
+                    })`,
                   }}
                 ></div>
               </>
@@ -140,7 +154,7 @@ const TopShowsSection: React.FC<{ onClose: (value: boolean) => void }> = ({
           {/* Right List */}
           <div className="flex-1">
             {isLoading && <Spinner color="white" size="sm" />}
-            {Posts.slice(0, 4).map((movie, index) => (
+            {Posts ?Posts.slice(0, 4).map((movie, index) => (
               <div
                 key={movie.id}
                 className={`p-4 rounded-lg mb-4 cursor-pointer ${
@@ -155,7 +169,23 @@ const TopShowsSection: React.FC<{ onClose: (value: boolean) => void }> = ({
                 </h3>
                 <p className="text-sm">{/* {movie.genre.join(" | ")} */}</p>
               </div>
-            ))}
+            )) :
+              posts.slice(0, 4).map((movie, index) => (
+                <div
+                  key={movie.id}
+                  className={`p-4 rounded-lg mb-4 cursor-pointer ${
+                    selectedMovie?.id === movie.id
+                      ? "bg-gray-800 text-white"
+                      : "bg-gray-700 text-gray-400"
+                  }`}
+                  onClick={() => setSelectedMovie(movie)}
+                >
+                  <h3 className="font-bold">
+                    #{index + 1} {movie.caption}
+                  </h3>
+                  <p className="text-sm">{/* {movie.genre.join(" | ")} */}</p>
+                </div>
+              ))}
           </div>
         </div>
       </div>

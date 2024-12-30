@@ -4,6 +4,15 @@ type data = {
   
   export const data: data[] = [
     {
+      name: "fashion",
+    },
+    {
+      name: "comedy",
+    },
+    {
+      name: "Music",
+    },
+    {
       name: "sports",
     },
     {
@@ -21,9 +30,7 @@ type data = {
     {
       name: "films",
     },
-    {
-      name: "fashion",
-    },
+   
     {
       name: "tv shows",
     },
@@ -39,9 +46,7 @@ type data = {
     {
       name: "health & fitness",
     },
-    {
-      name: "comedy",
-    },
+    
     {
       name: "tv series",
     },
@@ -57,7 +62,5 @@ type data = {
     {
       name: "international",
     },
-    {
-      name: "Music",
-    },
+  
   ];

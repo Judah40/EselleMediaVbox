@@ -38,7 +38,7 @@ const ShowsSection: React.FC<{ onClose: (value: boolean) => void }> = ({
                 <div className="flex items-center  justify-center gap-1">
                   {JSON.parse(movie.tags[0])
                     .slice(0, 2)
-                    .map((values, index) => {
+                    .map((values: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined, index: React.Key | null | undefined) => {
                       return (
                         <p key={index} className="text-sm text-gray-400">
                           {values}
