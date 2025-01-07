@@ -37,11 +37,8 @@ function page() {
     handleGetSinglePost(1)
       .then((post) => {
         setSinglePost(post.data.post);
-        console.log(post.data.post)
       })
-      .catch((error) => {
-        console.log(error.response.data)
-      })
+      .catch(() => {})
       .finally(() => {});
     // }
   }, []);
@@ -118,18 +115,18 @@ function page() {
       <ShowsSection onClose={OpenModal} />
       {/* preview of live gmae */}
       {/* fooball */}
-      <ChampionsLeague 
+      <ChampionsLeague
       // onClose={OpenModal}
-       />
+      />
       {/* FAQ */}
       {/* preview of live gmae */}
       <NewsSection
       //  onClose={OpenModal}
-       />
+      />
       {/* league table */}
       <LeagueTableSection
       //  onClose={OpenModal}
-        />
+      />
       {/* top shows section */}
       <TopShowsSection onClose={OpenModal} />
     </HomeLayoutWrapper>
