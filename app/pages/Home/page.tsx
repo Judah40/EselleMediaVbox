@@ -37,8 +37,11 @@ function page() {
     handleGetSinglePost(1)
       .then((post) => {
         setSinglePost(post.data.post);
+        console.log(post.data.post)
       })
-      .catch(() => {})
+      .catch((error) => {
+        console.log(error.response.data)
+      })
       .finally(() => {});
     // }
   }, []);
