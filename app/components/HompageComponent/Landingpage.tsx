@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { FlipWord } from "../TextAnimation/headerText";
-import { Bookmark, Play } from "lucide-react";
+import { Bookmark, Play, Info } from "lucide-react";
 
 interface BackgroundMediaProps {
   videoUrl?: string;
@@ -19,56 +19,50 @@ const LandingPage: React.FC<BackgroundMediaProps> = ({
   const [showBanner, setShowBanner] = useState<boolean>(true);
   const [isVideoReady, setIsVideoReady] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const router = useRouter();
 
-  // Handle video loading
+  // Existing handlers remain unchanged
   const handleVideoLoad = useCallback(() => {
     setIsVideoReady(true);
   }, []);
 
-  // Handle video playback
   const playVideo = useCallback(() => {
     if (videoRef.current && isVideoReady) {
       const playPromise = videoRef.current.play();
-
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
             setShowBanner(false);
-            setIsPlaying(true); // Set playing state to true when video starts
+            setIsPlaying(true);
           })
           .catch((error) => {
             console.error("Video playback failed:", error);
             setShowBanner(true);
-            setIsPlaying(false); // Ensure playing state is false on error
+            setIsPlaying(false);
           });
       }
     }
   }, [isVideoReady]);
 
-  // Handle video pause
   const pauseVideo = useCallback(() => {
     if (videoRef.current) {
       videoRef.current.pause();
       setShowBanner(true);
-      setIsPlaying(false); // Set playing state to false when video pauses
+      setIsPlaying(false);
     }
   }, []);
 
-  // Initial banner timeout
   useEffect(() => {
     if (!isVideoReady) return;
-
     const bannerTimeout = setTimeout(() => {
       playVideo();
     }, 5000);
-
     return () => clearTimeout(bannerTimeout);
   }, [isVideoReady, playVideo]);
 
-  // Intersection Observer setup
   useEffect(() => {
     observerRef.current = new IntersectionObserver(
       (entries) => {
@@ -96,94 +90,96 @@ const LandingPage: React.FC<BackgroundMediaProps> = ({
     };
   }, [playVideo, pauseVideo]);
 
-  // Video event handlers
   const handleVideoEnd = useCallback(() => {
     setShowBanner(true);
-    setIsPlaying(false); // Set playing state to false when video ends
+    setIsPlaying(false);
   }, []);
 
   const handleVideoError = useCallback(() => {
     console.error("Video error occurred");
     setShowBanner(true);
     setIsVideoReady(false);
-    setIsPlaying(false); // Set playing state to false on error
+    setIsPlaying(false);
   }, []);
 
-  // Additional video event handlers for play state
   const handlePlay = useCallback(() => {
     setIsPlaying(true);
-    // Debug log
   }, []);
 
   const handlePause = useCallback(() => {
     setIsPlaying(false);
-    // Debug log
   }, []);
 
   return (
-    <div className="flex w-full h-[600px] relative">
-      {showBanner ? (
-        <div
-          style={{
-            backgroundImage: `url(${imageUrl})`,
-            backgroundPosition: "center",
-            backgroundSize: "cover",
-          }}
-          className="absolute inset-0 w-full h-full"
+    <div className="relative w-full h-[600px] overflow-hidden">
+      {/* Background Image/Video Container */}
+      <div className="absolute inset-0">
+        {showBanner ? (
+          <div
+            style={{
+              backgroundImage: `url(${imageUrl})`,
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+            }}
+            className="absolute inset-0 w-full h-full"
+          />
+        ) : null}
+        <video
+          ref={videoRef}
+          src={videoUrl}
+          onEnded={handleVideoEnd}
+          onLoadedData={handleVideoLoad}
+          onError={handleVideoError}
+          onPlay={handlePlay}
+          onPause={handlePause}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+            showBanner ? "opacity-0" : "opacity-100"
+          }`}
+          playsInline
+          preload="auto"
         />
-      ) : null}
-      <video
-        ref={videoRef}
-        src={videoUrl}
-        onEnded={handleVideoEnd}
-        onLoadedData={handleVideoLoad}
-        onError={handleVideoError}
-        onPlay={handlePlay}
-        onPause={handlePause}
-        className={`absolute inset-0 w-full h-full object-contain ${
-          showBanner ? "hidden" : "block"
-        }`}
-        playsInline
-        preload="auto"
-      />
-      {/* Optional: Display play state indicator */}
-      {/* <div className="absolute top-4 right-4 z-20 px-3 py-1 rounded bg-black bg-opacity-50">
-        <span className={`inline-block w-2 h-2 rounded-full mr-2 ${
-          isPlaying ? 'bg-green-500' : 'bg-red-500'
-        }`}></span>
-        <span className="text-white text-sm">
-          {isPlaying ? 'Playing' : 'Stopped'}
-        </span>
-      </div> */}
-      <div
-        className={`w-full bg-black h-full pt-16 bg-opacity-60 flex md:flex-row z-10 bg-gradient-to-t ${
-          isPlaying ? "from-transparent" : "from-black"
-        } via-transparent to-black flex-col-reverse items-center justify-center gap-8`}
-      >
-        <div className="w-full px-6 md:px-14">
-          <div className="md:w-96 gap-6 flex flex-col ">
-            <div className="">
+        
+        {/* Multiple gradient overlays for better text protection */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent" />
+      </div>
+
+      {/* Content Container with backdrop protection */}
+      <div className="relative h-full z-10 flex flex-col justify-end pb-16 px-8 md:px-16">
+        {/* Main Content Container */}
+        <div className="max-w-2xl space-y-8">
+          {/* Title Animation with text protection */}
+          <div className="relative">
+            <div className="transform translate-y-0 transition-transform duration-500">
               <FlipWord />
             </div>
-            <div className="flex items-center space-x-6">
-              <button
-                onClick={() => {
-                  // router.push("/pages/Auth/Signup")
-                  playMainVideo(true);
-                }}
-                className="px-4 text-xs flex items-center justify-center gap-2 bg-yellow-700 py-4 hover:bg-yellow-600 rounded w-40"
-              >
-                <Play />
-                <p>Play Now</p>
-              </button>
-              <button
-                onClick={() => router.push("/pages/Auth/Signup")}
-                className="px-4 flex items-center justify-center text-xs gap-2 py-4 border rounded w-48"
-              >
-                <Bookmark />
-                <p>Add To Watchlist</p>
-              </button>
-            </div>
+          </div>
+
+          {/* Description with enhanced visibility */}
+          <p className="text-gray-100 text-sm md:text-base max-w-xl leading-relaxed drop-shadow-lg">
+            Experience the story that captivated audiences worldwide. Immerse yourself in a journey of wonder and excitement.
+          </p>
+
+          {/* Buttons Container with improved contrast */}
+          <div className="flex flex-wrap items-center gap-4 md:gap-6">
+            {/* Play Button */}
+            <button
+              onClick={() => playMainVideo(true)}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              className="group relative flex items-center gap-3 bg-yellow-600 hover:bg-yellow-500 px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              <Play className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
+              <span className="font-medium text-white">Play Now</span>
+              <div className={`absolute inset-0 bg-yellow-400/20 rounded-lg transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`} />
+            </button>
+
+
+            {/* More Info Button */}
+            <button className="group flex items-center gap-3 bg-black/40 backdrop-blur-sm hover:bg-black/60 px-6 py-3 rounded-lg transition-all duration-300 shadow-lg">
+              <Info className="w-5 h-5" />
+              <span className="font-medium text-white">More Info</span>
+            </button>
           </div>
         </div>
       </div>

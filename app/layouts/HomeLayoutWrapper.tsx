@@ -1,5 +1,5 @@
 import React from "react";
-// import Footer from "../components/Footer";
+import Footer from "../components/Footer";
 import Header from "../components/Header";
 
 interface HomeLayoutWrapperProps {
@@ -11,7 +11,7 @@ function HomeLayoutWrapper({ children }: HomeLayoutWrapperProps) {
     <div>
       <Header />
       {children}
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }

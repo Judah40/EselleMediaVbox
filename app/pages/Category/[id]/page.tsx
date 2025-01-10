@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
@@ -6,15 +5,15 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { handleGetPostByGenre } from "@/app/api/PostApi/api";
 import { Post } from "./category.types";
-import SkeletonCard from "../../Dashboard/(component)/Skeleton";
-import Link from "next/link";
+import PostCard from "@/app/components/Category/card";
+import SkeletonPageWrapper from "@/app/components/Category/wrapper";
+
 const Page = () => {
   const { id } = useParams();
   const [videos, setVideos] = useState<Post[] | null>(null);
-  const [isLVideoLoading, setIsVideoLoading] = useState<boolean>(true);
+  const [isVideoLoading, setIsVideoLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    //+
     handleGetPostByGenre(id as string)
       .then((posts) => {
         setVideos(posts.data.post);
@@ -23,47 +22,35 @@ const Page = () => {
       .catch(() => {
         setVideos([]);
         setIsVideoLoading(false);
-      }); //+
-  }, [id]); //+
+      });
+  }, [id]);
+
   return (
     <HomeLayoutWrapper>
-      <div className="h-24 w-full bg-black" />
-      <div className="p-4">
-        <p className="text-3xl">{id}</p>
-      </div>
-
-      <section className="py-10 ">
-        {isLVideoLoading ? (
-          <SkeletonCard />
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
-            {videos &&
-              videos.map((video, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-300 "
-                >
-                  <img
-                    src={video.bannerUrl}
-                    alt="videos"
-                    className="rounded-t-lg w-full h-48 object-cover"
-                  />
-                  <div className="p-4 text-center">
-                    <h3 className="text-lg text-black font-semibold mb-2">
-                      {video.caption}
-                    </h3>
-                    <Link
-                      href={`/pages/Dashboard/Videos/video/${video.id}`}
-                      className="bg-[#189AA7] text-white px-4 py-2 rounded-lg hover:bg-[#F9ECE4] transition duration-400"
-                    >
-                      View More
-                    </Link>
-                  </div>
-                </div>
-              ))}
+      {isVideoLoading ? (
+        <SkeletonPageWrapper />
+      ) : (
+        <>
+          <div className="h-24 w-full bg-black" />
+          <div className="p-4">
+            <p className="text-3xl">{id}</p>
           </div>
-        )}
-      </section>
+
+          <section className="py-10">
+            <div className="relative">
+              <div className="overflow-x-auto pb-6">
+                <div className="flex gap-4 px-4">
+                  {videos?.map((video, index) => (
+                    <div key={index} className="min-w-[280px] w-[280px]">
+                      <PostCard post={video} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        </>
+      )}
     </HomeLayoutWrapper>
   );
 };
