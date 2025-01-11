@@ -1,9 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { FlipWord } from "../TextAnimation/headerText";
-import { Bookmark, Play, Info } from "lucide-react";
+import {  Info, Play } from "lucide-react";
 
 interface BackgroundMediaProps {
   videoUrl?: string;
@@ -18,11 +18,11 @@ const LandingPage: React.FC<BackgroundMediaProps> = ({
 }) => {
   const [showBanner, setShowBanner] = useState<boolean>(true);
   const [isVideoReady, setIsVideoReady] = useState<boolean>(false);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  // const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
-  const router = useRouter();
+  // const router = useRouter();
 
   // Existing handlers remain unchanged
   const handleVideoLoad = useCallback(() => {
@@ -36,12 +36,12 @@ const LandingPage: React.FC<BackgroundMediaProps> = ({
         playPromise
           .then(() => {
             setShowBanner(false);
-            setIsPlaying(true);
+            // setIsPlaying(true);
           })
           .catch((error) => {
             console.error("Video playback failed:", error);
             setShowBanner(true);
-            setIsPlaying(false);
+            // setIsPlaying(false);
           });
       }
     }
@@ -51,7 +51,7 @@ const LandingPage: React.FC<BackgroundMediaProps> = ({
     if (videoRef.current) {
       videoRef.current.pause();
       setShowBanner(true);
-      setIsPlaying(false);
+      // setIsPlaying(false);
     }
   }, []);
 
@@ -92,22 +92,22 @@ const LandingPage: React.FC<BackgroundMediaProps> = ({
 
   const handleVideoEnd = useCallback(() => {
     setShowBanner(true);
-    setIsPlaying(false);
+    // setIsPlaying(false);
   }, []);
 
   const handleVideoError = useCallback(() => {
     console.error("Video error occurred");
     setShowBanner(true);
     setIsVideoReady(false);
-    setIsPlaying(false);
+    // setIsPlaying(false);
   }, []);
 
   const handlePlay = useCallback(() => {
-    setIsPlaying(true);
+     (true);
   }, []);
 
   const handlePause = useCallback(() => {
-    setIsPlaying(false);
+    // setIsPlaying(false);
   }, []);
 
   return (
