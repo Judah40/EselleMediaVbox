@@ -145,7 +145,7 @@ const LandingPage: React.FC<BackgroundMediaProps> = ({
       </div>
 
       {/* Content Container with backdrop protection */}
-      <div className="relative h-full z-10 flex flex-col justify-center pb-16 px-8 ">
+      <div className="relative h-full z-10 flex flex-col justify-end md:justify-center pb-16 px-8 ">
         {/* Main Content Container */}
         <div className="max-w-2xl space-y-[16px]">
           {/* Title Animation with text protection */}
@@ -155,7 +155,7 @@ const LandingPage: React.FC<BackgroundMediaProps> = ({
             </div>
 
             {/* Description with enhanced visibility */}
-            <p className="text-gray-100 text-sm md:text-base max-w-xl font-light leading-relaxed drop-shadow-lg">
+            <p className="text-gray-100 text-sm md:text-base max-w-xl text-center md:text-left font-light leading-relaxed drop-shadow-lg">
               Experience the story that captivated audiences worldwide.
               <br /> Immerse yourself in a journey of wonder and excitement.
             </p>

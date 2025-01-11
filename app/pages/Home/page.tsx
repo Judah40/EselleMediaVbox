@@ -125,9 +125,9 @@ function page() {
       //  onClose={OpenModal}
       />
       {/* league table */}
-      <LeagueTableSection
+      {/* <LeagueTableSection
       //  onClose={OpenModal}
-      />
+      /> */}
       {/* top shows section */}
       <TopShowsSection onClose={OpenModal} />
     </HomeLayoutWrapper>
