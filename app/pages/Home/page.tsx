@@ -53,7 +53,7 @@ function page() {
             backgroundPosition: "center",
             backgroundSize: "cover",
           }}
-          className="w-full bg-red-500 h-[400px] md:h-[700px] rounded-t-lg "
+          className="w-full bg-red-500 h-screen rounded-t-lg "
         >
           <div className="w-full h-full bg-black bg-gradient-to-b from-transparent via-transparent to-black bg-opacity-50 relative">
             <div className="bottom-12 md:left-6 mx-auto left-0 right-0  px-4 absolute flex flex-col md:flex-row gap-2">
@@ -107,17 +107,18 @@ function page() {
         videoUrl={singlePost?.videoUrl}
         imageUrl={singlePost?.bannerUrl}
       />
+        {/* fooball */}
+        <ChampionsLeague
+      // onClose={OpenModal}
+      />
       {/* mutiple genre section */}
       <GenreSection onClose={OpenModal} />
       {/* vod section */}
-      <VodSection onClose={OpenModal} />
-      {/* Shows section */}
+    
       <ShowsSection onClose={OpenModal} />
       {/* preview of live gmae */}
-      {/* fooball */}
-      <ChampionsLeague
-      // onClose={OpenModal}
-      />
+      <VodSection onClose={OpenModal} />
+      {/* Shows section */}
       {/* FAQ */}
       {/* preview of live gmae */}
       <NewsSection

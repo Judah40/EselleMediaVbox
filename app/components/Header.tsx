@@ -1,192 +1,216 @@
-"use client";
+'use client'
 
-import { ChevronDown, ChevronUp } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { Menu, X, ChevronDown, User } from 'lucide-react';
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { IoMenu, IoClose } from "react-icons/io5";
-import // handleGetUserProfilePicture,
-"../api/AuthApi/api";
-import DropdownUi from "./dropdowns/HeaderIconDropwodn/dropdown";
-import { data } from "../api/DummyData/data";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { UserAuth } from "@/useContext";
+import { data } from '../api/DummyData/data';
 
-function Header() {
+const Header = () => {
   const { username } = UserAuth();
   const path = usePathname().split("/")[2];
   const router = useRouter();
-  const handleScreenWidthResponsiveness = async () => {
-    //get screen size
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    const { innerWidth } = await window;
-
-    //
-    if (innerWidth > 768) {
-      setIsMenuBarOpen(false);
-    }
-  };
-  // states
-  const [isMenuBarOpen, setIsMenuBarOpen] = useState(false);
-  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const pages = [
     { name: "Home", link: "/pages/Home", path: "Home" },
     { name: "VOD", link: "/pages/videoOnDemand", path: "videoOnDemand" },
-    { name: "Categories", link: "" },
+    { name: "Categories", link: "", categories: data },
     { name: "Live Events", link: "/pages/Live", path: "Live" },
     { name: "Channels", link: "/pages/Channels", path: "Channels" },
   ];
 
   useEffect(() => {
-    handleScreenWidthResponsiveness();
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
 
-    // Attach the event listener to handle window resize
-    window.addEventListener("resize", handleScreenWidthResponsiveness);
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setIsMobileMenuOpen(false);
+      }
+    };
 
-    // Cleanup the event listener on component unmount
-    return () =>
-      window.removeEventListener("resize", handleScreenWidthResponsiveness);
-  }, [isMenuBarOpen]);
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
-    <div className="absolute z-50  w-full">
-      <div className="flex w-full  md:px-6">
-        <Image src={"/logo/vbox.png"} width={100} height={100} alt="logo" />
-        <div className="hidden md:block md:flex-1  md:w-full  md:items-center md:justify-center ">
-          <ul className="gap-8 flex flex-row items-center  h-full justify-end px-6">
-            {pages.map((items, index) => (
-              <li key={index} className="text-sm">
-                <Link
-                  href={items.link}
-                  className={`hover:underline hover:decoration-white group peer ${
-                    path === items.path && "underline decoration-white"
-                  } flex-col`}
-                >
-                  <div className="flex flex-col">
-                    <div className="flex items-center ">
-                      <p className="text-white">{items.name} </p>
-                      {items.name === "Categories" && (
-                        <div>
-                          <div className="group-hover:hidden block">
-                            <ChevronUp size={18} color="white" />
-                          </div>
-                          <div className="hidden group-hover:block">
-                            <ChevronDown size={18} color="white" />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-                {items.name === "Categories" && (
-                  <div className="p-2  absolute z-50 hidden hover:grid border-[0.2px] border-gray-700 rounded  bg-black peer-hover:grid grid-cols-2 gap-2">
-                    {data.map((value, index) => (
-                      <Link
-                        href={`/pages/Category/${value.name}`}
-                        key={index}
-                        className={`text-white ${
-                          path === items.path && "underline"
-                        }  rounded hover:underline p-2 `}
-                      >
-                        {value.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </li>
-            ))}
-            {username ? (
-              <DropdownUi />
-            ) : (
-              <Link
-                href={"/pages/Auth/Signin"}
-                className="bg-yellow-700 px-4 py-2 rounded text-sm hover:bg-yellow-500 text-white"
-              >
-                <p className="text-sm">Sign in</p>
-              </Link>
-            )}
-          </ul>
-        </div>
+    <header className={`fixed w-full z-50 transition-all duration-300 ${
+      isScrolled ? 'bg-black/90 backdrop-blur-sm shadow-lg' : 'bg-gradient-to-b from-black/80 to-transparent'
+    }`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="flex justify-between items-center py-4">
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <Link href="/pages/Home">
+              <Image
+                src="/logo/vbox.png"
+                width={100}
+                height={100}
+                alt="logo"
+                className="h-8 w-auto transition-transform hover:scale-105"
+              />
+            </Link>
+          </div>
 
-        <div className="md:hidden flex justify-end flex-1 px-4">
-          {/* menu bar */}
-          {!isMenuBarOpen ? (
-            <button
-              onClick={() => {
-                setIsMenuBarOpen(true);
-              }}
-            >
-              <IoMenu color="white" size={36} />
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                setIsMenuBarOpen(false);
-              }}
-            >
-              <IoClose color="white" size={36} />
-            </button>
-          )}
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <NavigationMenu>
+              <NavigationMenuList>
+                {pages.map((item) => (
+                  <NavigationMenuItem key={item.name}>
+                    {item.categories ? (
+                      <>
+                        <NavigationMenuTrigger className="text-white hover:text-yellow-400 transition-colors">
+                          {item.name}
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                          <div className="grid grid-cols-2 gap-3 p-4 w-[400px] bg-black/95 backdrop-blur-sm rounded-lg border border-gray-800">
+                            {item.categories.map((category) => (
+                              <Link
+                                key={category.name}
+                                href={`/pages/Category/${category.name}`}
+                                className="block p-3 hover:bg-white/10 rounded-md transition-colors text-white hover:text-yellow-400"
+                              >
+                                {category.name}
+                              </Link>
+                            ))}
+                          </div>
+                        </NavigationMenuContent>
+                      </>
+                    ) : (
+                      <Link
+                        href={item.link}
+                        className={`text-white hover:text-yellow-400 transition-colors px-3 py-2 text-sm ${
+                          path === item.path ? 'border-b-2 border-yellow-400' : ''
+                        }`}
+                      >
+                        {item.name}
+                      </Link>
+                    )}
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
+
+            {username ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full bg-yellow-700 hover:bg-yellow-600">
+                    <User className="h-5 w-5 text-white" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 bg-black/95 backdrop-blur-sm border-gray-800">
+                  <DropdownMenuItem className="text-white hover:text-yellow-400">
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="text-white hover:text-yellow-400">
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="text-white hover:text-yellow-400">
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button
+                onClick={() => router.push('/pages/Auth/Signin')}
+                className="bg-yellow-700 hover:bg-yellow-600 text-white px-6"
+              >
+                Sign in
+              </Button>
+            )}
+          </nav>
+
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden text-white hover:text-yellow-400 transition-colors"
+          >
+            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
       </div>
 
-      {isMenuBarOpen && (
-        <div className="w-full p-6 bg-white text-black z-50 absolute">
-          <ul className="gap-4 flex flex-col w-full ">
-            {pages.map((items, index) => (
-              <li key={index} className="w-full ">
-                <button
-                  onClick={() => {
-                    if (items.name !== "Categories") {
-                      router.push(items.link);
-                    } else {
-                      setIsDropDownOpen(!isDropDownOpen);
-                    }
-                  }}
-                  className="hover:shadow border-b  w-full  rounded p-4  flex items-start justify-center flex-1"
-                >
-                  <p>{items.name}</p>
-                  <div className="flex-1 flex justify-end ">
-                    {items.name === "Categories" ? (
-                      isDropDownOpen ? (
-                        <ChevronUp size={18} color="black" />
-                      ) : (
-                        <ChevronDown size={18} color="black" />
-                      )
-                    ) : null}
-                  </div>
-                </button>
-                {isDropDownOpen && items.name === "Categories" && (
-                  <div className="flex flex-col bg-cyan-50 gap-2 my-2">
-                    {data.map((value, index) => (
-                      <Link
-                        href={`/pages/Category/${value.name}`}
-                        key={index}
-                        className={`bg-cyan-100 ${
-                          path === items.path && "underline"
-                        }  rounded  shadow hover:shadow-l py-2 px-4 `}
-                      >
-                        {value.name}
-                      </Link>
+      {/* Mobile menu */}
+      <div
+        className={`md:hidden transition-all duration-300 ease-in-out ${
+          isMobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+        } overflow-hidden bg-black/95 backdrop-blur-sm`}
+      >
+        <div className="px-4 pt-2 pb-4 space-y-2">
+          {pages.map((item) => (
+            <div key={item.name} className="py-2">
+              {item.categories ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="w-full text-left px-4 py-2 text-white hover:text-yellow-400 transition-colors">
+                    <div className="flex justify-between items-center">
+                      {item.name}
+                      <ChevronDown className="h-4 w-4" />
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-full bg-gray-900/95 backdrop-blur-sm">
+                    {item.categories.map((category) => (
+                      <DropdownMenuItem key={category.name}>
+                        <Link
+                          href={`/pages/Category/${category.name}`}
+                          className="w-full text-white hover:text-yellow-400"
+                        >
+                          {category.name}
+                        </Link>
+                      </DropdownMenuItem>
                     ))}
-                  </div>
-                )}
-              </li>
-            ))}
-            <button
-              onClick={() => {
-                router.push("/pages/Auth/Signin");
-              }}
-              // href={"/pages/Auth/Signin"}
-              className="bg-yellow-700 px-4 py-2 outline-none rounded hover:bg-yellow-500 w-auto"
-            >
-              <p>Sign in</p>
-            </button>
-          </ul>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link
+                  href={item.link}
+                  className={`block px-4 py-2 text-white hover:text-yellow-400 transition-colors ${
+                    path === item.path ? 'border-l-4 border-yellow-400 pl-3' : ''
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              )}
+            </div>
+          ))}
+          {!username && (
+            <div className="pt-4">
+              <Button
+                onClick={() => router.push('/pages/Auth/Signin')}
+                className="w-full bg-yellow-700 hover:bg-yellow-600 text-white"
+              >
+                Sign in
+              </Button>
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      </div>
+    </header>
   );
-}
+};
 
 export default Header;
