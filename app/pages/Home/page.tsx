@@ -10,7 +10,7 @@ import VodSection from "@/app/components/HompageComponent/VodSections";
 import ShowsSection from "@/app/components/HompageComponent/TrensingShowsSections";
 import TopShowsSection from "@/app/components/HompageComponent/TopShowsSections";
 import NewsSection from "@/app/components/HompageComponent/NewsSection";
-import LeagueTableSection from "@/app/components/HompageComponent/LeagueTableSection";
+// import LeagueTableSection from "@/app/components/HompageComponent/LeagueTableSection";
 import Modal from "@/app/components/Modal";
 import { Bookmark, MessageSquare, Play, ThumbsUp } from "lucide-react";
 import { handleGetSinglePost } from "@/app/api/PostApi/api";
