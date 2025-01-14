@@ -1,47 +1,55 @@
-/* eslint-disable @next/next/no-img-element */
+"use client"
+
+// SignupPage.tsx
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import SignupForm from "@/app/components/forms/SignupForm";
 
-function Page() {
+const SignupPage = () => {
   return (
-    <div className="flex flex-col lg:flex-row h-[100vh]">
-      {/* Sign-up form */}
-      <div className="lg:w-6/12 w-full  h-full overflow-y-auto flex flex-col items-center md:justify-center  p-4">
-        <Link href={"/pages/Home"}>
-          <Image src={"/logo/vbox.png"} width={100} height={100} alt="logo" />
-        </Link>{" "}
-        <p className="text-4xl text-white">Welcome!</p>
-        {/* Container with fixed max width for the form */}
-        <div className="w-full ">
-          <SignupForm />
+    <div className="min-h-screen flex flex-col lg:flex-row text-white">
+      {/* Left Panel - Form */}
+      <div className="lg:w-6/12 w-full px-8 py-12 flex flex-col items-center justify-center relative">
+        <div className="absolute top-8 left-8">
+          <Link href="/pages/Home">
+            <Image src="/logo/vbox.png" width={80} height={80} alt="logo" className="hover:opacity-90 transition-opacity" />
+          </Link>
         </div>
-        <div>
-          <p className="text-white text-center">
-            Already have an account?{" "}
-            <Link
-              href={"/pages/Auth/Signin"}
-              className="underline text-cyan-500"
-            >
-              Sign In
-            </Link>
-          </p>
+
+        <div className="w-full max-w-xl space-y-6">
+          <div className="text-center space-y-2 mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">Create an Account</h1>
+            <p className="text-gray-500">Join us to get started with your journey</p>
+          </div>
+
+          <SignupForm />
+
+          <div className="text-center pt-4">
+            <p className="text-gray-600">
+              Already have an account?{" "}
+              <Link href="/pages/Auth/Signin" className="text-blue-600 hover:text-blue-700 font-medium">
+                Sign In
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Background Image */}
-      <div className="hidden lg:block lg:w-6/12 h-full">
-        <Link href={"/pages/Home"}>
-          <img
-            src={"/backgrounds/signupbackgroundImage.png"}
-            alt="sign-in-background-image"
-            className="w-full h-full object-cover"
-          />
-        </Link>
+      {/* Right Panel - Image */}
+      <div className="hidden lg:block lg:w-6/12 relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/30 to-purple-500/30 mix-blend-overlay" />
+        <Image
+          src="/backgrounds/signupbackgroundImage.png"
+          alt="Welcome"
+          layout="fill"
+          objectFit="cover"
+          className="object-center"
+          priority
+        />
       </div>
     </div>
   );
-}
+};
 
-export default Page;
+export default SignupPage;

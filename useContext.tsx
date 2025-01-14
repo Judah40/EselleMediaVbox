@@ -65,6 +65,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       .then((response) => {
         //
         router.push("/pages/Auth/OTPInput");
+        localStorage.setItem("phoneNumber", newUser.phoneNumber)
       })
       .catch((error) => {
         //

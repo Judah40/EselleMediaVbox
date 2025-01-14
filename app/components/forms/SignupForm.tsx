@@ -1,16 +1,40 @@
-"use client";
-
+// SignupForm.tsx
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { signUpValidationSchema } from "@/app/lib/signupValidation";
 import { UserAuth } from "@/useContext";
 import { Reg } from "@/app/types/context";
-import { Spinner } from "@nextui-org/react";
 
+interface InputFieldProps {
+  label: string;
+  name: string;
+  type?: string;
+  optional?: boolean;
+}
 
+const InputField: React.FC<InputFieldProps> = ({ label, name, type = "text", optional = false }) => (
+  <div className="space-y-1">
+    <label htmlFor={name} className="block text-sm font-medium text-white">
+      {label}{" "}
+      {optional && <span className="text-gray-400 text-xs">(optional)</span>}
+    </label>
+    <Field
+      type={type}
+      name={name}
+      id={name}
+      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900"
+    />
+    <ErrorMessage
+      name={name}
+      component="p"
+      className="text-sm text-red-600 mt-1"
+    />
+  </div>
+);
 
-function SignupForm() {
+const SignupForm = () => {
   const { isLoading, signup } = UserAuth();
+
   const initialValues: Reg = {
     username: "",
     firstName: "",
@@ -23,192 +47,76 @@ function SignupForm() {
     gender: "",
   };
 
-  const handleSubmit = (values: Reg) => {
-    const data: Reg = {
-      firstName: values.firstName,
-      middleName: values.middleName,
-      lastName: values.lastName,
-      username: values.username,
-      dateOfBirth: values.dateOfBirth,
-      gender: values.gender,
-      email: values.email,
-      address: values.address,
-      phoneNumber: values.phoneNumber,
-    };
-    signup(data);
-  };
-
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={signUpValidationSchema}
-      onSubmit={handleSubmit}
+      onSubmit={signup}
     >
-      {() => (
-        <Form className="w-full items-center flex flex-col gap-2">
-          <div className="flex md:flex-row flex-col w-full justify-between gap-4 ">
-            {/* Username */}
-            <div className="form-control flex flex-col w-full lg:w-8/12 ">
-              <label>Username</label>
-              <Field
-                type="text"
-                name="username"
-                className=" p-3 rounded text-black"
-              />
-              <ErrorMessage
-                name="username"
-                component="div"
-                className="error text-red-500 "
-              />
-            </div>
+      <Form className="space-y-6">
+        {/* Personal Information */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InputField label="Username" name="username" />
+          <InputField label="First Name" name="firstName" />
+          <InputField label="Last Name" name="lastName" />
+          <InputField label="Middle Name" name="middleName" optional />
+        </div>
 
-            {/* First Name */}
-            <div className="form-control flex flex-col w-full lg:w-8/12 ">
-              <label>First Name</label>
+        {/* Contact Information */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InputField label="Email" name="email" type="email" />
+          <InputField label="Phone Number" name="phoneNumber" />
+        </div>
+
+        {/* Additional Information */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <InputField label="Address" name="address" />
+          <InputField label="Date of Birth" name="dateOfBirth" type="date" />
+        </div>
+
+        {/* Gender Selection */}
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-white">Gender</label>
+          <div className="grid grid-cols-2 gap-4">
+            <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-700 transition-colors">
+              <Field type="radio" name="gender" value="Male" className="mr-3" />
+              <span className="text-white">Male</span>
+            </label>
+            <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-700 transition-colors">
               <Field
-                type="text"
-                name="firstName"
-                className=" p-3 rounded text-black"
+                type="radio"
+                name="gender"
+                value="Female"
+                className="mr-3"
               />
-              <ErrorMessage
-                name="firstName"
-                component="div"
-                className="error text-red-500"
-              />
-            </div>
+              <span className="text-white">Female</span>
+            </label>
           </div>
+          <ErrorMessage
+            name="gender"
+            component="p"
+            className="text-sm text-red-600 mt-1"
+          />
+        </div>
 
-          <div className="flex w-full md:flex-row flex-col justify-between gap-4 ">
-            {/* Last Name */}
-            <div className="form-control flex flex-col w-full lg:w-8/12 ">
-              <label>Last Name</label>
-              <Field
-                type="text"
-                name="lastName"
-                className=" p-3 rounded text-black"
-              />
-              <ErrorMessage
-                name="lastName"
-                component="div"
-                className="error text-red-500"
-              />
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isLoading ? (
+            <div className="flex items-center justify-center">
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+              Creating Account...
             </div>
-
-            {/* Middle Name (optional) */}
-            <div className="form-control flex flex-col w-full lg:w-8/12 ">
-              <label>Middle Name (optional)</label>
-              <Field
-                type="text"
-                name="middleName"
-                className=" p-3 rounded text-black"
-              />
-              <ErrorMessage
-                name="middleName"
-                component="div"
-                className="error text-red-500"
-              />
-            </div>
-          </div>
-
-          <div className="flex w-full md:flex-row flex-col justify-between gap-4 ">
-            {/* Email */}
-            <div className="form-control flex flex-col w-full lg:w-8/12 ">
-              <label>Email</label>
-              <Field
-                type="email"
-                name="email"
-                className=" p-3 rounded text-black"
-              />
-              <ErrorMessage
-                name="email"
-                component="div"
-                className="error text-red-500"
-              />
-            </div>
-
-            {/* Phone Number */}
-            <div className="form-control flex flex-col w-full lg:w-8/12 ">
-              <label>Phone Number</label>
-              <Field
-                type="text"
-                name="phoneNumber"
-                className=" p-3 rounded text-black"
-              />
-              <ErrorMessage
-                name="phoneNumber"
-                component="div"
-                className="error text-red-500"
-              />
-            </div>
-          </div>
-
-          <div className="flex w-full md:flex-row flex-col justify-between gap-4 ">
-            {/* Address */}
-            <div className="form-control flex flex-col w-full lg:w-8/12 ">
-              <label>Address</label>
-              <Field
-                type="text"
-                name="address"
-                className=" p-3 rounded text-black"
-              />
-              <ErrorMessage
-                name="address"
-                component="div"
-                className="error text-red-500"
-              />
-            </div>
-
-            {/* Age */}
-            <div className="form-control flex flex-col w-full lg:w-8/12">
-              <label>Date of Birth</label>
-              <Field
-                type="date"
-                name="dateOfBirth"
-                className="p-3 rounded text-black"
-              />
-              <ErrorMessage
-                name="dateOfBirth"
-                component="div"
-                className="error text-red-500"
-              />
-            </div>
-          </div>
-
-          {/* Sex */}
-          <div className="form-control flex flex-col w-full lg:w-8/12 ">
-            <label>Gender</label>
-            <div className="w-full  flex justify-between">
-              <div className="w-[45%] p-3 border rounded">
-                <label>
-                  <Field type="radio" name="gender" value="Male" />
-                  Male
-                </label>
-              </div>
-              <div className="w-[45%] p-3 border rounded">
-                <label>
-                  <Field type="radio" name="gender" value="Female" />
-                  Female
-                </label>
-              </div>
-            </div>
-            <ErrorMessage
-              name="gender"
-              component="div"
-              className="error text-red-500"
-            />
-          </div>
-
-          {/* Submit button */}
-          <button
-            type="submit"
-            className="w-full lg:w-8/12 bg-cyan-500 p-3 rounded"
-          >
-            {isLoading ? <Spinner /> : <p>Submit</p>}
-          </button>
-        </Form>
-      )}
+          ) : (
+            "Create Account"
+          )}
+        </button>
+      </Form>
     </Formik>
   );
-}
+};
 
 export default SignupForm;

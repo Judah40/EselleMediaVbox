@@ -1,64 +1,116 @@
-'use client'
+"use client";
 
-import React, { useState } from "react";
-import OTPInput from "react-otp-input";  // Import the OTP input component
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
-import { handleOTPVerification } from "@/app/api/AuthApi/api";
 
-const OTPVerification: React.FC = () => {
-  const [otp, setOtp] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { handleOTPVerification } from "@/app/api/AuthApi/api";
+import { useRouter } from "next/navigation";
+
+const FormSchema = z.object({
+  pin: z.string().min(6, {
+    message: "Your one-time password must be 6 characters.",
+  }),
+});
+
+export default function Page() {
   const router = useRouter();
 
-  const handleOTPChange = (otp: string) => {
-    setOtp(otp);
-  };
+  const [isLoading, setIsLoading] = useState(false);
+  const [getPhoneNumber, setGetPhoneNumber] = useState<string>("");
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      pin: "",
+    },
+  });
 
-  const handleSubmit = async () => {
-    if (otp.length !== 6) {
-      setError("OTP must be 6 digits.");
-      return;
-    }
-
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    // console.log(data)
     setIsLoading(true);
-    try {
-      const response = await handleOTPVerification(otp); // You need to define this function
-      Cookies.set("token", response.data.token); // Store token in cookies
-      router.push("/pages/Auth/PasswordSetup"); // Redirect to password setup
-    } catch (error) {
-      setError("OTP verification failed. Please try again.");
-    } finally {
-      setIsLoading(false);
+    handleOTPVerification(data.pin)
+      .then((response) => {
+        router.push("/pages/Auth/PasswordSetup");
+        Cookies.set("token", response.data.token);
+        Cookies.set("userType", response.data.userType);
+      })
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
+  const PhoneNumber = () => {
+    const phoneNumber = localStorage.getItem("phoneNumber");
+    if (phoneNumber) {
+      setGetPhoneNumber(phoneNumber);
     }
+    // console.log(phoneNumber?.slice(-4, -1));
+
+    // return phoneNumber;
   };
 
+  useEffect(() => {
+    PhoneNumber();
+  }, []);
   return (
-    <div className="max-w-sm mx-auto p-4">
-      <h2 className="text-xl font-semibold text-center mb-4">Enter OTP</h2>
-      
-      <OTPInput
-        value={otp}
-        onChange={handleOTPChange}
-        numInputs={6}
-        inputStyle="otp-input"
-        shouldAutoFocus
-        renderInput={(props: React.InputHTMLAttributes<HTMLInputElement>) => (
-          <input {...props} className="otp-input" />
-        )}      />
-      
-      {error && <p className="text-red-500 mt-2 text-center">{error}</p>}
-
-      <button
-        onClick={handleSubmit}
-        disabled={isLoading}
-        className="w-full mt-4 bg-blue-500 text-white py-2 rounded-lg"
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full flex flex-1 items-center justify-center flex-col h-screen space-y-6"
       >
-        {isLoading ? "Verifying..." : "Verify OTP"}
-      </button>
-    </div>
-  );
-};
+        <FormField
+          control={form.control}
+          name="pin"
+          render={({ field }) => (
+            <FormItem className=" flex flex-col items-center">
+              <FormLabel>One-Time Password</FormLabel>
+              <FormControl>
+                <InputOTP maxLength={6} {...field}>
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </FormControl>
+              <FormDescription>
+                Please enter the one-time password sent to{" "}
+                <span className="text-white">{getPhoneNumber}</span>.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-export default OTPVerification;
+        <Button type="submit">
+          {isLoading ? (
+            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+          ) : (
+            <span>Submit</span>
+          )}
+        </Button>
+      </form>
+    </Form>
+  );
+}

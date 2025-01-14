@@ -103,11 +103,11 @@ const LandingPage: React.FC<BackgroundMediaProps> = ({
   }, []);
 
   const handlePlay = useCallback(() => {
-    true;
+    setIsVideoReady(false);
   }, []);
 
   const handlePause = useCallback(() => {
-    // setIsPlaying(false);
+    setIsVideoReady(false);
   }, []);
 
   return (
