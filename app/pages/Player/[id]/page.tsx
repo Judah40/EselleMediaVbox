@@ -21,6 +21,7 @@ import {
 import { handleGetSingleUser } from "@/app/api/AdminApi/usersApi/api";
 import { User } from "../../Dashboard/types/users.types";
 import { AxiosError } from "axios";
+import { UserAuth } from "@/useContext";
 type vodcomment = {
   comment: string;
   vodId: string;
@@ -48,6 +49,7 @@ const VideoPlayer = () => {
   };
 
   const { id } = useParams();
+  const { username } = UserAuth();
   const [singlePost, setSinglePost] = useState<Post>();
   const [videos, setVideos] = useState<post[] | null>(null);
   const [comments, setComments] = useState<Comment[] | null>(null);
@@ -218,31 +220,33 @@ const VideoPlayer = () => {
                 {/* Comments Section */}
                 <div className="mt-6">
                   <h3 className="text-xl font-bold mb-4">Comments</h3>
-                  <div className="flex items-center space-x-2 mb-6">
-                    <input
-                      type="text"
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
-                      placeholder="Add a comment..."
-                      className="flex-1 bg-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    <button
-                      onClick={() => {
-                        setComment("");
-                        sendComment();
-                      }}
-                      className="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700"
-                    >
-                      {commentLoading ? (
-                        <div className="flex items-center justify-center space-x-2">
-                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                          <span>Commenting...</span>
-                        </div>
-                      ) : (
-                        "Comment"
-                      )}
-                    </button>
-                  </div>
+                  {username && (
+                    <div className="flex items-center space-x-2 mb-6">
+                      <input
+                        type="text"
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        placeholder="Add a comment..."
+                        className="flex-1 bg-gray-800 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                      <button
+                        onClick={() => {
+                          setComment("");
+                          sendComment();
+                        }}
+                        className="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700"
+                      >
+                        {commentLoading ? (
+                          <div className="flex items-center justify-center space-x-2">
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <span>Commenting...</span>
+                          </div>
+                        ) : (
+                          "Comment"
+                        )}
+                      </button>
+                    </div>
+                  )}
 
                   {/* Comment List */}
                   <div className="space-y-4">
