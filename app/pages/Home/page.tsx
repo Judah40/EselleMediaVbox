@@ -58,7 +58,7 @@ function page() {
           <div className="w-full h-full bg-black bg-gradient-to-b from-transparent via-transparent to-black bg-opacity-50 relative">
             <div className="bottom-12 md:left-6 mx-auto left-0 right-0  px-4 absolute flex flex-col md:flex-row gap-2">
               <button className="px-4 flex hover:bg-gray-100 items-centerm justify-center gap-2   py-2  border rounded md:w-48  bg-white text-black">
-                <Play color="black" />
+                <Play color="black" />w
 
                 <p>Play</p>
               </button>

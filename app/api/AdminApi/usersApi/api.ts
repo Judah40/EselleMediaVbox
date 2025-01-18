@@ -23,5 +23,5 @@ export const handleDeActivateUser =async (id:number)=>{
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //GET SINGLE USER
 export const handleGetSingleUser =async (id:string)=>{
-    const response = await apiClient.put(`admin/user/${id}`)
+    const response = await apiClient.get(`admin/user/${id}`)
     return response}
