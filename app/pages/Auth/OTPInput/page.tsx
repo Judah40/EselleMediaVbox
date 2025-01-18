@@ -74,7 +74,7 @@ export default function Page() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full flex flex-1 items-center justify-center flex-col h-screen space-y-6"
+        className="w-full flex flex-1 items-center justify-center flex-col h-[80vh] space-y-6"
       >
         <FormField
           control={form.control}
@@ -95,7 +95,7 @@ export default function Page() {
                 </InputOTP>
               </FormControl>
               <FormDescription>
-                Please enter the one-time password sent to{" "}
+                Please enter the otp sent to{" "}
                 <span className="text-white">{getPhoneNumber}</span>.
               </FormDescription>
               <FormMessage />

@@ -1,6 +1,6 @@
 
 // Type for the Post object
-export interface Post {
+export interface post {
   id: number; // Primary key
   postId: string; // UUID for post
   userId: number; // User ID (foreign key)

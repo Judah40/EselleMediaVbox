@@ -155,7 +155,7 @@ const LandingPage: React.FC<BackgroundMediaProps> = ({
             </div>
 
             {/* Description with enhanced visibility */}
-            <p className="text-gray-100 text-sm md:text-base max-w-xl text-center md:text-left font-light leading-relaxed drop-shadow-lg">
+            <p className="text-gray-100 text-sm md:text-lg max-w-xl text-center md:text-left font-light leading-relaxed drop-shadow-lg">
               Experience the story that captivated audiences worldwide.
               <br /> Immerse yourself in a journey of wonder and excitement.
             </p>

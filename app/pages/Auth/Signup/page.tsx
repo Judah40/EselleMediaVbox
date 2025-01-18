@@ -11,7 +11,7 @@ const SignupPage = () => {
     <div className="min-h-screen flex flex-col lg:flex-row text-white">
       {/* Left Panel - Form */}
       <div className="lg:w-6/12 w-full px-8 py-12 flex flex-col items-center justify-center relative">
-        <div className="absolute top-8 left-8">
+        <div className="md:absolute md:top-8 md:left-8 ">
           <Link href="/pages/Home">
             <Image src="/logo/vbox.png" width={80} height={80} alt="logo" className="hover:opacity-90 transition-opacity" />
           </Link>

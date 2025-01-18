@@ -34,7 +34,7 @@ function page() {
 
   useEffect(() => {
     // if (posts && posts[0].id) {
-    handleGetSinglePost(1)
+    handleGetSinglePost(4)
       .then((post) => {
         setSinglePost(post.data.post);
       })
@@ -104,17 +104,23 @@ function page() {
       </Modal>
       <Landingpage
         playMainVideo={playVideo}
-        videoUrl={singlePost?.videoUrl}
-        imageUrl={singlePost?.bannerUrl}
+        videoUrl={
+          singlePost?.videoUrl
+          // "/backgrounds/Tems.mp4"
+        }
+        imageUrl={
+          singlePost?.bannerUrl
+          // "/backgrounds/Arya-Star.jpg"
+        }
       />
-        {/* fooball */}
-        <ChampionsLeague
+      {/* fooball */}
+      <ChampionsLeague
       // onClose={OpenModal}
       />
       {/* mutiple genre section */}
       <GenreSection onClose={OpenModal} />
       {/* vod section */}
-    
+
       <ShowsSection onClose={OpenModal} />
       {/* preview of live gmae */}
       <VodSection onClose={OpenModal} />

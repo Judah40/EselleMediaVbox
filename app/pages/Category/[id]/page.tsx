@@ -4,13 +4,13 @@ import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { handleGetPostByGenre } from "@/app/api/PostApi/api";
-import { Post } from "./category.types";
+import { post } from "./category.types";
 import PostCard from "@/app/components/Category/card";
 import SkeletonPageWrapper from "@/app/components/Category/wrapper";
 
 const Page = () => {
   const { id } = useParams();
-  const [videos, setVideos] = useState<Post[] | null>(null);
+  const [videos, setVideos] = useState<post[] | null>(null);
   const [isVideoLoading, setIsVideoLoading] = useState<boolean>(true);
 
   useEffect(() => {

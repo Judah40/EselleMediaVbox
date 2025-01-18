@@ -126,7 +126,7 @@ const GenreSection: React.FC<{
                       >
                         <div
                           className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover/image:scale-110"
-                          style={{ backgroundImage: `url(${movie.bannerUrl})` }}
+                          style={{ backgroundImage: `url(${movie.thumbnailUrl})` }}
                         />
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/image:opacity-100 transition-opacity duration-300" />
                       </button>

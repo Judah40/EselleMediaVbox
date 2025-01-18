@@ -1,63 +1,60 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-// This function can be marked `async` if using `await` inside
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
 export async function middleware(request: NextRequest) {
   try {
-    const {pathname} = request.nextUrl.clone()
-    const apiurl = process.env.NEXT_PUBLIC_API_URL
-    const token =  request.cookies.get('token')
-    const userType =  request.cookies.get('userType')
-  const apiResponse = await fetch(`${apiurl}/auth/authenticate`, {
-    method: 'post', // You can change to 'POST', 'PUT', etc.
-    headers: {
-      'Authorization': `Bearer ${token?.value}`, // Attach Bearer token
-      'Content-Type': 'application/json', // Specify content type
-    },
-  });
-  // 
+    const { pathname } = request.nextUrl.clone();
+    const apiurl = process.env.NEXT_PUBLIC_API_URL;
+    const token = request.cookies.get('token')?.value;
+    const userType = request.cookies.get('userType')?.value;
 
-  const pages = pathname.split('/')[2]
-  const path = pathname.split('/')
-  // 
-  if(!apiResponse.ok && pages==="Auth"){
-    return NextResponse.next()
-  }
-  if (apiResponse.ok && pages ==="Dashboard" && userType?.value==="Admin") {
-    return NextResponse.next()
-  }
-  if(apiResponse.ok && pages==="Live" && path.length===4){
-    return NextResponse.next()
-  }
-  if(apiResponse.ok && pages==="Settings"){
-    return NextResponse.next()
+    // Fetch authentication status
+    const apiResponse = await fetch(`${apiurl}/auth/authenticate`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
 
-  }
-  // if(apiResponse.ok && pages==="Extras" && path.length===4){
-  //   return NextResponse.next()
-  // }
+    const isAuthenticated = apiResponse.ok;
+    const [_, section, pages, path] = pathname.split('/');
 
-  if(!apiResponse.ok && pages==="Live" && path.length===3){
-    return NextResponse.next()
+    // Define redirection logic
+    if (!isAuthenticated) {
+      if (pages === 'Auth') return NextResponse.next();
+      if (pages === 'Live' && path?.length === 3) return NextResponse.next();
+      if (pages === 'Live' && path?.length === 4) {
+        return NextResponse.redirect(new URL('/pages/Auth/Signin', request.url));
+      }
+      return NextResponse.redirect(new URL('/pages/Home', request.url));
+    }
+
+    // Authenticated users
+    if (isAuthenticated) {
+      if (
+        (pages === 'Dashboard' && userType === 'Admin') ||
+        (pages === 'Live' && path?.length === 4) ||
+        pages === 'Settings' ||
+        path === 'PasswordSetup'
+      ) {
+        return NextResponse.next();
+      }
+    }
+
+    // Default redirection for unauthorized access
+    return NextResponse.redirect(new URL('/pages/Home', request.url));
+  } catch (error) {
+    console.error('Middleware error:', error);
+    return NextResponse.redirect(new URL('/pages/Home', request.url));
   }
-  if(!apiResponse.ok && pages==="Live" && path.length===4){
-    // 
-    return NextResponse.redirect(new URL('/pages/Auth/Signin', request.url))
-  }
-  return NextResponse.redirect(new URL('/pages/Home', request.url))
-} catch (error) {
-    
-  }
-// return NextResponse.json({
-//     message: 'Hello from middleware!',
-// })
 }
- 
-// See "Matching Paths" below to learn more
+
 export const config = {
-  matcher: ['/pages/Dashboard/:path*',
-    //  '/pages/Auth/:path*',
-     '/pages/Live/:path*', 
-     '/pages/Settings/:path*' 
-    //  '/pages/Extras/:path*' 
-    ],
-}
+  matcher: [
+    '/pages/Dashboard/:path*',
+    '/pages/Auth/:path*',
+    '/pages/Live/:path*',
+    '/pages/Settings/:path*',
+  ],
+};

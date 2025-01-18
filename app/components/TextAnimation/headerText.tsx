@@ -16,7 +16,7 @@ export function FlipWord() {
         Watch
         <FlipWords words={words} />
       </div>
-      <p className="lg:text-xl font-bold text-center lg:text-left">
+      <p className="lg:text-2xl font-bold text-center lg:text-left">
         Discover exclusive events, stream the latest shows,<br/> and relive
         unforgettable moments – all in one place.
       </p>
