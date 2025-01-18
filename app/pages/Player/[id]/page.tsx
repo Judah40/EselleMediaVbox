@@ -75,20 +75,19 @@ const VideoPlayer = () => {
             const fetchedComments = response.data.data;
 
             // Create a promise for each user fetch
-            const commentsWithUsersPromises: Promise<Comment>[] = fetchedComments.map(
-              async (comment: any): Promise<Comment> => {
-              try {
-                const userResponse = await handleGetSingleUser(
-                comment.userId
-                );
+            const commentsWithUsersPromises: Promise<Comment>[] =
+              fetchedComments.map(async (comment: any): Promise<Comment> => {
+                try {
+                  const userResponse = await handleGetSingleUser(
+                    comment.userId
+                  );
 
-                return { ...comment, user: userResponse.data.data }; // Add user data to the comment
-              } catch (error) {
-                console.error("Error fetching user data:", error);
-                return { ...comment, user: null }; // Handle errors gracefully
-              }
-              }
-            );
+                  return { ...comment, user: userResponse.data.data }; // Add user data to the comment
+                } catch (error) {
+                  console.error("Error fetching user data:", error);
+                  return { ...comment, user: null }; // Handle errors gracefully
+                }
+              });
 
             // Wait for all promises to resolve
             Promise.all(commentsWithUsersPromises).then((resolvedComments) => {
@@ -120,16 +119,19 @@ const VideoPlayer = () => {
           const fetchedComments = await handleGetAllVodComments(
             singlePost.postId
           );
-            const commentsWithUsersPromises: Promise<Comment>[] = fetchedComments.data.data.map(
-            async (comment: any): Promise<Comment> => {
-              try {
-              const userResponse = await handleGetSingleUser(comment.userId);
-              return { ...comment, user: userResponse.data.data };
-              } catch (error) {
-              console.error("Error fetching user:", error);
-              return { ...comment, user: null };
+          const commentsWithUsersPromises: Promise<Comment>[] =
+            fetchedComments.data.data.map(
+              async (comment: any): Promise<Comment> => {
+                try {
+                  const userResponse = await handleGetSingleUser(
+                    comment.userId
+                  );
+                  return { ...comment, user: userResponse.data.data };
+                } catch (error) {
+                  console.error("Error fetching user:", error);
+                  return { ...comment, user: null };
+                }
               }
-            }
             );
 
           const resolvedComments = await Promise.all(commentsWithUsersPromises);
@@ -248,7 +250,7 @@ const VideoPlayer = () => {
                       comments.map((comment) => (
                         <div key={comment.id} className="flex space-x-3">
                           <div className="w-10 h-10 rounded-full bg-gray-700">
-                            {comment.user.profile_picture && (
+                            {comment && comment.user.profile_picture && (
                               <img
                                 src={comment.user.profile_picture}
                                 alt="Profile"
