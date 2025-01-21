@@ -15,17 +15,30 @@ import Modal from "@/app/components/Modal";
 import { Bookmark, MessageSquare, Play, ThumbsUp } from "lucide-react";
 import { handleGetSinglePost } from "@/app/api/PostApi/api";
 import { Post } from "./home.data";
+import { useRouter } from "next/navigation";
 // import { UserAuth } from "@/useContext";
 
 function page() {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [singlePost, setSinglePost] = useState<Post>();
+  const [singlePost, setSinglePost] = useState<Post | null>(null);
+  const [modalPost, setSingleModaPost] = useState<Post | null>(null);
   const closeModal = (open: boolean): void => {
     setIsModalOpen(open);
+    setSingleModaPost(null);
   };
   const OpenModal = (open: boolean): void => {
     setIsModalOpen(open);
+  };
+  const router = useRouter();
+  const handleCapturePostId = (postId: number): void => {
+    // console.log(postId);
+    handleGetSinglePost(postId)
+      .then((post) => {
+        setSingleModaPost(post.data.post);
+      })
+      .catch(() => {})
+      .finally(() => {});
   };
   const playVideo = (open: boolean): void => {
     setIsModalOpen(open);
@@ -49,7 +62,7 @@ function page() {
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <div
           style={{
-            backgroundImage: `url(${singlePost?.bannerUrl})`,
+            backgroundImage: `url(${modalPost?.bannerUrl})`,
             backgroundPosition: "center",
             backgroundSize: "cover",
           }}
@@ -57,9 +70,11 @@ function page() {
         >
           <div className="w-full h-full bg-black bg-gradient-to-b from-transparent via-transparent to-black bg-opacity-50 relative">
             <div className="bottom-12 md:left-6 mx-auto left-0 right-0  px-4 absolute flex flex-col md:flex-row gap-2">
-              <button className="px-4 flex hover:bg-gray-100 items-centerm justify-center gap-2   py-2  border rounded md:w-48  bg-white text-black">
-                <Play color="black" />w
-
+              <button
+                onClick={() => router.push(`/pages/Player/${modalPost?.id}`)}
+                className="px-4 flex hover:bg-gray-100 items-centerm justify-center gap-2   py-2  border rounded md:w-48  bg-white text-black"
+              >
+                <Play color="black" />
                 <p>Play</p>
               </button>
               <button className="px-4 flex text-white items-centerm justify-center gap-2  py-2  border rounded md:w-48  ">
@@ -72,10 +87,10 @@ function page() {
             <div className="absolute md:right-6 md:bottom-12 right-0   bottom-0 flex mx-auto items-center gap-4">
               <div className="flex items-center gap-2">
                 <ThumbsUp />
-                <p>{singlePost?.likeCount}</p>
+                <p>{modalPost?.likeCount}</p>
               </div>
               <div className="flex items-center gap-2">
-                <MessageSquare /> <p>{singlePost?.commentCount}</p>
+                <MessageSquare /> <p>{modalPost?.commentCount}</p>
               </div>
             </div>
           </div>
@@ -84,11 +99,11 @@ function page() {
             <div className="flex md:items-center w-full md:flex-row flex-col">
               <div className="flex items-center gap-2">
                 <p className="font-bold">Title:</p>
-                <p className="text-gray-300">{singlePost?.caption}</p>
+                <p className="text-gray-300">{modalPost?.caption}</p>
               </div>
               <div className="flex-1 flex md:justify-end">
                 <p className="font-bold">Genre:</p>
-                {singlePost?.tags.map((tag, index) => (
+                {modalPost?.tags.map((tag, index) => (
                   <p key={index} className="text-gray-300">
                     {tag}
                   </p>
@@ -97,7 +112,7 @@ function page() {
             </div>
             <div>
               <p className="font-bold"> Description:</p>
-              <p className="text-gray-300">{singlePost?.content}</p>
+              <p className="text-gray-300">{modalPost?.content}</p>
             </div>
           </div>
         </div>
@@ -118,10 +133,10 @@ function page() {
       // onClose={OpenModal}
       />
       {/* mutiple genre section */}
-      <GenreSection onClose={OpenModal} />
+      <GenreSection onClose={OpenModal} postId={handleCapturePostId} />
       {/* vod section */}
 
-      <ShowsSection onClose={OpenModal} />
+      <ShowsSection onClose={OpenModal} postId={handleCapturePostId} />
       {/* preview of live gmae */}
       <VodSection onClose={OpenModal} />
       {/* Shows section */}
@@ -130,10 +145,7 @@ function page() {
       <NewsSection
       //  onClose={OpenModal}
       />
-      {/* league table */}
-      {/* <LeagueTableSection
-      //  onClose={OpenModal}
-      /> */}
+    
       {/* top shows section */}
       <TopShowsSection onClose={OpenModal} />
     </HomeLayoutWrapper>

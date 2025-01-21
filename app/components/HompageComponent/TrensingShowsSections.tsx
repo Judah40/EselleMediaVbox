@@ -3,6 +3,10 @@ import React from "react";
 import { Play, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+type modal = {
+  onClose: (value: boolean) => void;
+  postId: (value: number) => void;
+};
 // Skeleton Loader Component
 const ShowCardSkeleton = () => (
   <div className="min-w-[200px] flex-shrink-0 rounded-xl overflow-hidden animate-pulse">
@@ -17,9 +21,7 @@ const ShowCardSkeleton = () => (
   </div>
 );
 
-const ShowsSection: React.FC<{
-  onClose: (value: boolean) => void;
-}> = ({ onClose }) => {
+const ShowsSection: React.FC<modal> = ({ onClose, postId }) => {
   const { posts } = UserAuth();
   const isLoading = !posts || posts.length === 0;
   const router = useRouter();
@@ -49,6 +51,7 @@ const ShowsSection: React.FC<{
                 <button
                   onClick={() => {
                     onClose(true);
+                    postId(movie.id);
                   }}
                   key={index}
                   className="min-w-[200px] group relative flex-shrink-0 rounded-xl overflow-hidden bg-neutral-900/50 backdrop-blur-sm hover:bg-neutral-800/50 transition-all duration-300"

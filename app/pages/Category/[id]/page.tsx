@@ -5,18 +5,32 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { handleGetPostByGenre } from "@/app/api/PostApi/api";
 import { post } from "./category.types";
-import PostCard from "@/app/components/Category/card";
+import PostCard from "@/app/components/Category/Fashion";
 import SkeletonPageWrapper from "@/app/components/Category/wrapper";
+import SportsDashboard from "@/app/components/Category/sports";
+import Fashion from "@/app/components/Category/Fashion";
+import Image from "next/image";
 
 const Page = () => {
-  const { id } = useParams();
+  const { id } = useParams() as { id: string };
   const [videos, setVideos] = useState<post[] | null>(null);
   const [isVideoLoading, setIsVideoLoading] = useState<boolean>(true);
 
+  const header = (type: string) => {
+    return (
+      <div className="px-8 bg-gradient-to-r from-yellow-600 via-yellow-600 to-yellow-800 flex justify-between items-center">
+        <h1 className="text-4xl font-semibold text-gray-100">
+          {type.toUpperCase()}
+        </h1>
+        <Image src={`/badge/${type}.png`} alt={type} width={100} height={100} />
+      </div>
+    );
+  };
   useEffect(() => {
     handleGetPostByGenre(id as string)
       .then((posts) => {
         setVideos(posts.data.post);
+        console.log(posts.data.post);
         setIsVideoLoading(false);
       })
       .catch(() => {
@@ -31,24 +45,15 @@ const Page = () => {
         <SkeletonPageWrapper />
       ) : (
         <>
-          <div className="h-24 w-full bg-black" />
-          <div className="p-4">
-            <p className="text-3xl">{id}</p>
-          </div>
+          {/* Banner */}
+          <div className="p-12" />
 
-          <section className="py-10">
-            <div className="relative">
-              <div className="overflow-x-auto pb-6">
-                <div className="flex gap-4 px-4">
-                  {videos?.map((video, index) => (
-                    <div key={index} className="min-w-[280px] w-[280px]">
-                      <PostCard post={video} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
+          {id && header(id as string)}
+          {id === "sports" ? (
+            <SportsDashboard />
+          ) : id === "fashion" ? (
+            <Fashion />
+          ) : null}
         </>
       )}
     </HomeLayoutWrapper>

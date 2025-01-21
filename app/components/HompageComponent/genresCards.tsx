@@ -16,6 +16,10 @@ type Data = {
   }>;
 };
 
+type modal = {
+  onClose: (value: boolean) => void;
+  postId: (value: number) => void;
+};
 // Skeleton component for loading state
 const GenreSkeleton = () => {
   return (
@@ -36,9 +40,7 @@ const GenreSkeleton = () => {
   );
 };
 
-const GenreSection: React.FC<{
-  onClose: (value: boolean) => void;
-}> = ({ onClose }) => {
+const GenreSection: React.FC<modal> = ({ onClose, postId }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [posts, setPosts] = useState<Data>();
   const [isLoading, setIsLoading] = useState(true);
@@ -77,7 +79,8 @@ const GenreSection: React.FC<{
             Discover Your Next Favorite
           </h2>
           <p className="text-gray-400 text-lg">
-            Explore our curated collection of genres and uncover stories that resonate with you.
+            Explore our curated collection of genres and uncover stories that
+            resonate with you.
           </p>
         </div>
 
@@ -107,9 +110,9 @@ const GenreSection: React.FC<{
           >
             {isLoading ? (
               // Skeleton loading state
-              Array(5).fill(0).map((_, index) => (
-                <GenreSkeleton key={index} />
-              ))
+              Array(5)
+                .fill(0)
+                .map((_, index) => <GenreSkeleton key={index} />)
             ) : posts && Object.keys(posts).length > 0 ? (
               Object.entries(posts).map(([tag, posts]) => (
                 <div
@@ -120,13 +123,18 @@ const GenreSection: React.FC<{
                   <div className="grid grid-cols-2 gap-2">
                     {posts.map((movie, idx) => (
                       <button
-                        onClick={() => onClose(true)}
+                        onClick={() => {
+                          onClose(true);
+                          postId(movie.id);
+                        }}
                         key={idx}
                         className="relative w-full overflow-hidden h-24 rounded-lg transform transition-all duration-300 hover:scale-105 group/image"
                       >
                         <div
                           className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover/image:scale-110"
-                          style={{ backgroundImage: `url(${movie.thumbnailUrl})` }}
+                          style={{
+                            backgroundImage: `url(${movie.thumbnailUrl})`,
+                          }}
                         />
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/image:opacity-100 transition-opacity duration-300" />
                       </button>
@@ -149,7 +157,9 @@ const GenreSection: React.FC<{
               ))
             ) : (
               <div className="flex items-center justify-center w-full p-8">
-                <p className="text-gray-400">No genres available at the moment.</p>
+                <p className="text-gray-400">
+                  No genres available at the moment.
+                </p>
               </div>
             )}
           </div>
