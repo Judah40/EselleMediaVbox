@@ -1,281 +1,134 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  MaterialReactTable,
-  MRT_GlobalFilterTextField,
-  MRT_ToggleFiltersButton,
-  useMaterialReactTable,
-  type MRT_ColumnDef,
-} from "material-react-table";
-import { Box } from "@mui/material";
-//Material UI Imports
-import { ListItemIcon, MenuItem, lighten } from "@mui/material";
-import { AccountCircle, Send, Close, CheckBox } from "@mui/icons-material";
-import { User } from "../../types/users.types";
-import {
-  handleActivateUser,
-  handleDeActivateUser,
-  handleGetAllUsers,
-} from "@/app/api/AdminApi/usersApi/api";
+import React, { useState } from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
-const Table = ({ id }: { id: number }) => {
-  const [data, setAllUsers] = useState<User[]>([]);
+interface UserData {
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  username: string;
+  dateOfBirth: string;
+  gender: string;
+  email: string;
+  address: string;
+  role: string;
+  phoneNumber: string;
+  profile_picture?: string;
+  isActive: boolean;
+  isDeleted: boolean;
+}
 
-  ////////////////////////////////////////////////////////////////
-  //API REQUEST USEEFFECT
-  useEffect(() => {
-    handleGetAllUsers(id)
-      .then((values) => {
-        setAllUsers(values.data.data);
-      })
-      .catch(() => {});
-  });
+interface UserDetailsTableProps {
+  data: UserData[];
+}
 
-  const columns = useMemo<MRT_ColumnDef<User>[]>(
-    () => [
-      {
-        id: "users",
-        header: "users",
-        columns: [
-          // NAME
-          {
-            accessorFn: (user) => `${user.firstName} ${user.lastName}`,
-            header: "Name",
-            id: "name",
-            Cell: ({ renderedCellValue }) => (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "1rem",
-                }}
-              >
-                <span>{renderedCellValue}</span>
-              </Box>
-            ),
-          },
-          // EMAIL
-          {
-            accessorKey: "email",
-            header: "Email",
-            id: "email",
-            enableClickToCopy: true,
-            filterVariant: "autocomplete",
-          },
-          // PHONE
-          {
-            accessorKey: "phoneNumber",
-            header: "Phone",
-            id: "phone",
-            enableClickToCopy: true,
-            filterVariant: "autocomplete",
-          },
-          // ADDRESS
-          {
-            accessorKey: "address",
-            header: "Address",
-            id: "address",
-            enableClickToCopy: true,
-            filterVariant: "autocomplete",
-          },
-          // ROLE
-          {
-            accessorKey: "role",
-            header: "Role",
-            id: "role",
-            filterVariant: "select",
-          },
-          // STATUS
-          {
-            accessorKey: "isActive",
-            header: "Status",
-            id: "status",
-            filterVariant: "select",
-            Cell: ({ renderedCellValue, row }) => (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "1rem",
-                }}
-              >
-                <span>
-                  {row.original.isActive ? (
-                    <div className="flex items-center gap-2">
-                      <p>Active</p>
-                      <div className="w-1 h-1 rounded-full bg-green-500" />
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <p>InActive</p>
-                      <div className="w-1 h-1 rounded-full bg-red-500" />
-                    </div>
-                  )}
-                </span>
-              </Box>
-            ),
-          },
-          // DATE OF BIRTH
-          {
-            accessorKey: "dateOfBirth",
-            header: "Date of Birth",
-            id: "dateOfBirth",
-            filterVariant: "date",
-          },
-          // GENDER
-          {
-            accessorKey: "gender",
-            header: "Gender",
-            id: "gender",
-            filterVariant: "select",
-          },
-        ],
-      },
-    ],
-    []
+const UserDetailsTable: React.FC<UserDetailsTableProps> = ({ data = [] }) => {
+  const [searchQuery, setSearchQuery] = useState<string>(""); // State for the search query
+  const [activeStates, setActiveStates] = useState<boolean[]>(
+    data.map((user) => user.isActive)
   );
-  const table = useMaterialReactTable({
-    columns,
-    data,
-    enableColumnOrdering: true,
-    enableRowSelection: true,
-    enableRowActions: true,
-    enableFullScreenToggle: false,
-    columnResizeMode: "onChange",
-    enableColumnPinning: true,
 
-    initialState: {
-      showGlobalFilter: true,
-      columnPinning: {
-        left: ["mrt-row-expand", "mrt-row-select"],
-        right: ["mrt-row-actions"],
-      },
-    },
+  const getInitials = (firstName: string, lastName: string): string =>
+    `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
 
-    renderRowActionMenuItems: ({ closeMenu, row }) => [
-      <MenuItem
-        key={0}
-        onClick={() => {
-          // View profile logic...
-          closeMenu();
-        }}
-        sx={{ m: 0 }}
-      >
-        <ListItemIcon>
-          <AccountCircle />
-        </ListItemIcon>
-        View Profile
-      </MenuItem>,
-      <MenuItem
-        key={1}
-        onClick={() => {
-          // Send email logic...
-          closeMenu();
-        }}
-        sx={{ m: 0 }}
-      >
-        <ListItemIcon>
-          <Send />
-        </ListItemIcon>
-        Send Email
-      </MenuItem>,
-      <MenuItem
-        key={1}
-        onClick={() => {
-          // Send email logic...
-          if (row.original.isActive) {
-            handleDeActivateUser(row.original.id)
-              .then(() => {
-                alert(`${row.original.firstName} deactivated`);
-                closeMenu();
-                window.location.reload();
-              })
-              .catch((error) => {
-                alert(`${error.reponse.data}error deleting user`);
-              });
-          }
-          if (!row.original.isActive) {
-            handleActivateUser(row.original.id)
-              .then(() => {
-                alert(`${row.original.firstName} activated`);
-                closeMenu();
-                window.location.reload();
-              })
-              .catch((error) => {
-                alert(`${error} error activating user`);
-              });
-          }
-        }}
-        sx={{ m: 0 }}
-      >
-        {row.original.isActive ? (
-          <div>
-            <ListItemIcon>
-              <Close />
-            </ListItemIcon>
-            Deactivate User
-          </div>
+  const handleToggleActivation = (index: number) => {
+    const newActiveStates = [...activeStates];
+    newActiveStates[index] = !newActiveStates[index];
+    setActiveStates(newActiveStates);
+    // API call for status update would go here
+  };
+
+  const filteredData = data.filter((user) =>
+    `${user.firstName} ${user.middleName || ""} ${user.lastName}`
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase())
+  );
+
+  const DetailRow: React.FC<{ label: string; value: string | undefined }> = ({
+    label,
+    value,
+  }) => (
+    <div className="flex justify-between">
+      <span className="font-medium text-muted-foreground">{label}:</span>
+      <span className="text-right">{value || "N/A"}</span>
+    </div>
+  );
+
+  return (
+    <div>
+      {/* Search Bar */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search by name..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full p-2 border rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+        />
+      </div>
+
+      {/* User Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {filteredData.length > 0 ? (
+          filteredData.map((user, index) => (
+            <Card
+              key={user.username}
+              className="w-full max-w-2xl mx-auto shadow-lg"
+            >
+              <CardHeader className="border-b p-4">
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <Avatar className="w-16 h-16">
+                      <AvatarImage
+                        src={user.profile_picture}
+                        alt={`${user.firstName} ${user.lastName}`}
+                      />
+                      <AvatarFallback>
+                        {getInitials(user.firstName, user.lastName)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h2 className="text-xl font-bold">
+                        {user.firstName} {user.middleName} {user.lastName}
+                      </h2>
+                      <p className="text-muted-foreground">@{user.username}</p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => handleToggleActivation(index)}
+                    variant={activeStates[index] ? "destructive" : "default"}
+                    className="ml-4"
+                  >
+                    {activeStates[index] ? "Deactivate" : "Activate"}
+                  </Button>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <DetailRow label="Email" value={user.email} />
+                    <DetailRow label="Phone" value={user.phoneNumber} />
+                    <DetailRow label="Date of Birth" value={user.dateOfBirth} />
+                  </div>
+                  <div className="space-y-2">
+                    <DetailRow label="Gender" value={user.gender} />
+                    <DetailRow label="Role" value={user.role} />
+                    <DetailRow label="Address" value={user.address} />
+                  </div>
+                </div>
+                <div className="mt-4 text-sm text-muted-foreground">
+                  <p>Status: {activeStates[index] ? "Active" : "Inactive"}</p>
+                </div>
+              </CardContent>
+            </Card>
+          ))
         ) : (
-          <div className="flex items-center">
-            <ListItemIcon>
-              <CheckBox />
-            </ListItemIcon>
-            <p>Activate User</p>
-          </div>
+          <p className="text-center text-gray-500">No users found.</p>
         )}
-      </MenuItem>,
-    ],
-    paginationDisplayMode: "pages",
-    positionToolbarAlertBanner: "bottom",
-    muiSearchTextFieldProps: {
-      size: "small",
-      variant: "outlined",
-    },
-    muiPaginationProps: {
-      color: "secondary",
-      rowsPerPageOptions: [10, 20, 30],
-      shape: "rounded",
-      variant: "outlined",
-    },
-    renderTopToolbar: ({ table }) => {
-      const handleDeactivate = () => {
-        table.getSelectedRowModel().flatRows.map((row) => {
-          alert("deactivating " + row.getValue("name"));
-        });
-      };
-
-      const handleActivate = () => {
-        table.getSelectedRowModel().flatRows.map((row) => {
-          alert("activating " + row.getValue("name"));
-        });
-      };
-
-      const handleContact = () => {
-        table.getSelectedRowModel().flatRows.map((row) => {
-          alert("contact " + row.getValue("name"));
-        });
-      };
-
-      return (
-        <Box
-          sx={(theme) => ({
-            backgroundColor: lighten(theme.palette.background.default, 0.05),
-            display: "flex",
-            gap: "0.5rem",
-            p: "8px",
-            justifyContent: "space-between",
-          })}
-        >
-          <Box sx={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-            {/* import MRT sub-components */}
-            <MRT_GlobalFilterTextField table={table} />
-            <MRT_ToggleFiltersButton table={table} />
-          </Box>
-        </Box>
-      );
-    },
-  });
-  return <MaterialReactTable table={table} />;
+      </div>
+    </div>
+  );
 };
 
-export default Table;
+export default UserDetailsTable;

@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Cookies from "js-cookie";
 
@@ -16,13 +16,20 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+
+const InputOTP = dynamic(() =>
+  import("@/components/ui/input-otp").then((mod) => mod.InputOTP)
+);
+const InputOTPGroup = dynamic(() =>
+  import("@/components/ui/input-otp").then((mod) => mod.InputOTPGroup)
+);
+const InputOTPSlot = dynamic(() =>
+  import("@/components/ui/input-otp").then((mod) => mod.InputOTPSlot)
+);
+
 import { handleOTPVerification } from "@/app/api/AuthApi/api";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 
 const FormSchema = z.object({
   pin: z.string().min(6, {
@@ -57,60 +64,67 @@ export default function Page() {
       });
   }
 
-  const PhoneNumber = () => {
-    const phoneNumber = localStorage.getItem("phoneNumber");
-    if (phoneNumber) {
-      setGetPhoneNumber(phoneNumber);
+  const PhoneNumber = memo(
+    ({
+      setGetPhoneNumber,
+    }: {
+      setGetPhoneNumber: React.Dispatch<React.SetStateAction<string>>;
+    }) => {
+      useEffect(() => {
+        const phoneNumber = localStorage.getItem("phoneNumber");
+        if (phoneNumber) {
+          setGetPhoneNumber(phoneNumber);
+        }
+      }, [setGetPhoneNumber]);
+      return null; // This component only sets the state; no UI is needed
     }
-    // console.log(phoneNumber?.slice(-4, -1));
+  );
 
-    // return phoneNumber;
-  };
-
-  useEffect(() => {
-    PhoneNumber();
-  }, []);
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full flex flex-1 items-center justify-center flex-col h-[80vh] space-y-6"
-      >
-        <FormField
-          control={form.control}
-          name="pin"
-          render={({ field }) => (
-            <FormItem className=" flex flex-col items-center">
-              <FormLabel>One-Time Password</FormLabel>
-              <FormControl>
-                <InputOTP maxLength={6} {...field}>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
-                  </InputOTPGroup>
-                </InputOTP>
-              </FormControl>
-              <FormDescription>
-                Please enter the otp sent to{" "}
-                <span className="text-white">{getPhoneNumber}</span>.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <>
+      <PhoneNumber setGetPhoneNumber={setGetPhoneNumber} />
 
-        <Button type="submit">
-          {isLoading ? (
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-          ) : (
-            <span>Submit</span>
-          )}
-        </Button>
-      </form>
-    </Form>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full flex flex-1 items-center justify-center flex-col h-[80vh] space-y-6"
+        >
+          <FormField
+            control={form.control}
+            name="pin"
+            render={({ field }) => (
+              <FormItem className=" flex flex-col items-center">
+                <FormLabel>One-Time Password</FormLabel>
+                <FormControl>
+                  <InputOTP maxLength={6} {...field}>
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} />
+                      <InputOTPSlot index={1} />
+                      <InputOTPSlot index={2} />
+                      <InputOTPSlot index={3} />
+                      <InputOTPSlot index={4} />
+                      <InputOTPSlot index={5} />
+                    </InputOTPGroup>
+                  </InputOTP>
+                </FormControl>
+                <FormDescription>
+                  Please enter the otp sent to{" "}
+                  <span className="text-white">{getPhoneNumber}</span>.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button type="submit">
+            {isLoading ? (
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+            ) : (
+              <span>Submit</span>
+            )}
+          </Button>
+        </form>
+      </Form>
+    </>
   );
 }

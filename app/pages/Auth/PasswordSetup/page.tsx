@@ -1,13 +1,27 @@
 "use client";
 
-import React, { useState, ChangeEvent, FormEvent } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React, { useState, ChangeEvent, FormEvent, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import { handleSettingUpPassword } from "@/app/api/AuthApi/api";
-import { Spinner } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 
+const Card = dynamic(() =>
+  import("@/components/ui/card").then((mod) => mod.Card)
+);
+const CardContent = dynamic(() =>
+  import("@/components/ui/card").then((mod) => mod.CardContent)
+);
+const CardHeader = dynamic(() =>
+  import("@/components/ui/card").then((mod) => mod.CardHeader)
+);
+const CardTitle = dynamic(() =>
+  import("@/components/ui/card").then((mod) => mod.CardTitle)
+);
+const Spinner = dynamic(() =>
+  import("@nextui-org/react").then((mod) => mod.Spinner)
+);
 interface FormState {
   password: string;
   confirmPassword: string;
@@ -17,6 +31,28 @@ interface FormErrors {
   password?: string;
   confirmPassword?: string;
 }
+
+const PasswordStrength = memo(({ password }: { password: string }) => {
+  const getPasswordStrength = (
+    password: string
+  ): { text: string; color: string } => {
+    if (!password) return { text: "", color: "" };
+    if (password.length < 8) return { text: "Weak", color: "text-red-500" };
+    if (password.length < 12)
+      return { text: "Moderate", color: "text-yellow-500" };
+    return { text: "Strong", color: "text-green-500" };
+  };
+
+  const strength = getPasswordStrength(password);
+
+  return (
+    password && (
+      <p className={`text-sm ${strength.color}`}>
+        Password strength: {strength.text}
+      </p>
+    )
+  );
+});
 
 const PasswordSetup = () => {
   const router = useRouter();
@@ -207,6 +243,7 @@ const PasswordSetup = () => {
               {touched.confirmPassword && errors.confirmPassword && (
                 <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
               )}
+              <PasswordStrength password={formData.password} />
             </div>
 
             {/* Password Requirements */}

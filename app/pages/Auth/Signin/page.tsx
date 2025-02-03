@@ -1,56 +1,53 @@
 /* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
-import React from "react";
+import React, { memo } from "react";
 import { FcGoogle } from "react-icons/fc";
-import SignInForm from "@/app/components/forms/SignInForm";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+const SignInForm = dynamic(() => import("@/app/components/forms/SignInForm"), {
+  ssr: false,
+});
 
-function page() {
+const Logo = memo(() => (
+  <Link href="/pages/Home" className="w-full p-4 flex justify-center">
+    <Image src="/logo/vbox.png" width={100} height={100} alt="logo" priority />
+  </Link>
+));
+
+function Page() {
   return (
-    <div className="flex-1 flex items-center justify-center  w-full h-[100vh]">
-      {/* background Image */}
-      <div className="hidden lg:block w-6/12">
-        <img
-          src={"/backgrounds/signinbackgroundImage.png"}
-          alt="sign-in-background-image"
-          className="w-full h-[100vh]"
-        />
-      </div>
-      {/* sign in form */}
-      <div className="lg:w-6/12  ">
-        <div className="w-full p-4 flex  justify-center">
-          <Link href={"/pages/Home"}>
-            <Image src={"/logo/vbox.png"} width={100} height={100} alt="logo" />
-          </Link>
-        </div>
-        <div className="flex-1 h-full w-full items-center flex-col flex justify-center gap-4">
-          <p className="text-4xl text-white">Welcome!</p>
+    <div className="flex-1 flex items-center justify-center w-full  bg-gray-900">
+      {/* Background Image */}
+      {/* <BackgroundImage /> */}
 
-          <SignInForm />
-          {/* OAUTH */}
-          <div className="w-full items-center flex flex-col gap-4">
-            <p>Or sign in with</p>
-            <button className="flex-row flex items-center p-3 rounded border w-8/12 justify-center">
-              <FcGoogle size={24} />
-              <p>Login with google</p>
-            </button>
-          </div>
-          {/* Sign up section  */}
-          <div>
-            <p className="text-white text-center">
-              Don&lsquo;t have an account?{" "}
-              <Link
-                href={"/pages/Auth/Signup"}
-                className="underline text-cyan-500"
-              >
-                Sign Up
-              </Link>
-            </p>
-          </div>
+      {/* Sign-in Form */}
+      <div className="lg:w-6/12 flex flex-col items-center p-4 space-y-6">
+        {/* Logo */}
+        <Logo />
+
+        <h1 className="text-4xl text-white">Welcome!</h1>
+
+        <SignInForm />
+
+        {/* OAuth Section */}
+        <div className="w-full flex flex-col items-center gap-4">
+          <p className="text-gray-300">Or sign in with</p>
+          <button className="flex items-center px-4 py-2 border rounded w-8/12 justify-center gap-2 hover:bg-gray-800">
+            <FcGoogle size={24} />
+            <span>Login with Google</span>
+          </button>
         </div>
+
+        {/* Sign-up Link */}
+        <p className="text-white text-center">
+          Don&apos;t have an account?{" "}
+          <Link href="/pages/Auth/Signup" className="underline text-cyan-500">
+            Sign Up
+          </Link>
+        </p>
       </div>
     </div>
   );
 }
 
-export default page;
+export default Page;

@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/collapsible";
 
 import DropdownUi from "./UserDropdownUi";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 
 // Menu items.
 const items = [
@@ -44,7 +46,7 @@ const items = [
     icon: Inbox,
   },
   {
-    title: "Live",
+    title: "LiveStream",
     url: "/pages/Dashboard/LiveStream",
     icon: Radio,
   },
@@ -83,6 +85,10 @@ const item = [
 ];
 
 export function AppSidebar() {
+  const path = usePathname();
+  useEffect(() => {
+    console.log(path.split("/")[3]);
+  }, [path]);
   return (
     <Sidebar>
       <SidebarHeader>
@@ -97,7 +103,14 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url} className="text-white">
+                    <a
+                      href={item.url}
+                      className={` ${
+                        path.split("/")[3] === item.title
+                          ? "bg-white"
+                          : "text-white"
+                      }`}
+                    >
                       <item.icon />
                       <span>{item.title}</span>
                     </a>

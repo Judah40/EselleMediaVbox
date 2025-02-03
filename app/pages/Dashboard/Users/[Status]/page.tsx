@@ -2,17 +2,30 @@
 
 // import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import Table from "../../(component)/Table/Table";
+import UserDetailsTable from "../../(component)/Table/Table";
 import { PiExportBold } from "react-icons/pi";
 import { Plus } from "lucide-react";
 import { Spinner } from "@nextui-org/react";
 import { useParams } from "next/navigation";
+import { User } from "../../types/users.types";
+import { handleGetAllUsers } from "@/app/api/AdminApi/usersApi/api";
+import { exportToCSV } from "../../(component)/ExportUsersfunction";
 
 const Page = () => {
   const { Status } = useParams();
   const [screenSize, setScreenSize] = useState<number | null>(null);
+  const [data, setAllUsers] = useState<User[]>([]);
+
   // const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  useEffect(() => {
+    handleGetAllUsers(Number(Status))
+      .then((values) => {
+        setAllUsers(values.data.data);
+        console.log(values.data);
+      })
+      .catch(() => {});
+  }, [Status]);
   const getScreenWidth = () => {
     const screenWidth = window.innerWidth;
     setScreenSize(screenWidth);
@@ -41,7 +54,12 @@ const Page = () => {
           <p className="text-sm">Find all users here</p>
         </div>
         <div className="flex-1 p-2  flex justify-end gap-4">
-          <button className="md:px-4 md:py-2 px-2 py-1 border flex rounded items-center text-sm gap-2">
+          <button
+            onClick={() => {
+              exportToCSV(data);
+            }}
+            className="md:px-4 md:py-2 px-2 py-1 border flex rounded items-center text-sm gap-2"
+          >
             <PiExportBold color="white" size={24} />
             <p className="text-xs">Export CSV</p>
           </button>
@@ -54,19 +72,8 @@ const Page = () => {
       <div className="w-full flex justify-center">
         {!screenSize && <Spinner color="white" />}
       </div>
-      {screenSize && (
-        <div
-          className={`overflow-x-auto  flex-1 flex justify-center`}
-          style={{
-            width:
-              screenSize < 768
-                ? `${screenSize - 40}px`
-                : `${screenSize - 300}px`,
-          }}
-        >
-          <Table id={Number(Status)} />
-        </div>
-      )}
+
+      {data && <UserDetailsTable data={data} />}
     </div>
   );
 };

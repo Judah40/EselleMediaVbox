@@ -31,7 +31,7 @@ const Header = () => {
 
   const pages = [
     { name: "Home", link: "/pages/Home", path: "Home" },
-    { name: "VOD", link: "/pages/videoOnDemand", path: "videoOnDemand" },
+    // { name: "VOD", link: "/pages/videoOnDemand", path: "videoOnDemand" },
     { name: "Categories", link: "", categories: data },
     { name: "Live Events", link: "/pages/Live", path: "Live" },
     { name: "Channels", link: "/pages/Channels", path: "Channels" },
@@ -76,6 +76,7 @@ const Header = () => {
                 height={100}
                 alt="logo"
                 className="h-8 w-auto transition-transform hover:scale-105"
+                priority
               />
             </Link>
           </div>
@@ -98,6 +99,7 @@ const Header = () => {
                                 key={category.name}
                                 href={`/pages/Category/${category.name}`}
                                 className="block p-3 hover:bg-white/10 rounded-md transition-colors text-white hover:text-yellow-400"
+                                prefetch={true}
                               >
                                 {category.name}
                               </Link>
@@ -153,10 +155,19 @@ const Header = () => {
                     Profile
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => router.push("/pages/Settings")}
+                    onClick={() => {
+                      if (username.role === "Admin") {
+                        router.push("/pages/Dashboard");
+                      } else {
+                        router.push("/pages/Settings");
+                      }
+                    }}
                     className="text-white hover:text-yellow-400"
                   >
-                    Settings
+                    {
+                      // If user is admin, redirect to dashboard
+                      username.role === "Admin" ? "Dashboard" : "Settings"
+                    }
                   </DropdownMenuItem>
                   <DropdownMenuItem className="text-white hover:text-yellow-400">
                     <button
@@ -170,12 +181,13 @@ const Header = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button
-                onClick={() => router.push("/pages/Auth/Signin")}
-                className="bg-yellow-700 hover:bg-yellow-600 text-white px-6"
+              <Link
+                href={"/pages/Auth/Signin"}
+                prefetch
+                className="bg-yellow-700 hover:bg-yellow-600 text-white px-6 py-1 rounded"
               >
                 Sign in
-              </Button>
+              </Link>
             )}
           </nav>
 

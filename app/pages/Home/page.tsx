@@ -1,172 +1,130 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
-import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
+
+import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
-// import { handleUserAuthentication } from "../../api/AuthApi/api";
-import Landingpage from "../../components/HompageComponent/Landingpage";
-import ChampionsLeague from "@/app/components/HompageComponent/FootballSection";
-import GenreSection from "@/app/components/HompageComponent/genresCards";
-import VodSection from "@/app/components/HompageComponent/VodSections";
-import ShowsSection from "@/app/components/HompageComponent/TrensingShowsSections";
-import TopShowsSection from "@/app/components/HompageComponent/TopShowsSections";
-import NewsSection from "@/app/components/HompageComponent/NewsSection";
-// import LeagueTableSection from "@/app/components/HompageComponent/LeagueTableSection";
-import Modal from "@/app/components/Modal";
 import { Bookmark, MessageSquare, Play, ThumbsUp } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { handleGetSinglePost } from "@/app/api/PostApi/api";
 import { Post } from "./home.data";
-import { useRouter } from "next/navigation";
-// import { UserAuth } from "@/useContext";
 
-function page() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+// Dynamic imports for components
+const HomeLayoutWrapper = dynamic(() => import("@/app/layouts/HomeLayoutWrapper"));
+const Landingpage = dynamic(() => import("../../components/HompageComponent/Landingpage"));
+const ChampionsLeague = dynamic(() => import("@/app/components/HompageComponent/FootballSection"));
+const GenreSection = dynamic(() => import("@/app/components/HompageComponent/genresCards"));
+const VodSection = dynamic(() => import("@/app/components/HompageComponent/VodSections"));
+const ShowsSection = dynamic(() => import("@/app/components/HompageComponent/TrensingShowsSections"));
+const TopShowsSection = dynamic(() => import("@/app/components/HompageComponent/TopShowsSections"));
+const NewsSection = dynamic(() => import("@/app/components/HompageComponent/NewsSection"));
+const Modal = dynamic(() => import("@/app/components/Modal"));
+
+function Page() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [singlePost, setSinglePost] = useState<Post | null>(null);
-  const [modalPost, setSingleModaPost] = useState<Post | null>(null);
-  const closeModal = (open: boolean): void => {
-    setIsModalOpen(open);
-    setSingleModaPost(null);
-  };
-  const OpenModal = (open: boolean): void => {
-    setIsModalOpen(open);
-  };
+  const [modalPost, setModalPost] = useState<Post | null>(null);
   const router = useRouter();
-  const handleCapturePostId = (postId: number): void => {
-    // console.log(postId);
+
+  const closeModal = (): void => {
+    setIsModalOpen(false);
+    setModalPost(null);
+  };
+
+  const openModal = (postId: number): void => {
+    setIsModalOpen(true);
     handleGetSinglePost(postId)
-      .then((post) => {
-        setSingleModaPost(post.data.post);
-      })
-      .catch(() => {})
-      .finally(() => {});
+      .then((post) => setModalPost(post.data.post))
+      .catch(() => {});
   };
-  const playVideo = (open: boolean): void => {
-    setIsModalOpen(open);
-  };
-  // const { posts } = UserAuth();
 
   useEffect(() => {
-    // if (posts && posts[0].id) {
     handleGetSinglePost(4)
-      .then((post) => {
-        setSinglePost(post.data.post);
-      })
-      .catch(() => {})
-      .finally(() => {});
-    // }
+      .then((post) => setSinglePost(post.data.post))
+      .catch(() => {});
   }, []);
 
   return (
     <HomeLayoutWrapper>
-      {/* header */}
+      {/* Modal */}
       <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <div
-          style={{
-            backgroundImage: `url(${modalPost?.bannerUrl})`,
-            backgroundPosition: "center",
-            backgroundSize: "cover",
-          }}
-          className="w-full bg-red-500 h-screen rounded-t-lg "
-        >
-          <div className="w-full h-full bg-black bg-gradient-to-b from-transparent via-transparent to-black bg-opacity-50 relative">
-            <div className="bottom-12 md:left-6 mx-auto left-0 right-0  px-4 absolute flex flex-col md:flex-row gap-2">
-              <button
-                onClick={() => router.push(`/pages/Player/${modalPost?.id}`)}
-                className="px-4 flex hover:bg-gray-100 items-centerm justify-center gap-2   py-2  border rounded md:w-48  bg-white text-black"
-              >
-                <Play color="black" />
-                <p>Play</p>
-              </button>
-              <button className="px-4 flex text-white items-centerm justify-center gap-2  py-2  border rounded md:w-48  ">
-                <div className="">
+        {modalPost && (
+          <div
+            style={{
+              backgroundImage: `url(${modalPost.bannerUrl})`,
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+            }}
+            className="w-full h-screen rounded-t-lg bg-red-500"
+          >
+            <div className="w-full h-full bg-black bg-gradient-to-b from-transparent via-transparent to-black bg-opacity-50 relative">
+              {/* Buttons */}
+              <div className="absolute bottom-12 md:left-6 mx-auto left-0 right-0 px-4 flex flex-col md:flex-row gap-2">
+                <button
+                  onClick={() => router.push(`/pages/Player/${modalPost.id}`)}
+                  className="px-4 py-2 flex items-center gap-2 border rounded md:w-48 bg-white text-black hover:bg-gray-100"
+                >
+                  <Play />
+                  <p>Play</p>
+                </button>
+                <button className="px-4 py-2 flex items-center gap-2 border rounded md:w-48 text-white">
                   <Bookmark />
+                  <p>Add To Watchlist</p>
+                </button>
+              </div>
+
+              {/* Like & Comment Section */}
+              <div className="absolute md:right-6 md:bottom-12 right-0 bottom-0 flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <ThumbsUp />
+                  <p>{modalPost.likeCount}</p>
                 </div>
-                <p>Add To Watchlist</p>
-              </button>
-            </div>
-            <div className="absolute md:right-6 md:bottom-12 right-0   bottom-0 flex mx-auto items-center gap-4">
-              <div className="flex items-center gap-2">
-                <ThumbsUp />
-                <p>{modalPost?.likeCount}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <MessageSquare /> <p>{modalPost?.commentCount}</p>
+                <div className="flex items-center gap-2">
+                  <MessageSquare />
+                  <p>{modalPost.commentCount}</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="w-full  text-sm py-4 bg-black px-4 gap-3 flex flex-col">
-            <div className="flex md:items-center w-full md:flex-row flex-col">
-              <div className="flex items-center gap-2">
-                <p className="font-bold">Title:</p>
-                <p className="text-gray-300">{modalPost?.caption}</p>
+            {/* Description Section */}
+            <div className="w-full text-sm py-4 bg-black px-4 flex flex-col gap-3">
+              <div className="flex md:flex-row flex-col w-full md:items-center">
+                <div className="flex items-center gap-2">
+                  <p className="font-bold">Title:</p>
+                  <p className="text-gray-300">{modalPost.caption}</p>
+                </div>
+                <div className="flex-1 flex md:justify-end">
+                  <p className="font-bold">Genre:</p>
+                  {modalPost.tags.map((tag, index) => (
+                    <p key={index} className="text-gray-300">
+                      {tag}
+                    </p>
+                  ))}
+                </div>
               </div>
-              <div className="flex-1 flex md:justify-end">
-                <p className="font-bold">Genre:</p>
-                {modalPost?.tags.map((tag, index) => (
-                  <p key={index} className="text-gray-300">
-                    {tag}
-                  </p>
-                ))}
+              <div>
+                <p className="font-bold">Description:</p>
+                <p className="text-gray-300">{modalPost.content}</p>
               </div>
-            </div>
-            <div>
-              <p className="font-bold"> Description:</p>
-              <p className="text-gray-300">{modalPost?.content}</p>
             </div>
           </div>
-        </div>
+        )}
       </Modal>
-      <Landingpage
-        playMainVideo={playVideo}
-        videoUrl={
-          singlePost?.videoUrl
-          // "/backgrounds/Tems.mp4"
-        }
-        imageUrl={
-          singlePost?.bannerUrl
-          // "/backgrounds/Arya-Star.jpg"
-        }
-      />
-      {/* fooball */}
-      <ChampionsLeague
-      // onClose={OpenModal}
-      />
-      {/* mutiple genre section */}
-      <GenreSection onClose={OpenModal} postId={handleCapturePostId} />
-      {/* vod section */}
 
-      <ShowsSection onClose={OpenModal} postId={handleCapturePostId} />
-      {/* preview of live gmae */}
-      <VodSection onClose={OpenModal} />
-      {/* Shows section */}
-      {/* FAQ */}
-      {/* preview of live gmae */}
-      <NewsSection
-      //  onClose={OpenModal}
+      {/* Main Content */}
+      <Landingpage
+        playMainVideo={() => setIsModalOpen(true)}
+        videoUrl={singlePost?.videoUrl}
+        imageUrl={singlePost?.bannerUrl}
       />
-    
-      {/* top shows section */}
-      <TopShowsSection onClose={OpenModal} />
+
+      <ChampionsLeague />
+      <GenreSection onClose={() => setIsModalOpen(true)} postId={openModal} />
+      <ShowsSection onClose={() => setIsModalOpen(true)} postId={openModal} />
+      <VodSection onClose={() => setIsModalOpen(true)} />
+      <NewsSection />
+      <TopShowsSection onClose={() => setIsModalOpen(true)} />
     </HomeLayoutWrapper>
   );
 }
 
-export default page;
-
-{
-  /* <div className="md:p-12 p-4 gap-4 flex-col flex bg-white text-black">
-<div className="flex items-center gap-4">
-  <p className="text-2xl font-semibold">
-    Subscribe to Various Channels
-  </p>
-  <Link href={{}} className="flex items-center gap-2 group ">
-    <p className="text-cyan-500  text-sm hidden group-hover:block">
-      View All
-    </p>
-    <ChevronRight color="#06b6d4" />{" "}
-  </Link>
-</div>
-{/* <LiveCards /> */
-}
-// </div> */}
+export default Page;

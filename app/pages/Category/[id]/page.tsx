@@ -13,7 +13,7 @@ import Image from "next/image";
 
 const Page = () => {
   const { id } = useParams() as { id: string };
-  const [videos, setVideos] = useState<post[] | null>(null);
+  const [videos, setVideos] = useState<post[] | undefined>(undefined);
   const [isVideoLoading, setIsVideoLoading] = useState<boolean>(true);
 
   const header = (type: string) => {
@@ -51,9 +51,13 @@ const Page = () => {
           {id && header(id as string)}
           {id === "sports" ? (
             <SportsDashboard />
-          ) : id === "fashion" ? (
-            <Fashion />
-          ) : null}
+          ) : id === "fashion" || "comedy" ? (
+            <Fashion contentypeCard={videos} />
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
+              Nothing to show for this category
+            </div>
+          )}
         </>
       )}
     </HomeLayoutWrapper>

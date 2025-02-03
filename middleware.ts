@@ -20,6 +20,7 @@ export async function middleware(request: NextRequest) {
     const isAuthenticated = apiResponse.ok;
     const [_, section, pages, path] = pathname.split('/');
 
+    console.log(path)
     // Define redirection logic
     if (!isAuthenticated) {
       if (pages === 'Auth') return NextResponse.next();
