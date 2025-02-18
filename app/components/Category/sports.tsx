@@ -27,13 +27,18 @@ interface ScrollableSectionProps {
 const ScrollableSection: React.FC<ScrollableSectionProps> = ({ title, children }) => {
   const scrollLeft = () => {
     const container = document.getElementById(`scroll-${title}`);
-    container?.scrollLeft && (container.scrollLeft -= 200);
+    if (container && container.scrollLeft !== undefined) {
+      container.scrollLeft -= 200;
+    }
   };
-
+  
   const scrollRight = () => {
     const container = document.getElementById(`scroll-${title}`);
-    container?.scrollLeft && (container.scrollLeft += 200);
+    if (container && container.scrollLeft !== undefined) {
+      container.scrollLeft += 200;
+    }
   };
+  
 
   return (
     <div className="mb-8">

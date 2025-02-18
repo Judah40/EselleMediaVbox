@@ -22,7 +22,7 @@ const Page = () => {
     handleGetAllUsers(Number(Status))
       .then((values) => {
         setAllUsers(values.data.data);
-        console.log(values.data);
+        // console.log(values.data);
       })
       .catch(() => {});
   }, [Status]);

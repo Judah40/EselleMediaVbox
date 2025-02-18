@@ -51,7 +51,7 @@ const Dashboard = () => {
   ];
 
   const COLORS = ['#818cf8', '#ec4899', '#a78bfa'];
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   const CustomTooltip = ({ active, payload, label }: { active?: boolean, payload?: any[], label?: string }) => {
     if (active && payload && payload.length) {
       return (

@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 const SignInForm = dynamic(() => import("@/app/components/forms/SignInForm"), {
   ssr: false,
 });
-
+// eslint-disable-next-line react/display-name
 const Logo = memo(() => (
   <Link href="/pages/Home" className="w-full p-4 flex justify-center">
     <Image src="/logo/vbox.png" width={100} height={100} alt="logo" priority />

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { handleGetPostByGenre } from "@/app/api/PostApi/api";
 import { post } from "./category.types";
-import PostCard from "@/app/components/Category/Fashion";
+// import PostCard from "@/app/components/Category/Fashion";
 import SkeletonPageWrapper from "@/app/components/Category/wrapper";
 import SportsDashboard from "@/app/components/Category/sports";
 import Fashion from "@/app/components/Category/Fashion";
@@ -30,7 +30,7 @@ const Page = () => {
     handleGetPostByGenre(id as string)
       .then((posts) => {
         setVideos(posts.data.post);
-        console.log(posts.data.post);
+        // console.log(posts.data.post);
         setIsVideoLoading(false);
       })
       .catch(() => {

@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 const SignupForm = dynamic(() => import("@/app/components/forms/SignupForm"), { ssr: false });
-
+// eslint-disable-next-line react/display-name
 const Logo = memo(() => (
   <div className="md:absolute md:top-8 md:left-8">
     <Link href="/pages/Home">
@@ -20,7 +20,7 @@ const Logo = memo(() => (
     </Link>
   </div>
 ));
-
+// eslint-disable-next-line react/display-name
 const BackgroundImage = memo(() => (
   <div className="hidden lg:block lg:w-6/12 relative">
     <div className="absolute inset-0 bg-gradient-to-br from-blue-500/30 to-purple-500/30 mix-blend-overlay" />

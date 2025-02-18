@@ -31,7 +31,7 @@ interface FormErrors {
   password?: string;
   confirmPassword?: string;
 }
-
+// eslint-disable-next-line react/display-name
 const PasswordStrength = memo(({ password }: { password: string }) => {
   const getPasswordStrength = (
     password: string

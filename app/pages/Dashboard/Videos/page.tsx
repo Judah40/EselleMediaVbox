@@ -2,8 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { CircleX, HardDriveUpload, Search } from "lucide-react";
-import { DatePicker, Select, SelectItem } from "@nextui-org/react";
-import { data as dummyData } from "@/app/api/DummyData/data";
 import VideoForm from "../(component)/Forms/videoForm/videoForm";
 import { handleGetAllPosts } from "@/app/api/PostApi/api";
 import { PostVideoData } from "./videos.types";
@@ -15,8 +13,8 @@ const Page = () => {
   const [videosPosted, setVideosPosted] = useState<PostVideoData[]>([]);
   const [isVideoLoading, setIsVideoLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  // const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+  // const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   // Fetch all videos
   useEffect(() => {

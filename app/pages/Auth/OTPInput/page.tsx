@@ -63,7 +63,7 @@ export default function Page() {
         setIsLoading(false);
       });
   }
-
+// eslint-disable-next-line react/display-name
   const PhoneNumber = memo(
     ({
       setGetPhoneNumber,

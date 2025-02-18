@@ -87,7 +87,7 @@ const item = [
 export function AppSidebar() {
   const path = usePathname();
   useEffect(() => {
-    console.log(path.split("/")[3]);
+    // console.log(path.split("/")[3]);
   }, [path]);
   return (
     <Sidebar>
