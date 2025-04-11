@@ -23,8 +23,6 @@ import {
   handleGetAllVodComments,
   handleSendvodComment,
 } from "@/app/api/messageApi/message";
-import { handleGetSingleUser } from "@/app/api/AdminApi/usersApi/api";
-import { User } from "../../Dashboard/types/users.types";
 import { AxiosError } from "axios";
 import { UserAuth } from "@/useContext";
 import Image from "next/image";
@@ -35,9 +33,10 @@ type vodcomment = {
 };
 type Comment = {
   id: number;
-  user: User;
+  username: string;
   comment: string;
   timestamp: string;
+  profile_picture: string;
 };
 
 const VideoPlayer = () => {
@@ -79,21 +78,8 @@ const VideoPlayer = () => {
       setSinglePost(response.data.post);
 
       const fetchedComments = commentsResponse.data.data;
-      const commentsWithUsers = await Promise.all(
-        fetchedComments.map(async (comment: Comment) => {
-          try {
-            const userResponse = await handleGetSingleUser(
-              String(comment.user.id)
-            );
-            return { ...comment, user: userResponse.data.data };
-          } catch (error) {
-            console.error("Error fetching user data:", error);
-            return { ...comment, user: null };
-          }
-        })
-      );
 
-      setComments(commentsWithUsers);
+      setComments(fetchedComments);
     } catch (error) {
       console.error("Error fetching post data:", error);
     } finally {
@@ -115,20 +101,8 @@ const VideoPlayer = () => {
           const fetchedComments = await handleGetAllVodComments(
             singlePost.postId
           );
-          const commentsWithUsers = await Promise.all(
-            fetchedComments.data.data.map(async (comment: Comment) => {
-              try {
-                const userResponse = await handleGetSingleUser(
-                  String(comment.user.id)
-                );
-                return { ...comment, user: userResponse.data.data };
-              } catch (error) {
-                console.error("Error fetching user:", error);
-                return { ...comment, user: null };
-              }
-            })
-          );
-          setComments(commentsWithUsers);
+
+          setComments(fetchedComments.data.data);
           setComment("");
         }
       } catch (error) {
@@ -249,8 +223,7 @@ const VideoPlayer = () => {
                         <div className="w-12 h-12 flex-shrink-0">
                           <Image
                             src={
-                              comment.user?.profile_picture ||
-                              "/default-avatar.png"
+                              comment.profile_picture || "/default-avatar.png"
                             }
                             alt="Profile"
                             width={48} // Adjust width as needed
@@ -262,8 +235,7 @@ const VideoPlayer = () => {
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center space-x-2">
                               <span className="font-semibold text-white">
-                                {comment.user?.firstName}{" "}
-                                {comment.user?.lastName}
+                                {comment.username}{" "}
                               </span>
                               <span className="text-gray-400 text-sm">
                                 {formatDate(comment.timestamp)}
@@ -305,7 +277,6 @@ const VideoPlayer = () => {
                   >
                     <div className="flex items-center space-x-4 bg-zinc-900 rounded-xl p-4 hover:bg-zinc-800 transition-colors">
                       <div className="w-36 h-24 rounded-lg overflow-hidden flex-shrink-0">
-                        
                         <Image
                           src={video.thumbnailUrl}
                           alt="Thumbnail"
