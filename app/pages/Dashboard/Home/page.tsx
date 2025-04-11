@@ -69,7 +69,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-4 md:p-6 w-full bg-gray-900 min-h-screen">
+    <div className="p-4 md:p-6 over w-full overflow-y-scroll bg-gray-900 min-h-screen">
       {/* Stats Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <Card className="bg-gray-800 border-gray-700">

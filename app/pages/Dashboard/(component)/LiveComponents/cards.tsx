@@ -1,46 +1,92 @@
 import React from "react";
 import { ResponseCardProps } from "../../LiveStream/live.types";
+import { MoreVertical, ArrowRight, Play, Pause } from "lucide-react";
+
+const StatusIndicator = ({ status }: { status: "RUNNING" | "IDLE" }) => {
+  return (
+    <div
+      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${
+        status === "RUNNING"
+          ? "bg-emerald-50 text-emerald-600"
+          : "bg-amber-50 text-amber-600"
+      }`}
+    >
+      {status === "RUNNING" ? (
+        <>
+          <div className="relative">
+            <div className="absolute inset-0 bg-emerald-400 rounded-full opacity-75 animate-ping"></div>
+            <Play className="w-4 h-4 fill-current relative" />
+          </div>
+          <span className="text-sm font-medium">Live</span>
+        </>
+      ) : (
+        <>
+          <Pause className="w-4 h-4 fill-current" />
+          <span className="text-sm font-medium">Idle</span>
+        </>
+      )}
+    </div>
+  );
+};
 
 const ResponseCard: React.FC<ResponseCardProps> = ({
-  title,
-  tags,
-  location,
-  likeCount,
-  commentCount,
-  description,
+  channelId,
+  channelName,
+  status,
 }) => {
   return (
-    <div className="bg-white h-56 shadow-lg rounded-lg p-5 max-w-md mx-auto hover:shadow-xl transition-shadow duration-300">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="font-bold text-gray-800">{title}</h2>
-        <div className="flex gap-2">
-          {tags.map((tag, index) => (
-            <span
-              key={index}
-              className="bg-cyan-500 text-white text-xs font-semibold py-1 px-3 rounded-full"
-            >
-              {tag}
-            </span>
-          ))}
+    <div className="group relative bg-white h-80 shadow-sm rounded-xl p-6 max-w-md w-full border border-gray-100 hover:border-blue-100 hover:shadow-lg transition-all duration-300 ease-in-out overflow-hidden">
+      {/* Glow effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+      {/* Card content */}
+      <div className="relative z-10 h-full flex flex-col">
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <h2 className="font-bold text-gray-900 text-lg tracking-tight line-clamp-1">
+              {channelName || "Untitled Channel"}
+            </h2>
+            <p className="text-gray-500 text-sm mt-1">
+              Channel ID: {channelId || "N/A"}
+            </p>
+          </div>
+          <button className="text-gray-400 hover:text-gray-600 p-1 -mr-1 transition-colors">
+            <MoreVertical className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Status badge */}
+        <div className="mt-2 mb-6">
+          <StatusIndicator status={status || "IDLE"} />
+        </div>
+
+        {/* Stats/metrics placeholder */}
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          <div className="bg-gray-50 rounded-lg p-2 text-center">
+            <p className="text-xs text-gray-500">Views</p>
+            <p className="font-semibold text-gray-900">1.2K</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-2 text-center">
+            <p className="text-xs text-gray-500">Engagement</p>
+            <p className="font-semibold text-gray-900">78%</p>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-2 text-center">
+            <p className="text-xs text-gray-500">Uptime</p>
+            <p className="font-semibold text-gray-900">99.8%</p>
+          </div>
+        </div>
+
+        {/* Action button */}
+        <div className="mt-auto">
+          <button className="w-full flex items-center justify-between bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-300 group/button">
+            <span>View Analytics</span>
+            <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/button:translate-x-1" />
+          </button>
         </div>
       </div>
-      <p className="text-gray-600 text-sm mb-4">{description}</p>
-      <div className="text-sm text-gray-500 mb-4">
-        <span className="font-semibold">Location:</span> {location}
-      </div>
-      <div className="flex items-center justify-between text-gray-500 text-sm">
-        <div className="flex items-center gap-2">
-          <span className="flex items-center gap-1">
-            <i className="fas fa-thumbs-up text-gray-400"></i> {likeCount}
-          </span>
-          <span className="flex items-center gap-1">
-            <i className="fas fa-comment text-gray-400"></i> {commentCount}
-          </span>
-        </div>
-        <button className="bg-cyan-500 text-white py-1 px-3 rounded-lg text-xs font-semibold hover:bg-blue-600 transition">
-          View Details
-        </button>
-      </div>
+
+      {/* Hover effect */}
+      <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-200/50 group-hover:ring-blue-200 transition-all duration-300 pointer-events-none"></div>
     </div>
   );
 };

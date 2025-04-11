@@ -1,8 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
-"use client";
-
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import {
-  ChevronsUpDown,
+  ChevronsLeft,
+  ChevronsRight,
   Home,
   Inbox,
   Radio,
@@ -10,31 +10,13 @@ import {
   ShieldX,
   SquarePlay,
   Users,
+  ChevronDown,
+  LogOut,
 } from "lucide-react";
-
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarFooter,
-  SidebarHeader,
-} from "@/components/ui/sidebar";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-
-import DropdownUi from "./UserDropdownUi";
+import { UserAuth } from "@/useContext";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
 
-// Menu items.
-const items = [
+const menuItems = [
   {
     title: "Home",
     url: "/pages/Dashboard",
@@ -56,109 +38,221 @@ const items = [
     icon: SquarePlay,
   },
 ];
-// Menu items.
-const item = [
-  {
-    title: "Users",
-    url: "/pages/Dashboard/Users",
 
-    metaData: [
-      {
-        title: "Active",
-        params: {
-          isActive: 1,
-        },
-        icon: ShieldCheck,
-        color: "green",
-      },
-      {
-        title: "Inactive",
-        params: {
-          isActive: 2,
-        },
-        icon: ShieldX,
-        color: "red",
-      },
-    ],
-    icon: Users,
-  },
-];
+const userManagementItems = {
+  title: "Users",
+  url: "/pages/Dashboard/Users",
+  icon: Users,
+  subItems: [
+    {
+      title: "Active",
+      url: "/pages/Dashboard/Users/1",
+      icon: ShieldCheck,
+      color: "text-green-500",
+    },
+    {
+      title: "Inactive",
+      url: "/pages/Dashboard/Users/2",
+      icon: ShieldX,
+      color: "text-red-500",
+    },
+  ],
+};
 
 export function AppSidebar() {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const { logout, username, userProfilePicture } = UserAuth();
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
   const path = usePathname();
+  const currentPath = path.split("/")[3];
   useEffect(() => {
     // console.log(path.split("/")[3]);
-  }, [path]);
+  }, []);
   return (
-    <Sidebar>
-      <SidebarHeader>
-        <div className="w-full bg-gray-500 bg-opacity-25 rounded justify-center flex">
-          <img src={"/logo/vbox.png"} alt="logo" className="w-[100px]" />
-        </div>
-      </SidebarHeader>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a
-                      href={item.url}
-                      className={` ${
-                        path.split("/")[3] === item.title
-                          ? "bg-white"
-                          : "text-white"
-                      }`}
-                    >
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-              <div className="w-full h-[0.2px]  bg-gray-700" />
-              <div className="w-full text-white">
-                {item.map((item, index) => (
-                  <div key={index} className="w-full ">
-                    <Collapsible>
-                      <div className="w-full flex px-2 gap-1 py-2 rounded border-gray-700 items-center border">
-                        <item.icon size={18} />
-                        <span>{item.title}</span>
-                        <div className="flex-1 flex justify-end ">
-                          <CollapsibleTrigger>
-                            <ChevronsUpDown className="h-4 w-4" />
-                          </CollapsibleTrigger>
-                        </div>
-                      </div>
-                      <CollapsibleContent>
-                        <div className="border my-2 rounded border-gray-700">
-                          {item.metaData.map((value) => (
-                            <SidebarMenuItem key={item.title}>
-                              <SidebarMenuButton asChild>
-                                <a
-                                  href={`${item.url}/${value.params.isActive}`}
-                                  className="text-white"
-                                >
-                                  <value.icon color={value.color} />
-                                  <span>{value.title}</span>
-                                </a>
-                              </SidebarMenuButton>
-                            </SidebarMenuItem>
-                          ))}
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  </div>
+    <div
+      className={`
+        h-screen 
+        bg-zinc-900 
+        text-gray-300 
+        transition-all 
+        duration-300 
+        ease-in-out 
+        flex 
+        flex-col 
+        ${isCollapsed ? "w-20" : "w-64"}
+        border-r 
+        border-zinc-800
+        shadow-2xl
+      `}
+    >
+      {/* Header */}
+      <div className="p-4 flex items-center justify-between border-b border-zinc-800">
+        {!isCollapsed && (
+          <div className="flex items-center space-x-3">
+            <img
+              src="/logo/vbox.png"
+              alt="Logo"
+              className="w-10 h-10 object-contain"
+            />
+            <span className="font-bold text-xl text-white">VBox</span>
+          </div>
+        )}
+        <button
+          onClick={toggleSidebar}
+          className="hover:bg-zinc-800 p-2 rounded-full transition-all"
+        >
+          {isCollapsed ? <ChevronsRight /> : <ChevronsLeft />}
+        </button>
+      </div>
+
+      {/* Main Menu */}
+      <nav className="flex-1 py-4 overflow-y-auto">
+        <div className="space-y-2">
+          {menuItems.map((item) => (
+            <SidebarItem
+              key={item.title}
+              item={item}
+              isCollapsed={isCollapsed}
+              currentPath={currentPath}
+            />
+          ))}
+
+          {/* User Management Section */}
+          <div className="px-4">
+            <button
+              onClick={() =>
+                setActiveSection(activeSection === "users" ? null : "users")
+              }
+              className={`
+                w-full 
+                flex 
+                items-center 
+                p-3 
+                rounded-lg 
+                transition-all 
+                ${
+                  activeSection === "users"
+                    ? "bg-zinc-800"
+                    : "hover:bg-zinc-800"
+                }
+              `}
+            >
+              <Users className="w-5 h-5 mr-3" />
+              {!isCollapsed && (
+                <div className="flex-1 flex justify-between items-center">
+                  <span>Users</span>
+                  <ChevronDown
+                    className={`
+                      w-4 h-4 
+                      transition-transform 
+                      ${activeSection === "users" ? "rotate-180" : ""}
+                    `}
+                  />
+                </div>
+              )}
+            </button>
+
+            {!isCollapsed && activeSection === "users" && (
+              <div className="mt-2 space-y-1 pl-3">
+                {userManagementItems.subItems.map((subItem) => (
+                  <a
+                    key={subItem.title}
+                    href={subItem.url}
+                    className={`
+                      flex 
+                      items-center 
+                      p-2 
+                      rounded-lg 
+                      hover:bg-zinc-800 
+                      ${subItem.color}
+                    `}
+                  >
+                    <subItem.icon className="w-4 h-4 mr-2" />
+                    {subItem.title}
+                  </a>
                 ))}
               </div>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter>
-        <DropdownUi />
-      </SidebarFooter>
-    </Sidebar>
+            )}
+          </div>
+        </div>
+      </nav>
+
+      {/* Footer / User Section */}
+      <div className="border-t border-zinc-800 p-4">
+        <div
+          className={`
+            flex 
+            items-center 
+            ${isCollapsed ? "justify-center" : "justify-between"}
+          `}
+        >
+          {!isCollapsed && (
+            <div className="flex items-center space-x-3">
+              <div>
+                <Image
+                  src={userProfilePicture || "/default-profile.png"}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                  width={40}
+                  height={40}
+                />
+              </div>
+              <div>
+                <div className="text-white font-semibold">
+                  {username?.firstName} {username?.lastName}
+                </div>
+                <div className="text-xs text-gray-400">{username?.role}</div>
+              </div>
+            </div>
+          )}
+
+          <div className="relative">
+            <button
+              onClick={() => logout()}
+              className="hover:bg-zinc-800 p-2 rounded-full flex transition-all"
+            >
+              <LogOut className="w-4 h-4 text-red-500" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
+
+// Individual Sidebar Item Component
+interface SidebarItemProps {
+  item: {
+    title: string;
+    url: string;
+    icon: React.ComponentType<{ className?: string }>;
+  };
+  isCollapsed: boolean;
+  currentPath: string;
+}
+
+function SidebarItem({ item, isCollapsed, currentPath }: SidebarItemProps) {
+  return (
+    <a
+      href={item.url}
+      className={`
+        px-4 
+        py-3 
+        flex 
+        items-center 
+        transition-all 
+        hover:bg-zinc-800
+        ${isCollapsed ? "justify-center" : ""}
+        ${currentPath === item.title ? "bg-zinc-800" : ""}
+      `}
+    >
+      <item.icon className="w-5 h-5" />
+      {!isCollapsed && <span className="ml-3">{item.title}</span>}
+    </a>
+  );
+}
+
+export default AppSidebar;

@@ -1,5 +1,5 @@
 import { apiClient } from "../config"
-import { FormValues } from "./api.types"
+// import { FormValues } from "./api.types"
 
 
 
@@ -15,7 +15,7 @@ export const handleCreateApiKey =async ()=>{
 //GO LIVE 
 
   
-export const handleGoLive =async (data:FormValues)=>{
+export const handleGoLive =async (data:FormData)=>{
     const response  = await apiClient.post('/live/create',data)
     return response
 }
@@ -26,6 +26,6 @@ export const handleGoLive =async (data:FormValues)=>{
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //GET ALL LIVESTREAMS
 export const handleGetAllLiveStreams =async ()=>{
-    const response  = await apiClient.get('/live')
+    const response  = await apiClient.get('/live/channel')
     return response
 }
