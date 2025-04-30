@@ -55,7 +55,7 @@ export const config = {
   matcher: [
     '/pages/Dashboard/:path*',
     '/pages/Auth/:path*',
-    '/pages/Live/:path*',
+    // '/pages/Live/:path*',
     '/pages/Settings/:path*',
   ],
 };

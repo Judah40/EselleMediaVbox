@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import Image from "next/image";
 import {
   ChevronsLeft,
@@ -14,7 +14,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { UserAuth } from "@/useContext";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const menuItems = [
   {
@@ -68,9 +68,9 @@ export function AppSidebar() {
   };
   const path = usePathname();
   const currentPath = path.split("/")[3];
-  useEffect(() => {
-    // console.log(path.split("/")[3]);
-  }, []);
+
+  const router = useRouter();
+
   return (
     <div
       className={`
@@ -91,14 +91,19 @@ export function AppSidebar() {
       {/* Header */}
       <div className="p-4 flex items-center justify-between border-b border-zinc-800">
         {!isCollapsed && (
-          <div className="flex items-center space-x-3">
+          <button
+            onClick={() => {
+              router.push("/");
+            }}
+            className="flex items-center space-x-3"
+          >
             <img
               src="/logo/vbox.png"
               alt="Logo"
               className="w-10 h-10 object-contain"
             />
             <span className="font-bold text-xl text-white">VBox</span>
-          </div>
+          </button>
         )}
         <button
           onClick={toggleSidebar}

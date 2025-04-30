@@ -10,30 +10,10 @@ import {
   ChevronRight,
   Heart,
 } from "lucide-react";
-
+import { Match } from "@/app/pages/Dashboard/LiveStream/Livedata/[key]/key.types";
 // Define the props interface for the LiveFootballCard component
 interface LiveFootballCardProps {
-  match: {
-    id: string;
-    isLive: boolean;
-    league: {
-      name: string;
-    };
-    homeTeam: {
-      name: string;
-      logo?: string;
-      score?: number;
-    };
-    awayTeam: {
-      name: string;
-      logo?: string;
-      score?: number;
-    };
-    dateTime: string;
-    matchPercentage?: number;
-    stadium?: string;
-    round: string;
-  };
+  match: Match;
   onPlay?: (id: string) => void;
   onInfo?: (id: string) => void;
 }
@@ -45,15 +25,17 @@ const LiveFootballCard: React.FC<LiveFootballCardProps> = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
-
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onPlay(match.id);
+    if (!match.channel) {
+      return;
+    }
+    onPlay(match.channel.toString());
   };
 
   const handleInfoClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onInfo(match.id);
+    onInfo(match.id.toString());
   };
 
   const toggleBookmark = (e: React.MouseEvent) => {
@@ -62,7 +44,7 @@ const LiveFootballCard: React.FC<LiveFootballCardProps> = ({
   };
 
   return (
-    <div className="group relative w-full max-w-[320px] mx-auto transform transition-all duration-500 perspective-1000">
+    <div className="group relative w-[350px] max-w-[400px] mx-auto transform transition-all duration-500 perspective-1000">
       <div
         className={`relative overflow-hidden rounded-2xl bg-gradient-to-b from-gray-900 to-black border border-gray-800 hover:border-indigo-500/50 transition-all duration-300 shadow-xl hover:shadow-indigo-500/20 ${
           isHovered ? "scale-[1.02] z-10" : "scale-100"
@@ -87,28 +69,20 @@ const LiveFootballCard: React.FC<LiveFootballCardProps> = ({
           {/* Live indicator */}
           <div className="absolute top-4 left-4 flex items-center gap-2">
             <div
-              className={`flex items-center gap-2 px-3 py-1.5 ${
-                match.isLive ? "bg-red-500" : "bg-gray-700"
-              } bg-opacity-90 backdrop-blur-md rounded-full`}
+              className={`flex items-center gap-2 px-3 py-1.5 bg-red-500 bg-opacity-90 backdrop-blur-md rounded-full`}
             >
-              <div
-                className={`${
-                  match.isLive ? "animate-pulse" : ""
-                } h-2 w-2 rounded-full bg-white`}
-              />
-              <span className="text-xs font-medium text-white">
-                {match.isLive ? "LIVE" : "UPCOMING"}
-              </span>
+              <div className={`animate-pulse h-2 w-2 rounded-full bg-white`} />
+              <span className="text-xs font-medium text-white">LIVE</span>
             </div>
           </div>
 
           {/* League badge */}
           <div className="absolute top-4 right-4">
-            <div className="h-8 w-8 bg-white bg-opacity-10 backdrop-blur-md rounded-full flex items-center justify-center">
+            <div className="h-8  w-8 bg-white bg-opacity-10 backdrop-blur-md rounded-full flex items-center justify-center">
               <img
-                src={"/logo/vbox.png"}
-                alt={match.league.name}
-                className="h-full w-full object-contain"
+                src={match && match.leagueLogo}
+                alt={match && match.leagueName}
+                className="h-full w-full object-contain rounded-full"
               />
             </div>
           </div>
@@ -120,23 +94,21 @@ const LiveFootballCard: React.FC<LiveFootballCardProps> = ({
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center shadow-lg">
                   <img
-                    src={match.homeTeam.logo || "/logos/team-placeholder.png"}
-                    alt={match.homeTeam.name}
+                    src={match && match.HomeTeamLogo}
+                    alt={match && match.HomeTeam}
                     className="h-6 w-6 object-contain"
                   />
                 </div>
                 <span className="text-white font-medium text-sm truncate max-w-[80px]">
-                  {match.homeTeam.name}
+                  {match && match.HomeTeam}
                 </span>
               </div>
 
               {/* Score or VS */}
               <div className="px-3">
-                {match.isLive &&
-                match.homeTeam.score !== undefined &&
-                match.awayTeam.score !== undefined ? (
+                {match && match.homeScore && match.awayScore ? (
                   <div className="text-white font-bold">
-                    {match.homeTeam.score} - {match.awayTeam.score}
+                    {match.homeScore} - {match.awayScore}
                   </div>
                 ) : (
                   <div className="text-gray-400 font-medium text-sm">VS</div>
@@ -146,12 +118,12 @@ const LiveFootballCard: React.FC<LiveFootballCardProps> = ({
               {/* Away team */}
               <div className="flex items-center gap-2">
                 <span className="text-white font-medium text-sm truncate max-w-[80px]">
-                  {match.awayTeam.name}
+                  {match.AwayTeam}
                 </span>
                 <div className="h-8 w-8 bg-white rounded-full flex items-center justify-center shadow-lg">
                   <img
-                    src={match.awayTeam.logo || "/logos/team-placeholder.png"}
-                    alt={match.awayTeam.name}
+                    src={match && match.AwayTeamLogo}
+                    alt={match.AwayTeam}
                     className="h-6 w-6 object-contain"
                   />
                 </div>
@@ -186,7 +158,7 @@ const LiveFootballCard: React.FC<LiveFootballCardProps> = ({
             <div className="flex items-center gap-1.5">
               <Award className="w-3.5 h-3.5 text-indigo-400" />
               <p className="text-xs text-indigo-400 font-medium truncate max-w-[100px]">
-                {match.league.name}
+                {match && match.leagueName}
               </p>
             </div>
             <div className="text-gray-400 text-xs font-medium">
@@ -196,28 +168,24 @@ const LiveFootballCard: React.FC<LiveFootballCardProps> = ({
 
           {/* Match title */}
           <h3 className="text-white font-medium text-sm mb-2 truncate">
-            {match.homeTeam.name} vs {match.awayTeam.name}
+            {match && match.HomeTeam} vs {match && match.AwayTeam}
           </h3>
 
           {/* Match details */}
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-gray-400" />
-              <p className="text-xs text-gray-400">{match.dateTime}</p>
+              <p className="text-xs text-gray-400">{match && match.Date}</p>
             </div>
 
-            {match.matchPercentage && (
-              <div className="text-xs text-indigo-400 font-medium">
-                {match.matchPercentage}% Match
-              </div>
-            )}
+            <div className="text-xs text-indigo-400 font-medium">90% Match</div>
           </div>
 
           {/* Stadium info */}
-          {match.stadium && (
+          {match.location && match && (
             <div className="flex items-center gap-1.5 mb-2">
               <Calendar className="w-3.5 h-3.5 text-gray-400" />
-              <p className="text-xs text-gray-400 truncate">{match.stadium}</p>
+              <p className="text-xs text-gray-400 truncate">{match.location}</p>
             </div>
           )}
 
