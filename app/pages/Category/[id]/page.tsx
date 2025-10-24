@@ -1,6 +1,4 @@
 "use client";
-
-import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { handleGetPostByGenre } from "@/app/api/PostApi/api";
@@ -40,7 +38,8 @@ const Page = () => {
   }, [id]);
 
   return (
-    <HomeLayoutWrapper>
+    <div>
+      {" "}
       {isVideoLoading ? (
         <SkeletonPageWrapper />
       ) : (
@@ -60,7 +59,7 @@ const Page = () => {
           )}
         </>
       )}
-    </HomeLayoutWrapper>
+    </div>
   );
 };
 

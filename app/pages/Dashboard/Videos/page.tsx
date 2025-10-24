@@ -63,7 +63,7 @@ const Page = () => {
 
     if (filters.genre) {
       result = result.filter((video) =>
-        JSON.parse(video.tags[0]).includes(filters.genre)
+        JSON.parse(video.genre[0]).includes(filters.genre)
       );
     }
 
