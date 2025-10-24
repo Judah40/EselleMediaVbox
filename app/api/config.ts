@@ -1,38 +1,37 @@
-import axios, { InternalAxiosRequestConfig } from "axios"
-import Cookies from "js-cookie"
-export const apiUrl = process.env.NEXT_PUBLIC_API_URL 
+import axios, { InternalAxiosRequestConfig } from "axios";
+import Cookies from "js-cookie";
+export const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 /////////////////////////////////////////////////////////////////////////////////
 //API CUSTOM CONFIG
 export const apiClient = axios.create({
-    baseURL: apiUrl,
-    headers: {
-        'Content-Type': 'application/json',
-    }, 
-    timeout: 5000,
-})
+  baseURL: apiUrl,
+  headers: {
+    "Content-Type": "application/json",
+  },
+  timeout: 10000,
+});
 /////////////////////////////////////////////////////////////////////////////////
 //GET COOKIES
 export const getCookie = (name: string) => {
-    return Cookies.get(name)
-}
+  return Cookies.get(name);
+};
 /////////////////////////////////////////////////////////////////////////////////
 //REQUEST INTERCEPTORS
 apiClient.interceptors.request.use(
-    async(config:InternalAxiosRequestConfig<unknown>)=>{
-        // HANDLING OF REQUEST AND SETTING BEARER TOKEN 
-      const token = getCookie("token")
-      if(token){
-        config.headers["Authorization"] = `Bearer ${token}`
-      }
-
-        return config
-    },
-    (error) => {
-        //PASSING ERROR TO THE NEXT CATCH() BLOCK
-        return Promise.reject(error)
+  async (config: InternalAxiosRequestConfig<unknown>) => {
+    // HANDLING OF REQUEST AND SETTING BEARER TOKEN
+    const token = getCookie("token");
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
-)
 
+    return config;
+  },
+  (error) => {
+    //PASSING ERROR TO THE NEXT CATCH() BLOCK
+    return Promise.reject(error);
+  }
+);
 
 /////////////////////////////////////////////////////////////////////////////////
 //RESPONSE INTERCEPTORS
@@ -45,7 +44,7 @@ apiClient.interceptors.request.use(
 //         //PASSING ERROR TO THE NEXT CATCH() BLOCK
 //         if(error.response){
 //             if(error.response.status===500){
-//                 
+//
 //             }
 //         }
 //         return Promise.reject(error)

@@ -37,6 +37,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { useStreamContext } from "@/Provider/streamContext";
+import { handleInputLiveStreamData } from "@/app/api/LiveApi/api";
 
 const apiKey = process.env.NEXT_PUBLIC_STREAM_IO_ACCESS_KEY ?? "";
 
@@ -57,7 +58,6 @@ const Livestream = ({ params }: ChannelPageProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // const [client, setClient] = useState<StreamVideoClient | null>(null);
   const [call, setCall] = useState<Call | null>(null);
   const [obsCredentials, setObsCredentials] = useState<obsCredentials>({
     ingestUrl: "",
@@ -68,17 +68,48 @@ const Livestream = ({ params }: ChannelPageProps) => {
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [streamDuration, setStreamDuration] = useState(0);
   const [viewerCount, setViewerCount] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [streamData, setStreamData] = useState({
+    title: "",
+    description: "",
+    banner: null as File | null,
+  });
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+
+  const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setStreamData({ ...streamData, banner: file });
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setBannerPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleGoLive = useCallback(async () => {
     if (call) {
       try {
-        await call.goLive({ start_hls: true });
+        const saveLiveStreamData = await handleInputLiveStreamData({
+          streamName: params.id,
+          ...streamData,
+        });
+        console.log(saveLiveStreamData);
+        if (saveLiveStreamData.status !== 201) {
+          console.error("❌ Failed to save livestream data");
+          return;
+        }
+        // await call.goLive({ start_hls: true });
         setIsLive(true);
+        setShowModal(false);
+        // You can access streamData here to send to your backend
+        // console.log("Stream Data:", streamData);
       } catch (e) {
         console.error("❌ Failed to go live:", e);
       }
     }
-  }, [call]);
+  }, [call, streamData]);
 
   const handleCopy = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
@@ -151,7 +182,6 @@ const Livestream = ({ params }: ChannelPageProps) => {
           setObsCredentials(data);
         }
       });
-      // setClient(streamClient);
       setCall(newCall);
     };
 
@@ -283,7 +313,7 @@ const Livestream = ({ params }: ChannelPageProps) => {
                 </div>
 
                 <button
-                  onClick={handleGoLive}
+                  onClick={() => (isLive ? null : setShowModal(true))}
                   disabled={isLive}
                   className={`w-full py-4 rounded-xl font-semibold text-white transition-all duration-300 ${
                     isLive
@@ -489,6 +519,160 @@ const Livestream = ({ params }: ChannelPageProps) => {
             </motion.div>
           </div>
         </div>
+
+        {/* Stream Setup Modal */}
+        <AnimatePresence>
+          {showModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+              onClick={() => setShowModal(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl border border-white/20 shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden"
+              >
+                {/* Modal Header */}
+                <div className="bg-black/40 border-b border-white/10 px-6 py-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#1ABC9C] to-[#16A085] flex items-center justify-center">
+                      <Radio className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h2 className="text-white font-bold text-xl">
+                        Setup Your Stream
+                      </h2>
+                      <p className="text-white/50 text-sm">
+                        Configure your broadcast details
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center transition-all"
+                  >
+                    <span className="text-white text-xl">×</span>
+                  </button>
+                </div>
+
+                {/* Modal Content */}
+                <div className="p-6 space-y-6 overflow-y-auto max-h-[calc(90vh-140px)] custom-scrollbar">
+                  {/* Title */}
+                  <div className="space-y-2">
+                    <label className="text-white font-medium text-sm flex items-center gap-2">
+                      <Video className="w-4 h-4 text-[#1ABC9C]" />
+                      Stream Title
+                    </label>
+                    <input
+                      type="text"
+                      value={streamData.title}
+                      onChange={(e) =>
+                        setStreamData({ ...streamData, title: e.target.value })
+                      }
+                      placeholder="What's your stream about?"
+                      className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-[#1ABC9C] transition-all"
+                    />
+                  </div>
+
+                  {/* Description */}
+                  <div className="space-y-2">
+                    <label className="text-white font-medium text-sm flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 text-[#1ABC9C]" />
+                      Description
+                    </label>
+                    <textarea
+                      value={streamData.description}
+                      onChange={(e) =>
+                        setStreamData({
+                          ...streamData,
+                          description: e.target.value,
+                        })
+                      }
+                      placeholder="Tell viewers what to expect..."
+                      rows={4}
+                      className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-[#1ABC9C] transition-all resize-none"
+                    />
+                  </div>
+
+                  {/* Banner Upload */}
+                  <div className="space-y-2">
+                    <label className="text-white font-medium text-sm flex items-center gap-2">
+                      <Eye className="w-4 h-4 text-[#1ABC9C]" />
+                      Stream Banner
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleBannerChange}
+                        className="hidden"
+                        id="banner-upload"
+                      />
+                      <label
+                        htmlFor="banner-upload"
+                        className="block w-full cursor-pointer"
+                      >
+                        {bannerPreview ? (
+                          <div className="relative group">
+                            <img
+                              src={bannerPreview}
+                              alt="Banner preview"
+                              className="w-full h-48 object-cover rounded-lg border-2 border-white/10"
+                            />
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all rounded-lg flex items-center justify-center">
+                              <span className="text-white font-medium">
+                                Click to change
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="w-full h-48 bg-black/40 border-2 border-dashed border-white/20 rounded-lg flex flex-col items-center justify-center hover:border-[#1ABC9C] transition-all">
+                            <Eye className="w-8 h-8 text-white/30 mb-2" />
+                            <p className="text-white/50 text-sm">
+                              Click to upload banner
+                            </p>
+                            <p className="text-white/30 text-xs mt-1">
+                              Recommended: 1920x1080px
+                            </p>
+                          </div>
+                        )}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Modal Footer */}
+                <div className="bg-black/40 border-t border-white/10 px-6 py-4 flex items-center justify-end gap-3">
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="px-6 py-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium transition-all"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleGoLive}
+                    disabled={!streamData.description || !streamData.title}
+                    className={`px-6 py-3 rounded-lg font-semibold text-white transition-all ${
+                      !streamData.description || !streamData.title
+                        ? "bg-white/10 cursor-not-allowed"
+                        : "bg-gradient-to-r from-[#1ABC9C] to-[#16A085] hover:shadow-lg hover:shadow-[#1ABC9C]/50"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <Radio className="w-4 h-4" />
+                      Go Live
+                    </span>
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <style jsx global>{`
           .custom-scrollbar::-webkit-scrollbar {
