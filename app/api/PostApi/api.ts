@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//CREATE POST 
+//CREATE POST
 
 import { FormValues } from "@/app/pages/Dashboard/(component)/Forms/videoForm/form.types";
 import { apiClient } from "../config";
 
-import { AxiosProgressEvent } from 'axios';
+import { AxiosProgressEvent } from "axios";
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //CREATE POST
 export const handleCreatePost = async (
@@ -12,17 +12,17 @@ export const handleCreatePost = async (
   onUploadProgress?: (progressEvent: AxiosProgressEvent) => void
 ) => {
   const formData = new FormData();
-  formData.append('content', values.content);
-  formData.append('caption', values.caption);
-  formData.append('location', values.location);
-  formData.append('thumbnails', values.thumbnail as Blob);
-  formData.append('banner', values.banner as Blob);
-  formData.append('fullVideo', values.fullVideo as Blob);
-  values.tags.forEach(tag => formData.append('tags[]', tag));
+  formData.append("description", values.description);
+  formData.append("title", values.title);
+  formData.append("location", values.location);
+  formData.append("thumbnails", values.thumbnail as Blob);
+  formData.append("banner", values.banner as Blob);
+  formData.append("fullVideo", values.fullVideo as Blob);
+  values.genre.forEach((tag) => formData.append("genre[]", tag));
 
   const response = await apiClient.post("/post", formData, {
     headers: {
-      'Content-Type': 'multipart/form-data',
+      "Content-Type": "multipart/form-data",
     },
     timeout: 0,
     onUploadProgress: onUploadProgress,
@@ -33,33 +33,31 @@ export const handleCreatePost = async (
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //UPDATE POST
-export const handleUpdatePost = async ()=>{
-
-}
+export const handleUpdatePost = async () => {};
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //GET ALL POST
 export const handleGetAllPosts = async () => {
-    const response = await apiClient.get("/post");
-    return response.data;
-}
+  const response = await apiClient.get("/post");
+  return response.data;
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //GET SINGLE POST
 export const handleGetSinglePost = async (id: number) => {
   const response = await apiClient.get(`/post/${id}`);
   return response;
-}
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //GET POST BY GENRE
 export const handleGetPostByGenre = async (genre: string) => {
   const response = await apiClient.get(`/post/genre/${genre}`);
   return response;
-}
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //GET ALL POST BY GENRE
 export const handleGetAllPostsByGenre = async () => {
   const response = await apiClient.get("/post/genre");
-  return response
-}
+  return response;
+};

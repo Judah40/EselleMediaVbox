@@ -1,48 +1,62 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Formik, FormikHelpers, Form, Field } from "formik";
 import { signInValidationSchema } from "@/app/lib/signInValidation";
-import { handleUserLogin } from "../../api/AuthApi/api";
+import { handleUserLogin } from "@/app/api/AuthApi/api";
 import Link from "next/link";
-import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  ArrowRight,
+  AlertCircle,
+  CheckCircle2,
+} from "lucide-react";
 import Cookies from "js-cookie";
 import { AxiosError } from "axios";
 
-type inputField = {
+type InputFieldProps = {
   label: string;
   name: string;
   type: string;
   placeholder: string;
   showPassword: boolean;
   onTogglePassword?: () => void;
+  error?: string;
+  touched?: boolean;
 };
-const InputField: React.FC<inputField> = ({
+
+const InputField: React.FC<InputFieldProps> = ({
   label,
   name,
   type,
   placeholder,
   showPassword,
   onTogglePassword,
+  error,
+  touched,
 }) => (
   <div className="space-y-2">
-    <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+    <label htmlFor={name} className="block text-sm font-medium text-gray-300">
       {label}
     </label>
-    <div className="relative">
+    <div className="relative group">
       <Field
         type={type}
         id={name}
         name={name}
         placeholder={placeholder}
-        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-900 pr-10"
+        className={`w-full px-4 py-3.5 rounded-xl bg-white/5 border ${
+          error && touched
+            ? "border-red-500/50 focus:border-red-500"
+            : "border-white/10 focus:border-cyan-500"
+        } focus:ring-2 focus:ring-cyan-500/20 transition-all text-white placeholder-gray-500 pr-10 backdrop-blur-sm hover:bg-white/10`}
       />
       {name === "password" && (
         <button
           type="button"
           onClick={onTogglePassword}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-cyan-400 focus:outline-none transition-colors"
         >
           {showPassword ? (
             <EyeOff className="w-5 h-5" />
@@ -52,63 +66,72 @@ const InputField: React.FC<inputField> = ({
         </button>
       )}
     </div>
+    {error && touched && (
+      <p className="mt-1 text-sm text-red-400 flex items-center gap-1 animate-in slide-in-from-top-1 duration-200">
+        <AlertCircle className="w-4 h-4" />
+        {error}
+      </p>
+    )}
   </div>
 );
 
 type StatusMessageProps = {
-  message: string; // The message to display
-  type: "error" | "success"; // The type of the message determines styling
+  message: string;
+  type: "error" | "success";
 };
+
 const StatusMessage: React.FC<StatusMessageProps> = ({ message, type }) => (
   <div
-    className={`p-4 rounded-lg w-full ${
+    className={`p-4 rounded-xl w-full ${
       type === "error"
-        ? "bg-red-100 border-red-400 text-red-700"
-        : "bg-green-100 border-green-400 text-green-700"
-    } flex items-center justify-center border transition-all duration-300 animate-fadeIn`}
+        ? "bg-red-500/10 border-red-500/50 text-red-300"
+        : "bg-green-500/10 border-green-500/50 text-green-300"
+    } flex items-center gap-3 border backdrop-blur-sm transition-all duration-300 animate-in slide-in-from-top-4`}
   >
-    {message}
+    {type === "error" ? (
+      <AlertCircle className="w-5 h-5 flex-shrink-0" />
+    ) : (
+      <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+    )}
+    <span className="text-sm font-medium">{message}</span>
   </div>
 );
 
 const SignInForm = () => {
   const [isLoading, setIsLoading] = useState(false);
-  type Status = {
+  const [status, setStatus] = useState<{
     message: string;
-    type: "error" | "success"; // Add valid types and an empty string for initialization
-  };
-
-  const [status, setStatus] = useState<Status>({
+    type: "error" | "success";
+  }>({
     message: "",
-    type: "success" as "success" | "error",
+    type: "success",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-
-  // ...existing code...
 
   const handleSubmit = async (
     values: { email: string; password: string },
     { setSubmitting }: FormikHelpers<{ email: string; password: string }>
   ) => {
     setIsLoading(true);
+    setStatus({ message: "", type: "success" });
 
     try {
       const response = await handleUserLogin(values);
-
-      const { token, userType, message } = response.data;
+      const { token, userType, message, streamToken } = response.data;
 
       if (rememberMe) {
         const thirtyDays = 30 * 24 * 60 * 60;
         Cookies.set("token", token, { expires: thirtyDays });
         Cookies.set("userType", userType, { expires: thirtyDays });
+        Cookies.set("streamToken", streamToken, { expires: thirtyDays });
       } else {
+        Cookies.set("streamToken", streamToken);
         Cookies.set("token", token);
         Cookies.set("userType", userType);
       }
 
       setStatus({ message, type: "success" });
-
       setTimeout(() => window.location.reload(), 2000);
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -128,8 +151,6 @@ const SignInForm = () => {
     }
   };
 
-  // ...existing code...
-
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
@@ -137,7 +158,7 @@ const SignInForm = () => {
       onSubmit={handleSubmit}
     >
       {({ errors, touched, isSubmitting }) => (
-        <Form className="space-y-6 w-full max-w-md">
+        <Form className="space-y-5 w-full">
           {status.message && (
             <StatusMessage message={status.message} type={status.type} />
           )}
@@ -148,10 +169,9 @@ const SignInForm = () => {
             type="email"
             placeholder="Enter your email"
             showPassword={false}
+            error={errors.email}
+            touched={touched.email}
           />
-          {errors.email && touched.email && (
-            <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-          )}
 
           <InputField
             label="Password"
@@ -160,25 +180,26 @@ const SignInForm = () => {
             placeholder="Enter your password"
             showPassword={showPassword}
             onTogglePassword={() => setShowPassword(!showPassword)}
+            error={errors.password}
+            touched={touched.password}
           />
-          {errors.password && touched.password && (
-            <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-          )}
 
           <div className="flex items-center justify-between">
-            <label className="flex items-center space-x-2">
+            <label className="flex items-center space-x-2 cursor-pointer group">
               <input
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                className="w-4 h-4 rounded border-white/20 bg-white/5 text-cyan-500 focus:ring-cyan-500 focus:ring-offset-0 transition-all cursor-pointer"
               />
-              <span className="text-sm text-gray-600">Remember me</span>
+              <span className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+                Remember me
+              </span>
             </label>
 
             <Link
               href="/forgot-password"
-              className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+              className="text-sm text-cyan-400 hover:text-cyan-300 font-medium transition-colors"
             >
               Forgot Password?
             </Link>
@@ -187,7 +208,7 @@ const SignInForm = () => {
           <button
             type="submit"
             disabled={isLoading || isSubmitting}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-700 hover:to-cyan-800 text-white py-3.5 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/40 hover:scale-105 active:scale-95 disabled:hover:scale-100"
           >
             {isLoading ? (
               <div className="flex items-center justify-center space-x-2">
@@ -195,7 +216,10 @@ const SignInForm = () => {
                 <span>Signing in...</span>
               </div>
             ) : (
-              "Sign In"
+              <span className="flex items-center justify-center gap-2">
+                Sign In
+                <ArrowRight className="w-4 h-4" />
+              </span>
             )}
           </button>
         </Form>

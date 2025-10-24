@@ -1,404 +1,232 @@
 "use client";
-
-import React, { useState, useEffect } from "react";
-import { Menu, X, ChevronDown, User, Search, Bell, BookmarkIcon } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import React, { useState, useEffect, useRef } from "react";
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+  Menu,
+  X,
+  User,
+  Search,
+  Bell,
+  LogOut,
+  Settings,
+  LayoutDashboard,
+  ArrowRight,
+} from "lucide-react";
 import { UserAuth } from "@/useContext";
-import { data } from "../api/DummyData/data";
+import { useRouter } from "next/navigation";
+import { users } from "../types/context";
+interface HeaderType {
+  onMenuToggle: () => void;
+  isMenuOpen: boolean;
+}
 
-const Header = () => {
-  const { username, userProfilePicture, logout } = UserAuth();
-  const path = usePathname().split("/")[2];
+const DropDownSection = ({
+  dropdownRef,
+  isDropdownOpen,
+  setIsDropdownOpen,
+  userProfilePicture,
+  username,
+}: {
+  dropdownRef: React.RefObject<HTMLDivElement>;
+  isDropdownOpen: boolean;
+  setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  userProfilePicture?: string;
+  username: users;
+}) => {
   const router = useRouter();
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        className="flex items-center space-x-2 p-1.5 lg:p-2 hover:bg-white/10 rounded-lg transition-all duration-200"
+      >
+        <div className="w-8 h-8 lg:w-9 lg:h-9 bg-gradient-to-br from-[#1ABC9C] to-[#087e66] rounded-full flex items-center justify-center ring-2 ring-white/10">
+          {userProfilePicture ? (
+            <img src={userProfilePicture} className="rounded-full" alt="pp" />
+          ) : (
+            <User className="h-4 w-4 lg:h-5 lg:w-5 text-white" />
+          )}
+        </div>
+        <span className="hidden lg:block text-white text-sm font-medium">
+          Profile
+        </span>
+      </button>
+
+      {isDropdownOpen && (
+        <div className="absolute right-0 top-full mt-2 w-56 bg-gray-900/95 backdrop-blur-lg border border-white/10 rounded-2xl shadow-2xl py-2 overflow-hidden">
+          <div className="px-4 py-3 border-b border-white/10">
+            <p className="text-white font-semibold text-sm">
+              {username && username.firstName}
+            </p>
+            <p className="text-gray-400 text-xs mt-0.5">Premium Member</p>
+          </div>
+
+          <button className="w-full flex items-center space-x-3 px-4 py-2.5 text-white hover:bg-white/10 transition-colors">
+            <User className="h-4 w-4" />
+            <span className="text-sm">View Profile</span>
+          </button>
+
+          {username && username.role === "Admin" && (
+            <button
+              onClick={() => router.push("/pages/Dashboard")}
+              className="w-full flex items-center space-x-3 px-4 py-2.5 text-white hover:bg-white/10 transition-colors"
+            >
+              <LayoutDashboard className="h-4 w-4" />{" "}
+              <span className="text-sm">Dashboard</span>
+            </button>
+          )}
+          <button className="w-full flex items-center space-x-3 px-4 py-2.5 text-white hover:bg-white/10 transition-colors">
+            <Settings className="h-4 w-4" />
+            <span className="text-sm">Settings</span>
+          </button>
+
+          <div className="border-t border-white/10 my-1"></div>
+
+          <button className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#1ABC9C] hover:bg-white/10 transition-colors">
+            <LogOut className="h-4 w-4" />
+            <span className="text-sm">Sign Out</span>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+// Header Component
+const Header = ({ onMenuToggle, isMenuOpen }: HeaderType) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showSearchBar, setShowSearchBar] = useState(false);
-
-  const pages = [
-    { name: "Home", link: "/pages/Home", path: "Home", icon: "home" },
-    { name: "Categories", link: "", categories: data, icon: "grid" },
-    { name: "Live Events", link: "/pages/Live", path: "Live", icon: "radio" },
-    { name: "Channels", link: "/pages/Channels", path: "Channels", icon: "tv" },
-  ];
-
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const { isAuthenticated, userProfilePicture, username } = UserAuth();
+  const router = useRouter();
+  const handleLogin = () => {
+    router.push("/pages/Auth/Signin"); // Adjust the route as needed
+  };
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-    const handleResize = () => {
-      if (window.innerWidth > 768) {
-        setIsMobileMenuOpen(false);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
       }
     };
-
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
-    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
     <header
-      className={`fixed w-full z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-black/85 backdrop-blur-md shadow-lg shadow-yellow-900/10"
-          : "bg-gradient-to-b from-black/95 to-transparent"
-      } border-b ${isScrolled ? "border-yellow-900/20" : "border-transparent"}`}
+          ? "bg-black/95 backdrop-blur-lg shadow-lg"
+          : "bg-gradient-to-b from-black/80 to-transparent"
+      }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex justify-between items-center py-3">
-          {/* Logo */}
-          <div className="flex-shrink-0 group">
-            <Link href="/pages/Home">
-              <div className="relative overflow-hidden">
-                <Image
-                  src="/logo/vbox.png"
-                  width={100}
-                  height={100}
-                  alt="logo"
-                  className="h-10 w-auto transition-all duration-300 group-hover:scale-110 group-hover:brightness-125"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-500/20 to-transparent opacity-0 group-hover:opacity-100 -translate-x-full group-hover:translate-x-full transition-all duration-1000 ease-in-out" />
-              </div>
-            </Link>
+      <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3 lg:py-4">
+        {/* Left section */}
+        <div className="flex items-center space-x-4 lg:space-x-8">
+          <button
+            onClick={onMenuToggle}
+            className="p-2 hover:bg-white/10 rounded-lg transition-all duration-200 lg:hidden"
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? (
+              <X className="h-5 w-5 text-white" />
+            ) : (
+              <Menu className="h-5 w-5 text-white" />
+            )}
+          </button>
+
+          <div className="flex items-center space-x-2 lg:space-x-3">
+            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br  rounded-xl flex items-center justify-center shadow-lg shadow-torquoise-500/30">
+              <img
+                src="/logo/vbox.png"
+                alt="Logo"
+                className="w-10 h-10 object-contain"
+              />{" "}
+            </div>
+            <span className="text-xl lg:text-2xl font-bold text-white tracking-tight">
+              VBox
+            </span>
           </div>
+        </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            <NavigationMenu>
-              <NavigationMenuList className="gap-1">
-                {pages.map((item) => (
-                  <NavigationMenuItem key={item.name}>
-                    {item.categories ? (
-                      <>
-                        <NavigationMenuTrigger className={`text-white hover:text-yellow-400 transition-all px-3 py-2 rounded-lg hover:bg-white/5 ${
-                          path === item.path ? "text-yellow-400 font-medium" : ""
-                        }`}>
-                          {item.name}
-                        </NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                          <div className="grid grid-cols-2 gap-2 p-4 w-[450px] bg-black/95 backdrop-blur-xl rounded-xl border border-yellow-900/30 shadow-xl shadow-black/50">
-                            {item.categories.map((category) => (
-                              <Link
-                                key={category.name}
-                                href={`/pages/Category/${category.name}`}
-                                className="block p-3 hover:bg-yellow-950/40 rounded-lg transition-all text-white hover:text-yellow-400 group"
-                                prefetch={true}
-                              >
-                                <div className="flex items-center gap-2">
-                                  <div className="w-2 h-2 rounded-full bg-yellow-600 opacity-0 group-hover:opacity-100 transition-all"></div>
-                                  <span>{category.name}</span>
-                                </div>
-                              </Link>
-                            ))}
-                          </div>
-                        </NavigationMenuContent>
-                      </>
-                    ) : (
-                      <Link
-                        href={item.link}
-                        className={`text-white hover:text-yellow-400 transition-all px-3 py-2 rounded-lg hover:bg-yellow-950/20 flex items-center gap-2 ${
-                          path === item.path
-                            ? "bg-yellow-950/30 text-yellow-400 font-medium"
-                            : ""
-                        }`}
-                      >
-                        {item.name}
-                      </Link>
-                    )}
-                  </NavigationMenuItem>
-                ))}
-              </NavigationMenuList>
-            </NavigationMenu>
-
-            {/* Action buttons */}
-            <div className="flex items-center gap-4">
-              {/* Search button */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full text-white hover:text-yellow-400 hover:bg-yellow-950/30"
-                onClick={() => setShowSearchBar(!showSearchBar)}
-              >
-                <Search className="h-5 w-5" />
-              </Button>
-
-              {/* Notifications button - only when logged in */}
-              {username && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full text-white hover:text-yellow-400 hover:bg-yellow-950/30 relative"
+        {/* Center - Search */}
+        <div className="hidden md:flex flex-1 max-w-xl lg:max-w-2xl mx-4 lg:mx-8">
+          <div className="relative w-full">
+            <div className="flex items-center bg-white/5 hover:bg-white/10 rounded-full border border-white/10 focus-within:border-[#087e66] focus-within:bg-white/10 transition-all duration-200">
+              <Search className="h-5 w-5 text-gray-400 ml-4" />
+              <input
+                type="text"
+                placeholder="Search movies, shows, sports..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="flex-1 bg-transparent text-white px-4 py-2.5 lg:py-3 focus:outline-none placeholder-gray-400 text-sm lg:text-base"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="p-2 hover:bg-white/10 rounded-full mr-2 transition-colors"
+                  aria-label="Clear search"
                 >
-                  <Bell className="h-5 w-5" />
-                  <span className="absolute top-0 right-0 w-2 h-2 bg-yellow-500 rounded-full"></span>
-                </Button>
+                  <X className="h-4 w-4 text-gray-400" />
+                </button>
               )}
-
-              {/* Bookmarks button - only when logged in */}
-              {username && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full text-white hover:text-yellow-400 hover:bg-yellow-950/30"
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="p-2 hover:bg-white/10 rounded-full mr-2 transition-colors"
+                  aria-label="Clear search"
                 >
-                  <BookmarkIcon className="h-5 w-5" />
-                </Button>
-              )}
-
-              {/* User profile or sign in */}
-              {username ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full bg-gradient-to-br from-yellow-600 to-yellow-800 hover:from-yellow-500 hover:to-yellow-700 ring-1 ring-yellow-500/20 hover:ring-yellow-400/40 transition-all"
-                    >
-                      {userProfilePicture ? (
-                        <div className="rounded-full overflow-hidden h-8 w-8 border-2 border-black">
-                          <Image
-                            src={userProfilePicture}
-                            width={32}
-                            height={32}
-                            alt="profile picture"
-                            className="object-cover"
-                          />
-                        </div>
-                      ) : (
-                        <User className="h-5 w-5 text-white" />
-                      )}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="end"
-                    className="w-56 bg-black/95 backdrop-blur-xl border-yellow-900/30 rounded-xl shadow-xl shadow-black/50 p-1 mt-1"
-                  >
-                    <div className="px-3 py-2 mb-1">
-                      <p className="text-sm font-medium text-white">{username.firstName}</p>
-                      <p className="text-xs text-yellow-500/80">{username.role}</p>
-                    </div>
-                    <DropdownMenuSeparator className="bg-yellow-900/20" />
-                    <DropdownMenuItem
-                      onClick={() => router.push("/pages/Settings")}
-                      className="text-white hover:text-yellow-400 hover:bg-yellow-950/40 py-2 rounded-lg cursor-pointer"
-                    >
-                      Profile
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        if (username.role === "Admin") {
-                          router.push("/pages/Dashboard");
-                        } else {
-                          router.push("/pages/Settings");
-                        }
-                      }}
-                      className="text-white hover:text-yellow-400 hover:bg-yellow-950/40 py-2 rounded-lg cursor-pointer"
-                    >
-                      {username.role === "Admin" ? "Dashboard" : "Settings"}
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-yellow-900/20" />
-                    <DropdownMenuItem
-                      onClick={() => logout()}
-                      className="text-white hover:text-red-400 hover:bg-red-950/30 py-2 rounded-lg cursor-pointer mt-1"
-                    >
-                      Sign out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <Link
-                  href={"/pages/Auth/Signin"}
-                  prefetch
-                  className="bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 text-white px-5 py-2 rounded-lg font-medium transition-all hover:shadow-md hover:shadow-yellow-900/20 ring-1 ring-yellow-500/20 hover:ring-yellow-400/40"
-                >
-                  Sign in
-                </Link>
+                  <ArrowRight className="h-4 w-4 text-gray-400" />
+                </button>
               )}
             </div>
-          </nav>
+          </div>
+        </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-white hover:text-yellow-400 hover:bg-yellow-950/30 rounded-full"
-              onClick={() => setShowSearchBar(!showSearchBar)}
-            >
-              <Search className="h-5 w-5" />
-            </Button>
-            
+        {/* Right section */}
+        <div className="flex items-center space-x-2 lg:space-x-3">
+          <button
+            className="md:hidden p-2 hover:bg-white/10 rounded-lg transition-colors"
+            aria-label="Search"
+          >
+            <Search className="h-5 w-5 text-white" />
+          </button>
+
+          {isAuthenticated && (
             <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-white hover:text-yellow-400 transition-colors p-1 rounded-lg hover:bg-yellow-950/30"
+              className="p-2 hover:bg-white/10 rounded-lg transition-all duration-200 relative group"
+              aria-label="Notifications"
             >
-              {isMobileMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
+              <Bell className="h-5 w-5 text-white" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-[#1ABC9C] rounded-full ring-2 ring-black"></span>
             </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Search bar overlay */}
-      <div
-        className={`absolute w-full left-0 transition-all duration-300 ease-in-out ${
-          showSearchBar ? "top-full opacity-100" : "-top-20 opacity-0 pointer-events-none"
-        }`}
-      >
-        <div className="max-w-3xl mx-auto p-4">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search content..."
-              className="w-full bg-black/90 text-white border border-yellow-900/30 rounded-xl py-3 px-4 pl-12 focus:outline-none focus:ring-2 focus:ring-yellow-600/50 placeholder-gray-500"
-            />
-            <Search className="h-5 w-5 text-yellow-500 absolute left-4 top-1/2 transform -translate-y-1/2" />
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile menu */}
-      <div
-        className={`md:hidden transition-all duration-300 ease-in-out ${
-          isMobileMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0 pointer-events-none"
-        } overflow-hidden bg-black/95 backdrop-blur-md border-t border-yellow-900/20`}
-      >
-        <div className="px-4 pt-2 pb-6 space-y-2">
-          {pages.map((item) => (
-            <div key={item.name} className="py-1">
-              {item.categories ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="w-full text-left px-4 py-3 text-white hover:text-yellow-400 transition-colors rounded-lg hover:bg-yellow-950/30">
-                    <div className="flex justify-between items-center">
-                      {item.name}
-                      <ChevronDown className="h-4 w-4" />
-                    </div>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-64 bg-black/95 backdrop-blur-xl border-yellow-900/30 rounded-xl shadow-xl shadow-black/50">
-                    {item.categories.map((category) => (
-                      <DropdownMenuItem key={category.name}>
-                        <Link
-                          href={`/pages/Category/${category.name}`}
-                          className="w-full text-white hover:text-yellow-400 py-2"
-                        >
-                          {category.name}
-                        </Link>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : (
-                <Link
-                  href={item.link}
-                  className={`block px-4 py-3 text-white hover:text-yellow-400 transition-colors rounded-lg hover:bg-yellow-950/30 ${
-                    path === item.path
-                      ? "bg-yellow-950/40 text-yellow-400"
-                      : ""
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              )}
-            </div>
-          ))}
-
-          {username && (
-            <div className="py-1 flex space-x-2">
-              <Link
-                href="/pages/Notifications"
-                className="flex-1 px-4 py-3 text-white hover:text-yellow-400 transition-colors rounded-lg hover:bg-yellow-950/30 flex items-center justify-center"
-              >
-                <Bell className="h-5 w-5" />
-              </Link>
-              <Link
-                href="/pages/Bookmarks"
-                className="flex-1 px-4 py-3 text-white hover:text-yellow-400 transition-colors rounded-lg hover:bg-yellow-950/30 flex items-center justify-center"
-              >
-                <BookmarkIcon className="h-5 w-5" />
-              </Link>
-            </div>
           )}
-
-          {!username ? (
-            <div className="pt-4">
-              <Button
-                onClick={() => router.push("/pages/Auth/Signin")}
-                className="w-full bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-500 hover:to-yellow-600 text-white py-6 rounded-xl font-medium transition-all hover:shadow-md hover:shadow-yellow-900/20"
-              >
-                Sign in
-              </Button>
-            </div>
+          {isAuthenticated ? (
+            <DropDownSection
+              userProfilePicture={userProfilePicture!}
+              dropdownRef={dropdownRef}
+              isDropdownOpen={isDropdownOpen}
+              setIsDropdownOpen={setIsDropdownOpen}
+              username={username!}
+            />
           ) : (
-            <div className="pt-4 gap-3 flex flex-col">
-              <div className="flex items-center gap-3 px-4 py-2">
-                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-yellow-600 to-yellow-800 flex items-center justify-center overflow-hidden">
-                  {userProfilePicture ? (
-                    <Image
-                      src={userProfilePicture}
-                      width={48}
-                      height={48}
-                      alt="profile picture"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <User className="h-6 w-6 text-white" />
-                  )}
-                </div>
-                <div>
-                  <p className="text-white font-medium">{username.firstName}</p>
-                  <p className="text-xs text-yellow-500/80">{username.role}</p>
-                </div>
-              </div>
-              
-              <Link
-                href={"/pages/Settings"}
-                className="text-center w-full bg-yellow-900/30 hover:bg-yellow-800/40 text-white py-3 rounded-lg transition-all border border-yellow-900/30"
-              >
-                Settings
-              </Link>
-              
-              {username.role === "Admin" && (
-                <Link
-                  href={"/pages/Dashboard"}
-                  className="text-center w-full bg-yellow-900/30 hover:bg-yellow-800/40 text-white py-3 rounded-lg transition-all border border-yellow-900/30"
-                >
-                  Dashboard
-                </Link>
-              )}
-              
-              <Button
-                onClick={() => logout()}
-                className="w-full bg-red-900/30 hover:bg-red-800/40 text-white py-6 rounded-lg transition-all border border-red-900/30"
-              >
-                Sign out
-              </Button>
-            </div>
+            <button
+              onClick={handleLogin}
+              className="flex items-center space-x-2 bg-[#1ABC9C] hover:bg-[#087e66] text-white px-4 py-2 rounded-lg transition-colors font-medium"
+            >
+              <User className="h-4 w-4" />
+              <span>Login</span>
+            </button>
           )}
         </div>
       </div>

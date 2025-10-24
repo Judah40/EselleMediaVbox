@@ -1,310 +1,297 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  ThumbsUp,
-  ThumbsDown,
-  Share,
-  MessageSquare,
-  ChevronRight,
-} from "lucide-react";
-import ReactPlayer from "react-player";
-import HomeLayoutWrapper from "@/app/layouts/HomeLayoutWrapper";
-import {
-  handleGetPostByGenre,
-  handleGetSinglePost,
-} from "@/app/api/PostApi/api";
-import { useParams, useRouter } from "next/navigation";
-import { Post } from "../../Home/home.data";
-import { post } from "../../Category/[id]/category.types";
-import { formatDate } from "@/lib/utils/dateFormatter";
-import VideoPlayerSkeleton from "./VideoPlayerSkeleton ";
-import {
-  handleGetAllVodComments,
-  handleSendvodComment,
-} from "@/app/api/messageApi/message";
-import { AxiosError } from "axios";
+import Header from "@/app/components/Header";
+import Sidebar from "@/app/components/SideBar";
 import { UserAuth } from "@/useContext";
-import Image from "next/image";
+import { Call } from "@stream-io/video-react-sdk";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { checkIfChannelExist } from "@/app/api/ChannelApi/api";
+import { User, Loader2 } from "lucide-react";
+import { useStreamContext } from "@/Provider/streamContext";
+import StreamBroadcast from "@/app/components/StreamBroadcast";
+import VideoPlayer from "@/app/components/VideoPlayer";
 
-type vodcomment = {
-  comment: string;
-  vodId: string;
-};
-type Comment = {
-  id: number;
-  username: string;
-  comment: string;
-  timestamp: string;
-  profile_picture: string;
-};
-
-const VideoPlayer = () => {
-  const [liked, setLiked] = useState(false);
-  const [disliked, setDisliked] = useState(false);
-  const [comment, setComment] = useState("");
-
-  const handleLike = () => {
-    setLiked(!liked);
-    if (disliked) setDisliked(false);
+interface ChannelPageProps {
+  params: {
+    id: string;
   };
+}
 
-  const handleDislike = () => {
-    setDisliked(!disliked);
-    if (liked) setLiked(false);
-  };
+type AppState =
+  | "loading"
+  | "auth_required"
+  | "initializing"
+  | "setting_up_stream"
+  | "broadcast"
+  | "viewer"
+  | "error";
 
-  const { id } = useParams();
+const Player = ({ params }: ChannelPageProps) => {
+  const [activeCategory, setActiveCategory] = useState("Home");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [channelExist, setChannelExist] = useState<boolean | null>(null);
+  const [appState, setAppState] = useState<AppState>("loading");
   const { username } = UserAuth();
-  const [singlePost, setSinglePost] = useState<Post>();
-  const [videos, setVideos] = useState<post[] | null>(null);
-  const [comments, setComments] = useState<Comment[] | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [commentLoading, setCommentLoading] = useState(false);
+  const { client } = useStreamContext();
+  const [call, setCall] = useState<Call | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleGetSinglePostOnly = async (id: number) => {
-    setIsLoading(true);
-    try {
-      const response = await handleGetSinglePost(Number(id));
-      const arr = JSON.parse(response.data.post.tags[0]);
+  // Check channel existence and initialize
+  useEffect(() => {
+    const initializeApp = async () => {
+      try {
+        setAppState("loading");
+        setError(null);
 
-      const [postResponse, commentsResponse] = await Promise.all([
-        handleGetPostByGenre(arr[0]),
-        handleGetAllVodComments(response.data.post.postId),
-      ]);
+        // First, check if channel exists
+        const channelResponse = await checkIfChannelExist(params.id);
+        const doesChannelExist = channelResponse.data.channelExists;
+        setChannelExist(doesChannelExist);
 
-      setVideos(postResponse.data.post);
-      setSinglePost(response.data.post);
+        // If channel doesn't exist, go directly to viewer mode
+        if (!doesChannelExist) {
+          setAppState("viewer");
+          return;
+        }
 
-      const fetchedComments = commentsResponse.data.data;
+        // Channel exists, check authentication
+        if (!username) {
+          setAppState("auth_required");
+          return;
+        }
 
-      setComments(fetchedComments);
-    } catch (error) {
-      console.error("Error fetching post data:", error);
-    } finally {
-      setIsLoading(false);
+        // Check client availability
+        if (!client) {
+          setAppState("initializing");
+          return;
+        }
+
+        // Initialize stream call
+        setAppState("setting_up_stream");
+        const newCall = client.call("livestream", params.id);
+        await newCall.camera.disable();
+        await newCall.microphone.disable();
+        setCall(newCall);
+
+        setAppState("broadcast");
+      } catch (err) {
+        console.error("❌ Initialization error:", err);
+        setError(err instanceof Error ? err.message : "Failed to initialize");
+        setAppState("error");
+      }
+    };
+
+    if (params.id) {
+      initializeApp();
     }
+
+    return () => {
+      if (call) {
+        call.leave().catch(console.error);
+      }
+    };
+  }, [params.id, username, client]);
+
+  // Effect to handle client initialization when channel exists
+  useEffect(() => {
+    if (channelExist && username && client && !call) {
+      const initializeCall = async () => {
+        try {
+          setAppState("setting_up_stream");
+          const newCall = client.call("livestream", params.id);
+          await newCall.camera.disable();
+          await newCall.microphone.disable();
+          setCall(newCall);
+          setAppState("broadcast");
+        } catch (err) {
+          console.error("❌ Call initialization error:", err);
+          setError(
+            err instanceof Error ? err.message : "Failed to setup stream"
+          );
+          setAppState("error");
+        }
+      };
+      initializeCall();
+    }
+  }, [channelExist, username, client, params.id, call]);
+
+  const handleLogin = () => {
+    router.push("/pages/Auth/Signin");
   };
 
-  const sendComment = useCallback(async () => {
-    if (singlePost && comment.trim()) {
-      setCommentLoading(true);
-      const data: vodcomment = {
-        comment: comment.trim(),
-        vodId: singlePost.postId,
-      };
+  const handleRetry = () => {
+    setChannelExist(null);
+    setCall(null);
+    setError(null);
+    setAppState("loading");
 
+    // Re-check channel existence
+    const reinitialize = async () => {
       try {
-        const response = await handleSendvodComment(data);
-        if (response.data) {
-          const fetchedComments = await handleGetAllVodComments(
-            singlePost.postId
-          );
+        const channelResponse = await checkIfChannelExist(params.id);
+        setChannelExist(channelResponse.data.channelExists);
 
-          setComments(fetchedComments.data.data);
-          setComment("");
+        if (!channelResponse.data.channelExists) {
+          setAppState("viewer");
+          return;
         }
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          console.error(
-            "Error sending comment:",
-            error.response?.data || error
-          );
+
+        if (!username) {
+          setAppState("auth_required");
+          return;
         }
-      } finally {
-        setCommentLoading(false);
+
+        if (!client) {
+          setAppState("initializing");
+          return;
+        }
+
+        // Client exists, proceed to setup stream
+        const newCall = client.call("livestream", params.id);
+        await newCall.camera.disable();
+        await newCall.microphone.disable();
+        setCall(newCall);
+        setAppState("broadcast");
+      } catch (err) {
+        setAppState("error");
+        setError(err instanceof Error ? err.message : "Failed to initialize");
       }
-    }
-  }, [singlePost, comment]);
+    };
 
-  useEffect(() => {
-    handleGetSinglePostOnly(Number(id));
-  }, [id]);
+    reinitialize();
+  };
 
-  if (isLoading) return <VideoPlayerSkeleton />;
-
-  return (
-    <HomeLayoutWrapper>
-      <div className="min-h-screen pt-12 bg-zinc-950 text-gray-100">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Main Video Section */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Video Player */}
-              <div className="rounded-2xl overflow-hidden shadow-2xl">
-                <ReactPlayer
-                  url={singlePost?.videoUrl}
-                  width="100%"
-                  height="auto"
-                  controls
-                  className="aspect-video"
-                />
-              </div>
-
-              {/* Video Info */}
-              <div className="bg-zinc-900 rounded-2xl p-6 shadow-lg">
-                <h1 className="text-3xl font-bold mb-4 text-white">
-                  {singlePost?.caption}
-                </h1>
-                <div className="flex flex-col md:flex-row justify-between items-center">
-                  <div className="flex items-center space-x-4 text-gray-400 mb-4 md:mb-0">
-                    <span>125K views</span>
-                    <span className="h-2 w-2 bg-gray-500 rounded-full"></span>
-                    {/* <span>{formatDate(singlePost?.createdAt || "")}</span> */}
-                  </div>
-                  <div className="flex items-center space-x-6">
-                    <button
-                      onClick={handleLike}
-                      className={`flex items-center space-x-2 transition-colors ${
-                        liked
-                          ? "text-blue-500"
-                          : "text-gray-400 hover:text-blue-400"
-                      }`}
-                    >
-                      <ThumbsUp className="w-5 h-5" />
-                      <span>{singlePost?.likeCount}</span>
-                    </button>
-                    <button
-                      onClick={handleDislike}
-                      className={`flex items-center space-x-2 transition-colors ${
-                        disliked
-                          ? "text-red-500"
-                          : "text-gray-400 hover:text-red-400"
-                      }`}
-                    >
-                      <ThumbsDown className="w-5 h-5" />
-                    </button>
-                    <button className="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors">
-                      <Share className="w-5 h-5" />
-                      <span>Share</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Comments Section */}
-              <div className="bg-zinc-900 rounded-2xl p-6 shadow-lg">
-                <h3 className="text-2xl font-bold mb-6 text-white">Comments</h3>
-
-                {username && (
-                  <div className="flex items-center space-x-4 mb-8">
-                    <input
-                      type="text"
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
-                      placeholder="Add a comment..."
-                      className="flex-1 bg-zinc-800 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-200"
-                    />
-                    <button
-                      onClick={sendComment}
-                      disabled={commentLoading}
-                      className="bg-blue-600 px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-                    >
-                      {commentLoading ? (
-                        <div className="flex items-center justify-center space-x-2">
-                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        </div>
-                      ) : (
-                        "Comment"
-                      )}
-                    </button>
-                  </div>
-                )}
-
-                {/* Comment List */}
-                <div className="space-y-6">
-                  {comments && comments.length > 0 ? (
-                    comments.map((comment) => (
-                      <div
-                        key={comment.id}
-                        className="flex space-x-4 bg-zinc-800 rounded-xl p-4 hover:bg-zinc-700 transition-colors"
-                      >
-                        <div className="w-12 h-12 flex-shrink-0">
-                          <Image
-                            src={
-                              comment.profile_picture || "/default-avatar.png"
-                            }
-                            alt="Profile"
-                            width={48} // Adjust width as needed
-                            height={48} // Adjust height as needed
-                            className="w-full h-full object-cover rounded-full"
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center space-x-2">
-                              <span className="font-semibold text-white">
-                                {comment.username}{" "}
-                              </span>
-                              <span className="text-gray-400 text-sm">
-                                {formatDate(comment.timestamp)}
-                              </span>
-                            </div>
-                          </div>
-                          <p className="text-gray-300">{comment.comment}</p>
-                          <div className="flex items-center space-x-4 mt-3 text-gray-400">
-                            <button className="flex items-center space-x-1 hover:text-blue-400 transition-colors">
-                              <ThumbsUp className="w-4 h-4" />
-                            </button>
-                            <button className="flex items-center space-x-1 hover:text-gray-200 transition-colors">
-                              <MessageSquare className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center text-gray-500">
-                      No comments yet. Be the first to comment!
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Suggested Videos Section */}
-            <div className="space-y-6">
-              <h3 className="text-2xl font-bold text-white mb-4">
-                More Videos
-              </h3>
-              {videos &&
-                videos.map((video) => (
-                  <button
-                    key={video.id}
-                    onClick={() => router.push(`/pages/Player/${video.id}`)}
-                    className="w-full group"
-                  >
-                    <div className="flex items-center space-x-4 bg-zinc-900 rounded-xl p-4 hover:bg-zinc-800 transition-colors">
-                      <div className="w-36 h-24 rounded-lg overflow-hidden flex-shrink-0">
-                        <Image
-                          src={video.thumbnailUrl}
-                          alt="Thumbnail"
-                          width={144} // Adjust width as needed
-                          height={96} // Adjust height as needed
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                        />
-                      </div>
-                      <div className="flex-1 text-left">
-                        <h4 className="font-semibold text-white mb-1 line-clamp-2">
-                          {video.caption}
-                        </h4>
-                        <div className="flex items-center space-x-2 text-gray-400 text-sm">
-                          <span>{video.commentCount} views</span>
-                          <span className="h-1 w-1 bg-gray-500 rounded-full"></span>
-                          <span>{formatDate(video.createdAt)}</span>
-                        </div>
-                      </div>
-                      <ChevronRight className="text-gray-400 group-hover:text-white transition-colors" />
-                    </div>
-                  </button>
-                ))}
-            </div>
-          </div>
+  // Loading component
+  const LoadingSpinner = ({ message }: { message: string }) => (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
+      <div className="text-center space-y-6">
+        <div className="flex justify-center">
+          <Loader2 className="h-12 w-12 text-[#1ABC9C] animate-spin" />
+        </div>
+        <p className="text-white/80 text-lg font-medium">{message}</p>
+        <div className="flex justify-center space-x-2">
+          <div
+            className="w-2 h-2 bg-[#1ABC9C] rounded-full animate-bounce"
+            style={{ animationDelay: "0ms" }}
+          />
+          <div
+            className="w-2 h-2 bg-[#1ABC9C] rounded-full animate-bounce"
+            style={{ animationDelay: "150ms" }}
+          />
+          <div
+            className="w-2 h-2 bg-[#1ABC9C] rounded-full animate-bounce"
+            style={{ animationDelay: "300ms" }}
+          />
         </div>
       </div>
-    </HomeLayoutWrapper>
+    </div>
+  );
+
+  // Error component
+  const ErrorState = () => (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
+      <div className="text-center space-y-6 max-w-md mx-4">
+        <div className="w-16 h-16 bg-[#087e66] rounded-full flex items-center justify-center mx-auto">
+          <span className="text-2xl">⚠️</span>
+        </div>
+        <div>
+          <h2 className="text-white text-xl font-semibold mb-2">
+            Something went wrong
+          </h2>
+          <p className="text-white/70">
+            {error || "Failed to load the stream"}
+          </p>
+        </div>
+        <button
+          onClick={handleRetry}
+          className="bg-[#1ABC9C] hover:bg-[#16A085] text-white px-6 py-3 rounded-lg font-medium transition-colors"
+        >
+          Try Again
+        </button>
+      </div>
+    </div>
+  );
+
+  // Show loading while checking initial state
+  if (appState === "loading") {
+    return <LoadingSpinner message="Checking channel..." />;
+  }
+
+  // Show error state if something failed
+  if (appState === "error") {
+    return <ErrorState />;
+  }
+
+  // If channel exists but user is not authenticated
+  if (channelExist && !username) {
+    return (
+      <div className="min-h-screen bg-black">
+        <Header
+          onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
+          isMenuOpen={sidebarOpen}
+        />
+        <div className="flex-1">
+          <Sidebar
+            activeCategory={activeCategory}
+            onCategoryChange={setActiveCategory}
+            isOpen={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+          />
+          <main className="flex-1 gap-2 min-h-screen transition-all duration-300 lg:pl-72 overflow-x-hidden h-screen flex items-center justify-center flex-col">
+            <div className="text-center space-y-4">
+              <p className="text-white text-lg">
+                Please login to access the broadcast studio
+              </p>
+              <button
+                onClick={handleLogin}
+                className="flex items-center space-x-2 bg-[#1ABC9C] hover:bg-[#087e66] text-white px-6 py-3 rounded-lg transition-colors font-medium"
+              >
+                <User className="h-5 w-5" />
+                <span>Login to Broadcast</span>
+              </button>
+            </div>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
+  // If channel exists but client is still initializing
+  if (channelExist && !client) {
+    return <LoadingSpinner message="Initializing broadcast studio..." />;
+  }
+
+  // If channel exists, user is authenticated, but call is being set up
+  if (channelExist && client && !call) {
+    return <LoadingSpinner message="Setting up livestream..." />;
+  }
+
+  // If channel exists and everything is ready for broadcast
+  if (channelExist && client && call) {
+    return (
+      <StreamBroadcast
+        activeCategory={activeCategory}
+        client={client}
+        call={call}
+        setSidebarOpen={setSidebarOpen}
+        setActiveCategory={setActiveCategory}
+        sidebarOpen={sidebarOpen}
+      />
+    );
+  }
+
+  // Default case: channel doesn't exist or user is a viewer
+  // This will show the normal video player for regular videos
+  return (
+    <VideoPlayer
+      activeCategory={activeCategory}
+      setSidebarOpen={setSidebarOpen}
+      setActiveCategory={setActiveCategory}
+      sidebarOpen={sidebarOpen}
+    />
   );
 };
 
-export default VideoPlayer;
+export default Player;

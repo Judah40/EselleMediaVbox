@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import {
   ChevronsLeft,
@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { UserAuth } from "@/useContext";
 import { usePathname, useRouter } from "next/navigation";
+import SidebarSkeleton from "./SideBarSkeleton";
 
 const menuItems = [
   {
@@ -62,7 +63,7 @@ const userManagementItems = {
 export function AppSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
-  const { logout, username, userProfilePicture } = UserAuth();
+  const { logout, username, userProfilePicture, isLoading } = UserAuth();
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
@@ -71,6 +72,9 @@ export function AppSidebar() {
 
   const router = useRouter();
 
+  if (isLoading) {
+    return <SidebarSkeleton isCollapsed={isCollapsed} />;
+  }
   return (
     <div
       className={`

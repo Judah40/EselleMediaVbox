@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import {
   createContext,
@@ -65,7 +66,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       .then((response) => {
         //
         router.push("/pages/Auth/OTPInput");
-        localStorage.setItem("phoneNumber", newUser.phoneNumber)
+        localStorage.setItem("phoneNumber", newUser.phoneNumber);
       })
       .catch((error) => {
         //
@@ -93,13 +94,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   useEffect(() => {
+    setIsLoading(true);
     handleGetUserProfile()
       .then((value) => {
         //
+        setIsAuthenticated(true);
         setUser(value.data.user);
       })
       .catch(() => {
         setUser(null);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
 
     handleGetUserProfilePicture()

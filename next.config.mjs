@@ -8,7 +8,10 @@ const nextConfig = {
         headers: [
           { key: "Access-Control-Allow-Credentials", value: "true" },
           { key: "Access-Control-Allow-Origin", value: "*" },
-          { key: "Access-Control-Allow-Methods", value: "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+          },
           {
             key: "Access-Control-Allow-Headers",
             value:
@@ -30,6 +33,33 @@ const nextConfig = {
   },
   images: {
     domains: ["vbox-esselle-media-new-bucket.s3.eu-north-1.amazonaws.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "zxiuogzmxtfmtitzvdwu.supabase.co",
+        port: "",
+        pathname: "/storage/v1/object/sign/vbox_bucket/profiles/**",
+      },
+      {
+        protocol: "https",
+        hostname: "zxiuogzmxtfmtitzvdwu.supabase.co",
+        port: "",
+        pathname: "/storage/v1/object/sign/vbox_bucket/posts/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        port: "",
+        pathname: "/**",
+      },
+      // Add other image hosts if needed
+      {
+        protocol: "https",
+        hostname: "example.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
 };
 

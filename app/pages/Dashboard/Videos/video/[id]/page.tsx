@@ -4,22 +4,21 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  Heart, 
-  MessageCircle, 
-  Share2, 
-  Bookmark, 
-  ThumbsUp, 
-  MapPin, 
-  Calendar, 
-  Eye, 
+import {
+  Heart,
+  MessageCircle,
+  Share2,
+  Bookmark,
+  ThumbsUp,
+  MapPin,
+  Calendar,
+  Eye,
   Clock,
   Play,
   Pause,
   Volume2,
-  VolumeX
+  VolumeX,
 } from "lucide-react";
-import { Spinner } from "@nextui-org/react";
 import { handleGetSinglePost } from "@/app/api/PostApi/api";
 import { Post } from "./video.types";
 import { formatDate } from "@/lib/utils/dateFormatter";
@@ -94,12 +93,12 @@ const VideoPage = () => {
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
   if (!id) {
     return (
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="flex-1 flex justify-center items-center min-h-[50vh]"
@@ -113,18 +112,90 @@ const VideoPage = () => {
 
   if (isLoading) {
     return (
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="flex-1 flex justify-center items-center min-h-[50vh]"
+        className="flex-1 p-4 max-w-7xl mx-auto"
       >
-        <Spinner color="white" size="lg" />
+        <div className="grid grid-cols-12 gap-6">
+          {/* Main Content Skeleton */}
+          <div className="col-span-12 lg:col-span-8 space-y-6">
+            {/* Video Player Skeleton */}
+            <div className="relative rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-800 animate-pulse aspect-video" />
+
+            {/* Video Info Skeleton */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-start">
+                <div className="flex-1 space-y-3">
+                  <div className="h-8 bg-gray-200 dark:bg-gray-800 rounded animate-pulse w-3/4" />
+                  <div className="flex items-center gap-4">
+                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse w-24" />
+                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse w-32" />
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <div className="h-9 w-20 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+                  <div className="h-9 w-20 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+                </div>
+              </div>
+
+              {/* Engagement Stats Skeleton */}
+              <div className="flex gap-6 py-4 border-t border-b dark:border-gray-800">
+                <div className="h-8 w-20 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+                <div className="h-8 w-20 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+                <div className="h-8 w-32 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+              </div>
+
+              {/* Description Skeleton */}
+              <Card className="bg-gray-50 dark:bg-gray-800/50">
+                <CardContent className="p-4 space-y-3">
+                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-32" />
+                  <div className="space-y-2">
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-full" />
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-5/6" />
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-4/6" />
+                  </div>
+                  <div className="flex flex-wrap gap-3 pt-3">
+                    <div className="h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />
+                    <div className="h-6 w-28 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />
+                    <div className="h-6 w-20 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Sidebar Skeleton */}
+          <div className="col-span-12 lg:col-span-4 space-y-4">
+            <Card className="overflow-hidden">
+              <CardContent className="p-0">
+                <div className="relative aspect-video bg-gray-200 dark:bg-gray-800 animate-pulse" />
+              </CardContent>
+            </Card>
+
+            <Card className="overflow-hidden">
+              <CardContent className="p-0">
+                <div className="relative aspect-video bg-gray-200 dark:bg-gray-800 animate-pulse" />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="h-5 bg-gray-200 dark:bg-gray-800 rounded animate-pulse w-32 mb-3" />
+                <div className="space-y-3">
+                  <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse w-full" />
+                  <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse w-3/4" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </motion.div>
     );
   }
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="flex-1 p-4 max-w-7xl mx-auto"
@@ -133,7 +204,7 @@ const VideoPage = () => {
         {/* Main Content */}
         <div className="col-span-12 lg:col-span-8 space-y-6">
           {/* Video Player */}
-          <div 
+          <div
             className="relative rounded-lg overflow-hidden bg-gray-900"
             onMouseEnter={() => setShowControls(true)}
             onMouseLeave={() => setShowControls(false)}
@@ -148,16 +219,16 @@ const VideoPage = () => {
             />
             <AnimatePresence>
               {showControls && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   className="absolute inset-0 bg-black/30 flex items-center justify-center"
                 >
                   <div className="flex flex-col items-center space-y-4">
-                    <Button 
-                      variant="ghost" 
-                      size="lg" 
+                    <Button
+                      variant="ghost"
+                      size="lg"
                       className="text-white hover:bg-white/20"
                       onClick={handlePlayPause}
                     >
@@ -178,9 +249,9 @@ const VideoPage = () => {
                       <span className="text-white text-sm">
                         {formatTime(duration)}
                       </span>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         className="text-white hover:bg-white/20"
                         onClick={toggleMute}
                       >
@@ -201,7 +272,7 @@ const VideoPage = () => {
           </div>
 
           {/* Video Info */}
-          <motion.div 
+          <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -279,7 +350,7 @@ const VideoPage = () => {
         </div>
 
         {/* Sidebar */}
-        <motion.div 
+        <motion.div
           initial={{ x: 20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}

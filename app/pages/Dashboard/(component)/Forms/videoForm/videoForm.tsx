@@ -70,8 +70,10 @@ const VideoForm: React.FC<VideoProps> = ({ isComplete }) => {
 
   const tagOptions = data.map((tag) => ({ value: tag.name, label: tag.name }));
 
-
-  const customSelectStyles: StylesConfig<{ value: string; label: string }, true> = {
+  const customSelectStyles: StylesConfig<
+    { value: string; label: string },
+    true
+  > = {
     control: (base: CSSObjectWithLabel) => ({
       ...base,
       backgroundColor: "rgba(255, 255, 255, 0.05)",
@@ -193,8 +195,9 @@ const VideoForm: React.FC<VideoProps> = ({ isComplete }) => {
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  
-  const handleTagsChange = (selectedOptions: MultiValue<{ value: string; label: string }>) => {
+  const handleTagsChange = (
+    selectedOptions: MultiValue<{ value: string; label: string }>
+  ) => {
     const selectedTags = selectedOptions.map((option) => option.value);
     setFormValues((prev) => ({ ...prev, tags: selectedTags }));
   };
@@ -265,9 +268,9 @@ const VideoForm: React.FC<VideoProps> = ({ isComplete }) => {
       setIsLoading(true);
 
       const data = {
-        content: formValues.content,
-        caption: formValues.caption,
-        tags: formValues.tags,
+        description: formValues.content,
+        title: formValues.caption,
+        genre: formValues.tags,
         location: formValues.location,
         thumbnail: formValues.thumbnail,
         banner: formValues.banner,
@@ -610,7 +613,7 @@ const VideoForm: React.FC<VideoProps> = ({ isComplete }) => {
                 htmlFor="content"
                 className="block text-sm font-medium text-gray-300"
               >
-                Content
+                Description
               </label>
               <textarea
                 id="content"
@@ -634,7 +637,7 @@ const VideoForm: React.FC<VideoProps> = ({ isComplete }) => {
                 htmlFor="caption"
                 className="block text-sm font-medium text-gray-300"
               >
-                Caption
+                Title
               </label>
               <input
                 type="text"
@@ -658,7 +661,7 @@ const VideoForm: React.FC<VideoProps> = ({ isComplete }) => {
                 htmlFor="tags"
                 className="block text-sm font-medium text-gray-300"
               >
-                Tags
+                Genre
               </label>
               <Select
                 isMulti
