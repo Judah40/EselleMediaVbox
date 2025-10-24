@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Tv, Film, Trophy, Flame, Clock, Home } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { Category, SidebarType } from "../types/sideBar";
@@ -16,7 +17,7 @@ const Sidebar = ({
     { id: "Sports", name: "Sports", icon: Trophy },
     { id: "Movies", name: "Movies", icon: Film },
     { id: "tv", name: "TV Shows", icon: Tv },
-    { id: "trending", name: "Trending", icon: Flame },
+    // { id: "trending", name: "Trending", icon: Flame },
     { id: "watchlist", name: "My List", icon: Clock },
   ];
 
@@ -78,7 +79,7 @@ const Sidebar = ({
             Quick Access
           </h3>
           <div className="space-y-1">
-            {["Recently Watched", "Downloads", "Settings"].map((item) => (
+            {["Recently Watched", "Settings"].map((item) => (
               <button
                 key={item}
                 className="w-full text-left px-4 py-2.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"

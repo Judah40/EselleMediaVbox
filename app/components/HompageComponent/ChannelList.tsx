@@ -71,13 +71,39 @@ const ChannelCard = memo(({ channel }: ChannelCardProps) => {
 
 ChannelCard.displayName = "ChannelCard";
 
+// Skeleton Card Component
+const SkeletonCard = memo(() => {
+  return (
+    <div className="flex-shrink-0 w-40 lg:w-48 animate-pulse">
+      <div className="relative aspect-square rounded-xl overflow-hidden mb-3 bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-white/10">
+        {/* Shimmer effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent shimmer" />
+      </div>
+
+      <div className="text-center space-y-2">
+        {/* Channel name skeleton */}
+        <div className="h-4 bg-gray-800/50 rounded mx-auto w-3/4" />
+        {/* Status skeleton */}
+        <div className="h-3 bg-gray-800/50 rounded mx-auto w-1/2" />
+      </div>
+    </div>
+  );
+});
+
+SkeletonCard.displayName = "SkeletonCard";
+
 interface ChannelListProps {
   title?: string;
   channels: Channel[];
+  isLoading?: boolean;
 }
 
 const ChannelList = memo(
-  ({ title = "Live Channels", channels }: ChannelListProps) => {
+  ({
+    title = "Live Channels",
+    channels,
+    isLoading = false,
+  }: ChannelListProps) => {
     const rowRef = useRef<HTMLDivElement>(null);
     const [showLeftArrow, setShowLeftArrow] = useState(false);
     const [showRightArrow, setShowRightArrow] = useState(true);
@@ -106,6 +132,48 @@ const ChannelList = memo(
       window.addEventListener("resize", handleResize);
       return () => window.removeEventListener("resize", handleResize);
     }, [checkScrollButtons]);
+
+    // Show skeleton when loading
+    if (isLoading) {
+      return (
+        <section className="py-6 lg:py-8 overflow-hidden">
+          <div className="px-4 sm:px-6 lg:px-8">
+            {/* Header Skeleton */}
+            <div className="flex items-center justify-between mb-4 lg:mb-6">
+              <div className="flex items-center space-x-3">
+                <div className="w-1 h-8 bg-gray-800/50 rounded-full animate-pulse" />
+                <div className="h-8 w-48 bg-gray-800/50 rounded animate-pulse" />
+                <div className="hidden sm:flex h-8 w-24 bg-gray-800/50 rounded-full animate-pulse" />
+              </div>
+              <div className="h-6 w-24 bg-gray-800/50 rounded animate-pulse" />
+            </div>
+
+            {/* Skeleton Cards */}
+            <div className="relative">
+              <div className="flex space-x-4 lg:space-x-6 overflow-hidden pb-4">
+                {[...Array(6)].map((_, index) => (
+                  <SkeletonCard key={index} />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <style jsx>{`
+            @keyframes shimmer {
+              0% {
+                transform: translateX(-100%);
+              }
+              100% {
+                transform: translateX(100%);
+              }
+            }
+            .shimmer {
+              animation: shimmer 2s infinite;
+            }
+          `}</style>
+        </section>
+      );
+    }
 
     if (!channels || channels.length === 0) {
       return null;

@@ -95,12 +95,11 @@ const Livestream = ({ params }: ChannelPageProps) => {
           streamName: params.id,
           ...streamData,
         });
-        console.log(saveLiveStreamData);
         if (saveLiveStreamData.status !== 201) {
           console.error("❌ Failed to save livestream data");
           return;
         }
-        // await call.goLive({ start_hls: true });
+        await call.goLive({ start_hls: true });
         setIsLive(true);
         setShowModal(false);
         // You can access streamData here to send to your backend

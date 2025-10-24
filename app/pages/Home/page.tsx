@@ -27,51 +27,8 @@ import { PostVideoData } from "../Dashboard/Videos/videos.types";
 import { handleGetAllPosts } from "@/app/api/PostApi/api";
 import Sidebar from "@/app/components/SideBar";
 import { UserAuth } from "@/useContext";
+import { getAllChannel } from "@/app/api/ChannelApi/api";
 
-type data = {
-  channelLogo: string;
-  channelId: string;
-  channelName: string;
-  lastBroadcast: string | null;
-};
-
-const data: data[] = [
-  {
-    channelLogo:
-      "https://zxiuogzmxtfmtitzvdwu.supabase.co/storage/v1/object/sign/vbox_bucket/channel/3cf51db9-18df-4c34-954e-377b2d4bf8fe?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83NzIwY2E4YS1mMjBhLTQ0ZmMtYTRiMi01ZGRkMGY5OWU2MjMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2Ym94X2J1Y2tldC9jaGFubmVsLzNjZjUxZGI5LTE4ZGYtNGMzNC05NTRlLTM3N2IyZDRiZjhmZSIsImlhdCI6MTc2MTEwMTg5MywiZXhwIjoxNzYxMTA1MDkzfQ.LZcivcG4-NirCtPhDEMeHrM1cESHuVfPUXJwjk2CYGI",
-    channelId: "53788771-62da-48f6-a794-283d1df596ba",
-    channelName: "Sports",
-    lastBroadcast: null,
-  },
-  {
-    channelLogo:
-      "https://zxiuogzmxtfmtitzvdwu.supabase.co/storage/v1/object/sign/vbox_bucket/channel/5786139b-5585-44ba-b028-0beffd04602e?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83NzIwY2E4YS1mMjBhLTQ0ZmMtYTRiMi01ZGRkMGY5OWU2MjMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2Ym94X2J1Y2tldC9jaGFubmVsLzU3ODYxMzliLTU1ODUtNDRiYS1iMDI4LTBiZWZmZDA0NjAyZSIsImlhdCI6MTc2MTEwMTg5MywiZXhwIjoxNzYxMTA1MDkzfQ.YgvE7yGZv836pDoZieUycnSmRJvmpAM8JYZilSiG45g",
-    channelId: "69e88b5f-811a-41da-b3de-c9ada9d447f9",
-    channelName: "Movie",
-    lastBroadcast: null,
-  },
-  {
-    channelLogo:
-      "https://zxiuogzmxtfmtitzvdwu.supabase.co/storage/v1/object/sign/vbox_bucket/channel/507b8226-8609-4bd2-8f73-157c3e993784?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83NzIwY2E4YS1mMjBhLTQ0ZmMtYTRiMi01ZGRkMGY5OWU2MjMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2Ym94X2J1Y2tldC9jaGFubmVsLzUwN2I4MjI2LTg2MDktNGJkMi04ZjczLTE1N2MzZTk5Mzc4NCIsImlhdCI6MTc2MTEwMTg5MywiZXhwIjoxNzYxMTA1MDkzfQ.3D9FFoPlhMn6pfkvam_vnHalUnyXhSX893myVDAx-CM",
-    channelId: "7a127a63-ce2e-491e-84b9-dfd4aa7cc08a",
-    channelName: "Music",
-    lastBroadcast: null,
-  },
-  {
-    channelLogo:
-      "https://zxiuogzmxtfmtitzvdwu.supabase.co/storage/v1/object/sign/vbox_bucket/channel/79b09583-dd4f-4390-9e60-30aa7c3909a7?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83NzIwY2E4YS1mMjBhLTQ0ZmMtYTRiMi01ZGRkMGY5OWU2MjMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2Ym94X2J1Y2tldC9jaGFubmVsLzc5YjA5NTgzLWRkNGYtNDM5MC05ZTYwLTMwYWE3YzM5MDlhNyIsImlhdCI6MTc2MTEwMTg5MywiZXhwIjoxNzYxMTA1MDkzfQ.xR9GBZGLlV7l5XL8cark1SAobwu9b0sskMtTLZM3UtU",
-    channelId: "efdce3d0-d0d6-4d14-9d0a-dbac4b4adabf",
-    channelName: "Comedy",
-    lastBroadcast: null,
-  },
-  {
-    channelLogo:
-      "https://zxiuogzmxtfmtitzvdwu.supabase.co/storage/v1/object/sign/vbox_bucket/channel/dfa20cc7-74ee-4c6f-b1f9-f894e6b5b06b?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV83NzIwY2E4YS1mMjBhLTQ0ZmMtYTRiMi01ZGRkMGY5OWU2MjMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2Ym94X2J1Y2tldC9jaGFubmVsL2RmYTIwY2M3LTc0ZWUtNGM2Zi1iMWY5LWY4OTRlNmI1YjA2YiIsImlhdCI6MTc2MTEwMTg5MywiZXhwIjoxNzYxMTA1MDkzfQ.JwQhjYc9X7sguFTFkFdByGn4MpDSSZRvoGTaiQuB0wA",
-    channelId: "b57168d4-22f3-4129-bff4-3d02a3b6a3a0",
-    channelName: "Comedy",
-    lastBroadcast: null,
-  },
-];
 // Lazy load heavy components
 const ContentRow = lazy(
   () => import("../../components/HompageComponent/ContentRow")
@@ -200,13 +157,42 @@ const Footer = React.memo(() => (
 
 Footer.displayName = "Footer";
 
+interface Channel {
+  channelId: string;
+  channelName: string;
+  channelLogo: string;
+  lastBroadcast: string;
+  lastTotalViewers: number;
+}
 // Main Component
 const StreamingPlatform = () => {
   const [activeCategory, setActiveCategory] = useState("Home");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { username } = UserAuth();
   const { videos, filteredVideos, loading } = useVideos();
+  const [channels, setChannels] = useState<Channel[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const getChannelsData = async () => {
+    const response = await getAllChannel()
+      .catch((error) => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
+    // console.log(response.data);
+    setChannels(response.data);
+  };
+  // Simulate data fetching
+  useEffect(() => {
+    getChannelsData();
+
+    // ✅ Refetch when new channel is created
+    const refreshListener = () => getChannelsData();
+    window.addEventListener("refresh-channels", refreshListener);
+    return () => {
+      window.removeEventListener("refresh-channels", refreshListener);
+    };
+  }, []);
   const toggleSidebar = useCallback(() => {
     setSidebarOpen((prev) => !prev);
   }, []);
@@ -245,7 +231,7 @@ const StreamingPlatform = () => {
                 items={videos.filter((p) => p.genre.includes("Music"))}
               />
 
-              <ChannelList channels={data} />
+              <ChannelList channels={channels} />
 
               <ContentRow
                 title="Comedy Videos"
