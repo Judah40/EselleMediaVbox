@@ -79,7 +79,7 @@ const Player = ({ params }: ChannelPageProps) => {
       } catch (err) {
         console.error("❌ Initialization error:", err);
         setError(err instanceof Error ? err.message : "Failed to initialize");
-        setAppState("error");
+        setAppState("viewer");
       }
     };
 
@@ -110,7 +110,7 @@ const Player = ({ params }: ChannelPageProps) => {
           setError(
             err instanceof Error ? err.message : "Failed to setup stream"
           );
-          setAppState("error");
+          setAppState("viewer");
         }
       };
       initializeCall();
@@ -290,6 +290,7 @@ const Player = ({ params }: ChannelPageProps) => {
       setSidebarOpen={setSidebarOpen}
       setActiveCategory={setActiveCategory}
       sidebarOpen={sidebarOpen}
+      videoId={params.id}
     />
   );
 };

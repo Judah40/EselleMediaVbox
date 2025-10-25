@@ -126,19 +126,24 @@ const HeroSection = ({
                 <span>Play Now</span>
               </button>
 
-              <button
-                onClick={() => AddToMyList()}
-                className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white px-5 lg:px-6 py-3 lg:py-4 rounded-xl font-medium transition-all duration-200 border border-white/20 whitespace-nowrap"
-              >
-                {inMyList ? (
-                  <Check className="h-5 w-5 flex-shrink-0" />
-                ) : (
-                  <Plus className="h-5 w-5 flex-shrink-0" />
-                )}
-                <span className="hidden sm:inline">
-                  {inMyList ? "In My List" : "My List"}
-                </span>
-              </button>
+              {User && User.firstName && (
+                <button
+                  onClick={() => AddToMyList()}
+                  disabled={content.isPartOfMyList}
+                  className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white px-5 lg:px-6 py-3 lg:py-4 rounded-xl font-medium transition-all duration-200 border border-white/20 whitespace-nowrap"
+                >
+                  {content && content.isPartOfMyList ? (
+                    <Check className="h-5 w-5 flex-shrink-0" />
+                  ) : (
+                    <Plus className="h-5 w-5 flex-shrink-0" />
+                  )}
+                  <span className="hidden sm:inline">
+                    {content && content.isPartOfMyList
+                      ? "In My List"
+                      : "My List"}
+                  </span>
+                </button>
+              )}
 
               <button className="p-3 lg:p-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-xl transition-all duration-200 border border-white/20 flex-shrink-0">
                 <Info className="h-5 w-5" />

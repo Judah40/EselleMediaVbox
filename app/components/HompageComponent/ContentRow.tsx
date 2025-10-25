@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback, memo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 // Updated interface to match your JSON structure
 interface Post {
@@ -28,7 +29,10 @@ const ContentCard = memo(({ content }: ContentCardProps) => {
   };
 
   return (
-    <div className="flex-shrink-0 w-48 lg:w-64 group cursor-pointer">
+    <Link
+      href={`/pages/Player/${content.postId}`}
+      className="flex-shrink-0 w-48 lg:w-64 group cursor-pointer"
+    >
       <div className="relative aspect-video rounded-lg overflow-hidden mb-2">
         <img
           src={content.thumbnailUrl}
@@ -51,7 +55,7 @@ const ContentCard = memo(({ content }: ContentCardProps) => {
           {content.genre.join(", ")}
         </span>
       </div>
-    </div>
+    </Link>
   );
 });
 

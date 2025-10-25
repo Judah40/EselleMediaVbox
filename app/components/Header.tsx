@@ -101,6 +101,12 @@ const Header = ({ onMenuToggle, isMenuOpen }: HeaderType) => {
   const handleLogin = () => {
     router.push("/pages/Auth/Signin"); // Adjust the route as needed
   };
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      router.push(`/pages/Search/${encodeURIComponent(searchQuery)}`);
+    }
+  };
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -182,7 +188,7 @@ const Header = ({ onMenuToggle, isMenuOpen }: HeaderType) => {
               )}
               {searchQuery && (
                 <button
-                  onClick={() => setSearchQuery("")}
+                  onClick={() => handleSearch()}
                   className="p-2 hover:bg-white/10 rounded-full mr-2 transition-colors"
                   aria-label="Clear search"
                 >

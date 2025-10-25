@@ -1,27 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-
 "use client";
-
 import React, {
   useState,
   useRef,
   useEffect,
   useCallback,
-  useMemo,
   lazy,
   Suspense,
 } from "react";
-import {
-  Play,
-  Plus,
-  Star,
-  ChevronLeft,
-  ChevronRight,
-  Volume2,
-  VolumeX,
-  Info,
-  Check,
-} from "lucide-react";
+import { Play } from "lucide-react";
 import Header from "@/app/components/Header";
 import { PostVideoData } from "../Dashboard/Videos/videos.types";
 import { handleGetAllPosts } from "@/app/api/PostApi/api";
@@ -64,8 +51,8 @@ const useVideos = () => {
         if (mounted) {
           setState((prev) => ({
             ...prev,
-            videos: values.post || [],
-            filteredVideos: values.post || [],
+            videos: values.posts || [],
+            filteredVideos: values.posts || [],
             loading: false,
           }));
         }
@@ -172,7 +159,6 @@ const StreamingPlatform = () => {
   const { videos, filteredVideos, loading } = useVideos();
   const [channels, setChannels] = useState<Channel[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
   const getChannelsData = async () => {
     const response = await getAllChannel()
       .catch((error) => {})

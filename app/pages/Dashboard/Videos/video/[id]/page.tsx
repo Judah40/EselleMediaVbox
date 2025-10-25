@@ -40,7 +40,7 @@ const VideoPage = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    handleGetSinglePost(Number(id))
+    handleGetSinglePost(id.toString())
       .then((posts) => {
         setSinglePost(posts.data.post);
         setIsLoading(false);

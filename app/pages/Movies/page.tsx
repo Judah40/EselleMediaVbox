@@ -20,6 +20,10 @@ const Movies = () => {
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
         />
+
+        <main className="flex-1 min-h-screen transition-all flex item-center justify-center duration-300 lg:pl-72 overflow-x-hidden">
+          <span>No Movie Available</span>
+        </main>
       </div>
     </div>
   );

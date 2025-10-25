@@ -16,9 +16,9 @@ const Sidebar = ({
     { id: "Home", name: "Home", icon: Home },
     { id: "Sports", name: "Sports", icon: Trophy },
     { id: "Movies", name: "Movies", icon: Film },
-    { id: "tv", name: "TV Shows", icon: Tv },
+    { id: "Shows", name: "TV Shows", icon: Tv },
     // { id: "trending", name: "Trending", icon: Flame },
-    { id: "watchlist", name: "My List", icon: Clock },
+    { id: "Watchlist", name: "My List", icon: Clock },
   ];
 
   return (

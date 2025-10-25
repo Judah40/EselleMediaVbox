@@ -43,7 +43,7 @@ export const handleGetAllPosts = async () => {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //GET SINGLE POST
-export const handleGetSinglePost = async (id: number) => {
+export const handleGetSinglePost = async (id: string) => {
   const response = await apiClient.get(`/post/${id}`);
   return response;
 };

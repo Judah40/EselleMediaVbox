@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./SideBar";
 import Header from "./Header";
 import {
@@ -9,12 +9,15 @@ import {
   Eye,
   Calendar,
 } from "lucide-react";
+import { handleGetSinglePost } from "../api/PostApi/api";
+import { PostVideoData } from "../pages/Dashboard/Videos/videos.types";
 
 type videoPlayerType = {
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveCategory: React.Dispatch<React.SetStateAction<string>>;
   sidebarOpen: boolean;
   activeCategory: string;
+  videoId: string;
 };
 
 // Dummy video suggestions
@@ -146,17 +149,43 @@ const VideoPlayer: React.FC<videoPlayerType> = ({
   setActiveCategory,
   sidebarOpen,
   activeCategory,
+  videoId,
 }) => {
   const [commentText, setCommentText] = useState("");
   const [showCommentInput, setShowCommentInput] = useState(false);
+  const [postData, setPostData] = useState<PostVideoData | null>(null);
 
   const handleCommentSubmit = () => {
     if (commentText.trim()) {
-      // console.log("Submitting comment:", commentText);
       setCommentText("");
       setShowCommentInput(false);
     }
   };
+
+  const getVideoPost = async () => {
+    const response = await handleGetSinglePost(videoId);
+    // console.log(response.data.post);
+    setPostData(response.data.post);
+  };
+
+  useEffect(() => {
+    getVideoPost();
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  // const formatDuration = (seconds: number) => {
+  //   const mins = Math.floor(seconds / 60);
+  //   const secs = seconds % 60;
+  //   return `${mins}:${secs.toString().padStart(2, '0')}`;
+  // };
 
   return (
     <div className="min-h-screen bg-black">
@@ -173,42 +202,55 @@ const VideoPlayer: React.FC<videoPlayerType> = ({
           onClose={() => setSidebarOpen(false)}
         />
 
-        <main className="flex-1 pt-16 lg:pt-20">
+        <main className="pt-16 lg:pt-20 lg:pl-72 transition-all duration-300">
           <div className="flex flex-col lg:flex-row gap-6 p-4 max-w-[2000px] mx-auto">
             {/* Main Video Content */}
             <div className="flex-1 max-w-[1280px]">
               {/* Video Player */}
               <div className="bg-black rounded-xl overflow-hidden">
-                <div className="relative w-full aspect-video bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
-                  <div className="text-6xl">🎬</div>
-                  <div className="absolute bottom-4 right-4 bg-black bg-opacity-80 text-white text-sm px-3 py-1 rounded">
-                    12:45 / 18:30
+                {postData ? (
+                  <video
+                    src={postData.videoUrl}
+                    controls
+                    className="w-full aspect-video bg-black"
+                    poster={postData.thumbnailUrl}
+                  />
+                ) : (
+                  <div className="relative w-full aspect-video bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
+                    <div className="text-6xl">🎬</div>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Video Info */}
               <div className="mt-4 space-y-4">
                 <h1 className="text-white text-xl lg:text-2xl font-semibold">
-                  Complete Guide to Building Modern Web Applications
+                  {postData?.title ||
+                    "Complete Guide to Building Modern Web Applications"}
                 </h1>
 
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div className="flex items-center gap-4 text-sm text-gray-400">
                     <div className="flex items-center gap-1">
                       <Eye className="w-4 h-4" />
-                      <span>1,234,567 views</span>
+                      <span>{postData?.likeCount || 0} views</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
-                      <span>Jan 15, 2025</span>
+                      <span>
+                        {postData
+                          ? formatDate(postData.createdAt)
+                          : "Jan 15, 2025"}
+                      </span>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <button className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-full transition-colors">
                       <ThumbsUp className="w-5 h-5" />
-                      <span className="font-medium">12K</span>
+                      <span className="font-medium">
+                        {postData?.likeCount || 0}
+                      </span>
                     </button>
                     <button className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-full transition-colors">
                       <ThumbsDown className="w-5 h-5" />
@@ -239,11 +281,26 @@ const VideoPlayer: React.FC<videoPlayerType> = ({
                           1.2M subscribers
                         </p>
                         <p className="text-gray-300 text-sm mt-2">
-                          In this comprehensive tutorial, we&apos;ll explore
-                          modern web development techniques and best practices.
-                          Learn how to build scalable, performant applications
-                          from scratch.
+                          {postData?.description ||
+                            "In this comprehensive tutorial, we'll explore modern web development techniques and best practices. Learn how to build scalable, performant applications from scratch."}
                         </p>
+                        {postData?.genre && postData.genre.length > 0 && (
+                          <div className="flex gap-2 mt-2">
+                            {postData.genre.map((g: string, idx: number) => (
+                              <span
+                                key={idx}
+                                className="text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded"
+                              >
+                                {g}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                        {postData?.location && (
+                          <p className="text-gray-400 text-xs mt-2">
+                            📍 {postData.location}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <button className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full font-medium transition-colors whitespace-nowrap">
