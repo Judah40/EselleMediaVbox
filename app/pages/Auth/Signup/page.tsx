@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Formik, Form, Field, ErrorMessage, FormikHelpers } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import { signUpValidationSchema } from "@/app/lib/signupValidation";
 import { UserAuth } from "@/useContext";
 import { Reg } from "@/app/types/context";
@@ -451,12 +451,11 @@ const SignupPage = () => {
     signUpValidationSchema,
   ];
 
-  const handleSubmit = async (values: Reg, actions: FormikHelpers<Reg>) => {
-    if (currentStep < totalSteps - 1) {
-      handleNextStep();
-      actions.setSubmitting(false);
-    } else {
+  const handleSubmit = async (values: Reg) => {
+    try {
       await signup(values);
+    } catch (error) {
+      console.error(error);
     }
   };
 

@@ -62,12 +62,12 @@ const FavoritesSelector = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-rose-50/20 flex flex-col relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col relative overflow-hidden">
       {/* Decorative background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-20 w-72 h-72 bg-cyan-200/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-20 right-20 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div
-          className="absolute bottom-20 left-20 w-96 h-96 bg-rose-200/20 rounded-full blur-3xl animate-pulse"
+          className="absolute bottom-20 left-20 w-96 h-96 bg-rose-500/10 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: "1s" }}
         ></div>
       </div>
@@ -80,24 +80,24 @@ const FavoritesSelector = () => {
             <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl shadow-lg shadow-rose-500/30 mb-6 animate-bounce">
               <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-white fill-white" />
             </div>
-            <h1 className="text-3xl sm:text-5xl font-bold bg-gradient-to-r from-rose-600 via-pink-600 to-cyan-600 bg-clip-text text-transparent mb-3">
+            <h1 className="text-3xl sm:text-5xl font-bold bg-gradient-to-r from-rose-500 via-pink-500 to-cyan-500 bg-clip-text text-transparent mb-3">
               Choose Your Favorites
             </h1>
-            <p className="text-slate-600 text-base sm:text-lg flex items-center justify-center gap-2">
-              <Sparkles className="w-4 h-4 text-cyan-500" />
+            <p className="text-slate-400 text-base sm:text-lg flex items-center justify-center gap-2">
+              <Sparkles className="w-4 h-4 text-cyan-400" />
               Select the items you love most
-              <Sparkles className="w-4 h-4 text-rose-500" />
+              <Sparkles className="w-4 h-4 text-rose-400" />
             </p>
           </header>
 
           {/* Selection counter badge */}
           {selected.size > 0 && (
             <div className="mb-6 flex justify-center">
-              <div className="inline-flex items-center gap-2 px-6 py-3 bg-white rounded-full shadow-lg border-2 border-cyan-500/20 animate-in fade-in slide-in-from-top-4 duration-500">
+              <div className="inline-flex items-center gap-2 px-6 py-3 bg-slate-800 rounded-full shadow-lg border-2 border-cyan-500/20 animate-in fade-in slide-in-from-top-4 duration-500">
                 <div className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-cyan-600 rounded-full flex items-center justify-center">
                   <Check className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-semibold text-slate-700">
+                <span className="font-semibold text-slate-200">
                   {selected.size} {selected.size === 1 ? "item" : "items"}{" "}
                   selected
                 </span>
@@ -120,8 +120,8 @@ const FavoritesSelector = () => {
                   <div
                     className={`relative flex items-center space-x-4 p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 ${
                       isSelected
-                        ? "border-cyan-500 bg-gradient-to-br from-cyan-50 to-cyan-100/50 shadow-xl shadow-cyan-500/20"
-                        : "border-slate-200 bg-white hover:border-cyan-300 hover:shadow-lg"
+                        ? "border-cyan-500 bg-gradient-to-br from-cyan-950 to-cyan-900/50 shadow-xl shadow-cyan-500/20"
+                        : "border-slate-700 bg-slate-800 hover:border-cyan-500/50 hover:shadow-lg hover:bg-slate-800/80"
                     }`}
                     onClick={() => {
                       toggleItem(idx);
@@ -149,8 +149,8 @@ const FavoritesSelector = () => {
                       htmlFor={idx.toString()}
                       className={`text-base sm:text-lg font-medium cursor-pointer flex-grow transition-colors ${
                         isSelected
-                          ? "text-cyan-900"
-                          : "text-slate-700 group-hover:text-cyan-700"
+                          ? "text-cyan-100"
+                          : "text-slate-300 group-hover:text-cyan-300"
                       }`}
                     >
                       {item.name}
@@ -160,8 +160,8 @@ const FavoritesSelector = () => {
                     <Heart
                       className={`w-5 h-5 transition-all duration-300 ${
                         isSelected
-                          ? "text-rose-500 fill-rose-500 scale-110"
-                          : "text-slate-300 group-hover:text-rose-400 group-hover:scale-110"
+                          ? "text-rose-400 fill-rose-400 scale-110"
+                          : "text-slate-600 group-hover:text-rose-400 group-hover:scale-110"
                       }`}
                     />
                   </div>
@@ -173,13 +173,13 @@ const FavoritesSelector = () => {
       </div>
 
       {/* Enhanced fixed navigation footer */}
-      <div className="sticky bottom-0 border-t border-slate-200 bg-white/90 backdrop-blur-xl shadow-2xl relative z-20">
+      <div className="sticky bottom-0 border-t border-slate-800 bg-slate-900/90 backdrop-blur-xl shadow-2xl relative z-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-8 py-5 sm:py-6">
           <div className="flex justify-between items-center gap-4">
             <div className="flex items-center gap-3">
-              <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full">
+              <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-slate-800 rounded-full">
                 <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse"></div>
-                <span className="text-sm font-medium text-slate-700">
+                <span className="text-sm font-medium text-slate-300">
                   {selected.size === 0
                     ? "No items selected"
                     : `${selected.size} selected`}
@@ -191,7 +191,7 @@ const FavoritesSelector = () => {
               <Button
                 variant="outline"
                 onClick={handleSkip}
-                className="px-6 py-6 rounded-xl border-2 hover:border-slate-400 hover:bg-slate-50 transition-all font-medium"
+                className="px-6 py-6 rounded-xl border-2 border-slate-700 bg-slate-800 text-slate-300 hover:border-slate-600 hover:bg-slate-700 hover:text-slate-100 transition-all font-medium"
               >
                 Skip for now
               </Button>

@@ -20,4 +20,5 @@ export type PostVideoData = {
   title: string;
   description: string;
   isPartOfMyList: boolean;
+  views: number;
 };

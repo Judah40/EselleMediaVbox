@@ -33,7 +33,7 @@ const Player = ({ params }: ChannelPageProps) => {
   const [channelExist, setChannelExist] = useState<boolean | null>(null);
   const [appState, setAppState] = useState<AppState>("loading");
   const { username } = UserAuth();
-  const { client } = useStreamContext();
+  const { client, chatClient } = useStreamContext();
   const [call, setCall] = useState<Call | null>(null);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -70,6 +70,7 @@ const Player = ({ params }: ChannelPageProps) => {
 
         // Initialize stream call
         setAppState("setting_up_stream");
+
         const newCall = client.call("livestream", params.id);
         await newCall.camera.disable();
         await newCall.microphone.disable();
@@ -291,6 +292,7 @@ const Player = ({ params }: ChannelPageProps) => {
       setActiveCategory={setActiveCategory}
       sidebarOpen={sidebarOpen}
       videoId={params.id}
+      chatClient={chatClient!}
     />
   );
 };

@@ -121,7 +121,12 @@ const HeroSection = ({
               className="flex flex-wrap items-center gap-3 lg:gap-4 animate-fade-in-up"
               style={{ animationDelay: "0.3s" }}
             >
-              <button className="flex items-center space-x-2 bg-white hover:bg-white/90 text-black px-6 lg:px-8 py-3 lg:py-4 rounded-xl font-bold transition-all duration-200 hover:scale-105 shadow-lg whitespace-nowrap">
+              <button
+                onClick={() => {
+                  router.push(`/pages/Player/${content.postId}`);
+                }}
+                className="flex items-center space-x-2 bg-white hover:bg-white/90 text-black px-6 lg:px-8 py-3 lg:py-4 rounded-xl font-bold transition-all duration-200 hover:scale-105 shadow-lg whitespace-nowrap"
+              >
                 <Play className="h-5 w-5 fill-black flex-shrink-0" />
                 <span>Play Now</span>
               </button>

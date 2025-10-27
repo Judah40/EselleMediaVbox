@@ -52,7 +52,7 @@ export const handleGetSinglePost = async (id: string) => {
 //GET POST BY GENRE
 export const handleGetPostByGenre = async (genre: string) => {
   const response = await apiClient.get(`/post/genre/${genre}`);
-  return response;
+  return response.data;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

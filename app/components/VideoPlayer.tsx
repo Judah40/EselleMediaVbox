@@ -9,8 +9,19 @@ import {
   Eye,
   Calendar,
 } from "lucide-react";
-import { handleGetSinglePost } from "../api/PostApi/api";
+import { handleGetPostByGenre, handleGetSinglePost } from "../api/PostApi/api";
 import { PostVideoData } from "../pages/Dashboard/Videos/videos.types";
+import { StreamChat, Channel as StreamChannel } from "stream-chat";
+import {
+  Chat,
+  Channel,
+  // ChannelHeader,
+  MessageList,
+  MessageInput,
+  Thread,
+  Window,
+} from "stream-chat-react";
+import "stream-chat-react/dist/css/v2/index.css";
 
 type videoPlayerType = {
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,131 +29,8 @@ type videoPlayerType = {
   sidebarOpen: boolean;
   activeCategory: string;
   videoId: string;
+  chatClient: StreamChat;
 };
-
-// Dummy video suggestions
-const suggestedVideos = [
-  {
-    id: 1,
-    title: "Advanced React Patterns You Must Know in 2025",
-    channel: "Tech Mastery",
-    views: "125K",
-    time: "2 weeks ago",
-    thumbnail: "🎯",
-    duration: "15:24",
-  },
-  {
-    id: 2,
-    title: "Building Scalable Applications with Next.js",
-    channel: "Code Academy",
-    views: "89K",
-    time: "1 month ago",
-    thumbnail: "🚀",
-    duration: "22:15",
-  },
-  {
-    id: 3,
-    title: "Modern CSS Techniques That Will Blow Your Mind",
-    channel: "Design Pro",
-    views: "234K",
-    time: "3 days ago",
-    thumbnail: "🎨",
-    duration: "18:45",
-  },
-  {
-    id: 4,
-    title: "JavaScript Performance Optimization Tips",
-    channel: "Dev Insights",
-    views: "156K",
-    time: "1 week ago",
-    thumbnail: "⚡",
-    duration: "12:30",
-  },
-  {
-    id: 5,
-    title: "TypeScript Best Practices for Large Projects",
-    channel: "Code Masters",
-    views: "198K",
-    time: "2 weeks ago",
-    thumbnail: "📘",
-    duration: "25:18",
-  },
-  {
-    id: 6,
-    title: "Web Security Essentials Every Developer Needs",
-    channel: "Security First",
-    views: "267K",
-    time: "5 days ago",
-    thumbnail: "🔒",
-    duration: "19:42",
-  },
-  {
-    id: 7,
-    title: "Docker and Kubernetes Crash Course",
-    channel: "DevOps Hub",
-    views: "312K",
-    time: "1 month ago",
-    thumbnail: "🐳",
-    duration: "28:15",
-  },
-  {
-    id: 8,
-    title: "Database Design Patterns Explained",
-    channel: "Data Science Pro",
-    views: "178K",
-    time: "2 days ago",
-    thumbnail: "💾",
-    duration: "16:50",
-  },
-];
-
-// Dummy comments
-const dummyComments = [
-  {
-    id: 1,
-    user: "Sarah Wilson",
-    avatar: "SW",
-    time: "2 days ago",
-    comment:
-      "This is exactly what I was looking for! Great explanation of the concepts. The examples really helped me understand the implementation.",
-    likes: 1200,
-  },
-  {
-    id: 2,
-    user: "Mike Chen",
-    avatar: "MC",
-    time: "1 week ago",
-    comment:
-      "Amazing content! Could you make a follow-up video covering the advanced use cases?",
-    likes: 856,
-  },
-  {
-    id: 3,
-    user: "Emma Davis",
-    avatar: "ED",
-    time: "3 days ago",
-    comment:
-      "I've been struggling with this for weeks. Your tutorial made everything click! Thank you so much! 🙏",
-    likes: 642,
-  },
-  {
-    id: 4,
-    user: "James Brown",
-    avatar: "JB",
-    time: "5 days ago",
-    comment: "The production quality is top-notch. Keep up the great work!",
-    likes: 421,
-  },
-  {
-    id: 5,
-    user: "Lisa Anderson",
-    avatar: "LA",
-    time: "1 day ago",
-    comment:
-      "Best tutorial on this topic I've found on YouTube. Clear, concise, and practical.",
-    likes: 1580,
-  },
-];
 
 const VideoPlayer: React.FC<videoPlayerType> = ({
   setSidebarOpen,
@@ -150,24 +38,51 @@ const VideoPlayer: React.FC<videoPlayerType> = ({
   sidebarOpen,
   activeCategory,
   videoId,
+  chatClient,
 }) => {
-  const [commentText, setCommentText] = useState("");
-  const [showCommentInput, setShowCommentInput] = useState(false);
   const [postData, setPostData] = useState<PostVideoData | null>(null);
+  const [channel, setChannel] = useState<StreamChannel | null>(null);
+  const [suggestedVideos, setSuggestedVideos] = useState<PostVideoData[]>([]);
+  // Initialize channel
+  useEffect(() => {
+    const initializeChannel = async () => {
+      try {
+        // Create or get channel using videoId
+        const videoChannel = chatClient.channel(
+          "livestream",
+          `video-${videoId}`
+        );
 
-  const handleCommentSubmit = () => {
-    if (commentText.trim()) {
-      setCommentText("");
-      setShowCommentInput(false);
+        // Watch the channel
+        await videoChannel.watch();
+        setChannel(videoChannel);
+      } catch (error) {
+        console.error("Error initializing channel:", error);
+      }
+    };
+
+    if (chatClient && videoId) {
+      initializeChannel();
     }
-  };
+
+    // Cleanup
+    return () => {
+      if (channel) {
+        channel.stopWatching();
+      }
+    };
+  }, [chatClient, videoId, postData?.thumbnailUrl]);
 
   const getVideoPost = async () => {
     const response = await handleGetSinglePost(videoId);
-    // console.log(response.data.post);
     setPostData(response.data.post);
+    getSimilarVidoes(response.data.post.genre);
   };
-
+  const getSimilarVidoes = async (genre: string) => {
+    const response = await handleGetPostByGenre(genre);
+    setSuggestedVideos(response.post);
+    // return response.post;
+  };
   useEffect(() => {
     getVideoPost();
   }, []);
@@ -180,12 +95,6 @@ const VideoPlayer: React.FC<videoPlayerType> = ({
       day: "numeric",
     });
   };
-
-  // const formatDuration = (seconds: number) => {
-  //   const mins = Math.floor(seconds / 60);
-  //   const secs = seconds % 60;
-  //   return `${mins}:${secs.toString().padStart(2, '0')}`;
-  // };
 
   return (
     <div className="min-h-screen bg-black">
@@ -270,16 +179,7 @@ const VideoPlayer: React.FC<videoPlayerType> = ({
                 <div className="bg-gray-900 rounded-xl p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center flex-shrink-0 text-white font-semibold">
-                        TM
-                      </div>
                       <div>
-                        <h3 className="text-white font-semibold">
-                          Tech Mastery
-                        </h3>
-                        <p className="text-gray-400 text-sm">
-                          1.2M subscribers
-                        </p>
                         <p className="text-gray-300 text-sm mt-2">
                           {postData?.description ||
                             "In this comprehensive tutorial, we'll explore modern web development techniques and best practices. Learn how to build scalable, performant applications from scratch."}
@@ -303,95 +203,32 @@ const VideoPlayer: React.FC<videoPlayerType> = ({
                         )}
                       </div>
                     </div>
-                    <button className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full font-medium transition-colors whitespace-nowrap">
-                      Subscribe
-                    </button>
                   </div>
                 </div>
 
-                {/* Comments Section */}
+                {/* Comments Section with Stream Chat React */}
                 <div className="mt-6">
-                  <div className="flex items-center gap-4 mb-6">
-                    <h2 className="text-white text-xl font-semibold">
-                      2,847 Comments
-                    </h2>
-                    <button className="text-gray-400 hover:text-white text-sm flex items-center gap-1">
-                      <span>Sort by</span>
-                    </button>
-                  </div>
+                  <h2 className="text-white text-xl font-semibold mb-4">
+                    Comments
+                  </h2>
 
-                  {/* Add Comment */}
-                  <div className="flex gap-3 mb-8">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center flex-shrink-0 text-white font-semibold">
-                      YU
+                  {channel ? (
+                    <div className="stream-chat-custom-wrapper">
+                      <Chat client={chatClient} theme="str-chat__theme-dark">
+                        <Channel channel={channel}>
+                          <Window>
+                            <MessageList />
+                            <MessageInput focus />
+                          </Window>
+                          <Thread />
+                        </Channel>
+                      </Chat>
                     </div>
-                    <div className="flex-1">
-                      <input
-                        type="text"
-                        value={commentText}
-                        onChange={(e) => setCommentText(e.target.value)}
-                        onFocus={() => setShowCommentInput(true)}
-                        placeholder="Add a comment..."
-                        className="w-full bg-transparent text-white border-b border-gray-700 focus:border-gray-500 pb-2 focus:outline-none placeholder-gray-500"
-                      />
-                      {showCommentInput && (
-                        <div className="flex items-center justify-end gap-2 mt-3">
-                          <button
-                            onClick={() => {
-                              setShowCommentInput(false);
-                              setCommentText("");
-                            }}
-                            className="px-4 py-2 text-gray-400 hover:text-white rounded-full transition-colors"
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            onClick={handleCommentSubmit}
-                            disabled={!commentText.trim()}
-                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-500 text-white rounded-full transition-colors"
-                          >
-                            Comment
-                          </button>
-                        </div>
-                      )}
+                  ) : (
+                    <div className="text-center text-gray-400 py-8">
+                      Loading comments...
                     </div>
-                  </div>
-
-                  {/* Comments List */}
-                  <div className="space-y-6">
-                    {dummyComments.map((comment) => (
-                      <div key={comment.id} className="flex gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center flex-shrink-0 text-white text-sm font-semibold">
-                          {comment.avatar}
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="text-white font-medium text-sm">
-                              {comment.user}
-                            </span>
-                            <span className="text-gray-500 text-xs">
-                              {comment.time}
-                            </span>
-                          </div>
-                          <p className="text-gray-200 text-sm mt-1">
-                            {comment.comment}
-                          </p>
-                          <div className="flex items-center gap-4 mt-2">
-                            <button className="flex items-center gap-1 text-gray-400 hover:text-white transition-colors">
-                              <ThumbsUp className="w-4 h-4" />
-                              <span className="text-xs">{comment.likes}</span>
-                            </button>
-                            <button className="flex items-center gap-1 text-gray-400 hover:text-white transition-colors">
-                              <ThumbsDown className="w-4 h-4" />
-                            </button>
-                            <button className="text-gray-400 hover:text-white text-xs font-medium">
-                              Reply
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -404,24 +241,24 @@ const VideoPlayer: React.FC<videoPlayerType> = ({
                   className="flex gap-2 p-2 rounded-lg hover:bg-gray-900 cursor-pointer transition-colors group"
                 >
                   <div className="relative w-40 flex-shrink-0">
-                    <div className="aspect-video bg-gradient-to-br from-gray-800 to-gray-700 rounded-lg flex items-center justify-center">
-                      <span className="text-3xl">{video.thumbnail}</span>
-                    </div>
+                    <img
+                      src={video.thumbnailUrl}
+                      alt={video.title}
+                      className="aspect-video bg-gradient-to-br from-gray-800 to-gray-700 rounded-lg object-cover w-full h-full"
+                    />
                     <div className="absolute bottom-1 right-1 bg-black bg-opacity-90 text-white text-xs px-1.5 py-0.5 rounded">
-                      {video.duration}
+                      {video.duration}min
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-white text-sm font-medium line-clamp-2 group-hover:text-gray-300">
                       {video.title}
                     </h3>
-                    <p className="text-gray-400 text-xs mt-1">
-                      {video.channel}
-                    </p>
+                    <p className="text-gray-400 text-xs mt-1">{video.genre}</p>
                     <div className="flex items-center gap-1 text-gray-500 text-xs mt-0.5">
-                      <span>{video.views} views</span>
+                      <span>{video.views || 0} views</span>
                       <span>•</span>
-                      <span>{video.time}</span>
+                      <span>{formatDate(video.updatedAt)}</span>
                     </div>
                   </div>
                 </div>
@@ -430,6 +267,103 @@ const VideoPlayer: React.FC<videoPlayerType> = ({
           </div>
         </main>
       </div>
+
+      <style>{`
+        .stream-chat-custom-wrapper {
+          background: #1a1a1a;
+          border-radius: 12px;
+          overflow: hidden;
+          min-height: 500px;
+        }
+        
+        .str-chat__channel {
+          background: #1a1a1a;
+        }
+        
+        .str-chat__list {
+          background: #1a1a1a;
+          padding: 20px;
+        }
+        
+        .str-chat__message-simple {
+          background: transparent;
+        }
+        
+        .str-chat__message-simple-text-inner {
+          background: #2d2d2d;
+          color: #e5e5e5;
+          border-radius: 12px;
+          padding: 10px 14px;
+        }
+        
+        .str-chat__input-flat {
+          background: #2d2d2d;
+          border: 1px solid #3d3d3d;
+          border-radius: 24px;
+          margin: 0 20px 20px 20px;
+        }
+        
+        .str-chat__input-flat-wrapper {
+          background: transparent;
+        }
+        
+        .str-chat__textarea textarea {
+          color: #e5e5e5;
+          background: transparent;
+        }
+        
+        .str-chat__textarea textarea::placeholder {
+          color: #888;
+        }
+        
+        .str-chat__message-simple__actions__action--reactions {
+          background: #2d2d2d;
+        }
+        
+        .str-chat__message-simple-name {
+          color: #fff;
+          font-weight: 600;
+        }
+        
+        .str-chat__message-simple-timestamp {
+          color: #888;
+        }
+        
+        .str-chat__avatar {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .str-chat__send-button {
+          background: #3b82f6;
+        }
+        
+        .str-chat__send-button:hover {
+          background: #2563eb;
+        }
+        
+        /* Hide header if you don't want it */
+        .str-chat__header-livestream {
+          display: none;
+        }
+        
+        /* Scrollbar styling */
+        .str-chat__list::-webkit-scrollbar {
+          width: 8px;
+        }
+        
+        .str-chat__list::-webkit-scrollbar-track {
+          background: #1a1a1a;
+        }
+        
+        .str-chat__list::-webkit-scrollbar-thumb {
+          background: #3d3d3d;
+          border-radius: 4px;
+        }
+        
+        .str-chat__list::-webkit-scrollbar-thumb:hover {
+          background: #4d4d4d;
+        }
+      `}</style>
     </div>
   );
 };

@@ -2,6 +2,7 @@
 import { Tv, Film, Trophy, Flame, Clock, Home } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { Category, SidebarType } from "../types/sideBar";
+import { UserAuth } from "@/useContext";
 
 // Sidebar Component
 const Sidebar = ({
@@ -20,6 +21,7 @@ const Sidebar = ({
     // { id: "trending", name: "Trending", icon: Flame },
     { id: "Watchlist", name: "My List", icon: Clock },
   ];
+  const { username } = UserAuth();
 
   return (
     <>
@@ -43,6 +45,7 @@ const Sidebar = ({
           {categories.map((category) => {
             const Icon = category.icon;
             const isActive = path === category.id;
+            if (!username?.firstName && category.id === "Watchlist") return;
             return (
               <button
                 key={category.id}
