@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     await handleUserRegistration(data)
       .then((response) => {
         //
-        router.push("/pages/Auth/OTPInput");
+        router.push("/pages/Auth/PasswordSetup");
         localStorage.setItem("phoneNumber", newUser.phoneNumber);
       })
       .catch((error) => {

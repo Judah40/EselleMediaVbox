@@ -54,7 +54,7 @@ export default function Page() {
     setIsLoading(true);
     handleOTPVerification(data.pin)
       .then((response) => {
-        router.push("/pages/Auth/PasswordSetup");
+        // router.push("/pages/Auth/PasswordSetup");
         Cookies.set("token", response.data.token);
         Cookies.set("userType", response.data.userType);
       })
@@ -63,7 +63,7 @@ export default function Page() {
         setIsLoading(false);
       });
   }
-// eslint-disable-next-line react/display-name
+  // eslint-disable-next-line react/display-name
   const PhoneNumber = memo(
     ({
       setGetPhoneNumber,
