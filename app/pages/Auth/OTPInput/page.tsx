@@ -28,7 +28,7 @@ const InputOTPSlot = dynamic(() =>
 );
 
 import { handleOTPVerification } from "@/app/api/AuthApi/api";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 
 const FormSchema = z.object({
@@ -38,7 +38,7 @@ const FormSchema = z.object({
 });
 
 export default function Page() {
-  const router = useRouter();
+  // const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
   const [getPhoneNumber, setGetPhoneNumber] = useState<string>("");
