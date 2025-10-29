@@ -5,8 +5,6 @@ import Image from "next/image";
 import {
   Camera,
   User,
-  CreditCard,
-  ChevronRight,
   Upload,
   X,
   Star,
@@ -216,7 +214,7 @@ const Dashboard: React.FC = () => {
       setPreviewImage(imageUrl);
 
       // Here you would typically upload the image to your server
-      console.log("Selected image:", file.name);
+      // console.log("Selected image:", file.name);
     }
   };
 
@@ -257,7 +255,6 @@ const Dashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(userProfilePicture);
     getFavorites();
   }, []);
 

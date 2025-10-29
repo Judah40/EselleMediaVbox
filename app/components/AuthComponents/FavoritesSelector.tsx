@@ -6,11 +6,11 @@ import { Heart, Sparkles, Check } from "lucide-react";
 import { data } from "@/app/api/DummyData/data";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@nextui-org/react";
-import { favoritesArray, handleAddingFavorites } from "@/app/api/AuthApi/api";
+import { handleAddingFavorites } from "@/app/api/AuthApi/api";
 
 const FavoritesSelector = () => {
-  const [selected, setSelected] = useState(new Set());
-  const [selectedName, setSelectedName] = useState(new Set());
+  const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [selectedName, setSelectedName] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
@@ -36,9 +36,7 @@ const FavoritesSelector = () => {
 
   const handleNext = async () => {
     setIsLoading(true);
-    const favorites: favoritesArray[] = Array.from(
-      selectedName
-    ) as favoritesArray[];
+    const favorites: string[] = Array.from(selectedName);
     if (favorites.length > 0) {
       await handleAddingFavorites(favorites)
         .then((response) => {
