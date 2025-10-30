@@ -26,12 +26,14 @@ const DropDownSection = ({
   setIsDropdownOpen,
   userProfilePicture,
   username,
+  logout,
 }: {
   dropdownRef: React.RefObject<HTMLDivElement>;
   isDropdownOpen: boolean;
   setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
   userProfilePicture?: string;
   username: users;
+  logout: () => void;
 }) => {
   const router = useRouter();
   return (
@@ -89,7 +91,12 @@ const DropDownSection = ({
 
           <div className="border-t border-white/10 my-1"></div>
 
-          <button className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#1ABC9C] hover:bg-white/10 transition-colors">
+          <button
+            onClick={() => {
+              logout();
+            }}
+            className="w-full flex items-center space-x-3 px-4 py-2.5 text-[#1ABC9C] hover:bg-white/10 transition-colors"
+          >
             <LogOut className="h-4 w-4" />
             <span className="text-sm">Sign Out</span>
           </button>
@@ -104,7 +111,7 @@ const Header = ({ onMenuToggle, isMenuOpen }: HeaderType) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { isAuthenticated, userProfilePicture, username } = UserAuth();
+  const { isAuthenticated, userProfilePicture, username, logout } = UserAuth();
   const router = useRouter();
   const handleLogin = () => {
     router.push("/pages/Auth/Signin"); // Adjust the route as needed
@@ -235,6 +242,7 @@ const Header = ({ onMenuToggle, isMenuOpen }: HeaderType) => {
               isDropdownOpen={isDropdownOpen}
               setIsDropdownOpen={setIsDropdownOpen}
               username={username!}
+              logout={logout}
             />
           ) : (
             <button
