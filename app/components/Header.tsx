@@ -14,6 +14,7 @@ import {
 import { UserAuth } from "@/useContext";
 import { useRouter } from "next/navigation";
 import { users } from "../types/context";
+import Image from "next/image";
 interface HeaderType {
   onMenuToggle: () => void;
   isMenuOpen: boolean;
@@ -41,7 +42,14 @@ const DropDownSection = ({
       >
         <div className="w-8 h-8 lg:w-9 lg:h-9 bg-gradient-to-br from-[#1ABC9C] to-[#087e66] rounded-full flex items-center justify-center ring-2 ring-white/10">
           {userProfilePicture ? (
-            <img src={userProfilePicture} className="rounded-full" alt="pp" />
+            <Image
+              src={userProfilePicture}
+              className="rounded-full"
+              alt="pp"
+              width={32}
+              height={32}
+              objectFit="cover"
+            />
           ) : (
             <User className="h-4 w-4 lg:h-5 lg:w-5 text-white" />
           )}
@@ -153,10 +161,13 @@ const Header = ({ onMenuToggle, isMenuOpen }: HeaderType) => {
 
           <div className="flex items-center space-x-2 lg:space-x-3">
             <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br  rounded-xl flex items-center justify-center shadow-lg shadow-torquoise-500/30">
-              <img
+              <Image
                 src="/logo/vbox.png"
                 alt="Logo"
                 className="w-10 h-10 object-contain"
+                width={40}
+                height={40}
+                priority
               />{" "}
             </div>
             <span className="text-xl lg:text-2xl font-bold text-white tracking-tight">

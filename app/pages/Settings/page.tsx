@@ -11,7 +11,6 @@ import {
   Key,
   FileText,
   CreditCard as CardIcon,
-  Play,
   Shield,
   CheckCircle2,
 } from "lucide-react";
@@ -31,9 +30,11 @@ import { passwordSchema, userDetailsSchema } from "@/lib/utils/validation";
 import {
   handleAddingFavorites,
   handleGetFavorite,
+  handleUploadProfilePicture,
   resetPassword,
   updateUserProfile,
 } from "@/app/api/AuthApi/api";
+import { useRouter } from "next/navigation";
 
 interface Category {
   name: string;
@@ -67,58 +68,74 @@ interface HeaderProps {
   profile_picture?: string | null;
 }
 
-const Header = ({ onMenuToggle, isMenuOpen, profile_picture }: HeaderProps) => (
-  <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/10">
-    <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16 lg:h-20">
-      <div className="flex items-center space-x-4">
-        <button
-          onClick={onMenuToggle}
-          className="lg:hidden p-2 hover:bg-white/10 rounded-lg transition-colors"
-        >
-          <div className="w-6 h-5 flex flex-col justify-between">
-            <span
-              className={`w-full h-0.5 bg-white transition-all ${
-                isMenuOpen ? "rotate-45 translate-y-2" : ""
-              }`}
-            ></span>
-            <span
-              className={`w-full h-0.5 bg-white transition-all ${
-                isMenuOpen ? "opacity-0" : ""
-              }`}
-            ></span>
-            <span
-              className={`w-full h-0.5 bg-white transition-all ${
-                isMenuOpen ? "-rotate-45 -translate-y-2" : ""
-              }`}
-            ></span>
-          </div>
-        </button>
-        <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/50">
-            <Play className="h-4 w-4 lg:h-5 lg:w-5 text-black fill-black" />
-          </div>
-          <span className="text-white font-bold text-lg lg:text-xl tracking-tight">
-            StreamMax
-          </span>
+const Header = ({ onMenuToggle, isMenuOpen, profile_picture }: HeaderProps) => {
+  const router = useRouter();
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/10">
+      <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16 lg:h-20">
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={onMenuToggle}
+            className="lg:hidden p-2 hover:bg-white/10 rounded-lg transition-colors"
+          >
+            <div className="w-6 h-5 flex flex-col justify-between">
+              <span
+                className={`w-full h-0.5 bg-white transition-all ${
+                  isMenuOpen ? "rotate-45 translate-y-2" : ""
+                }`}
+              ></span>
+              <span
+                className={`w-full h-0.5 bg-white transition-all ${
+                  isMenuOpen ? "opacity-0" : ""
+                }`}
+              ></span>
+              <span
+                className={`w-full h-0.5 bg-white transition-all ${
+                  isMenuOpen ? "-rotate-45 -translate-y-2" : ""
+                }`}
+              ></span>
+            </div>
+          </button>
+          <button
+            onClick={() => router.push("/")}
+            className="flex items-center space-x-2 lg:space-x-3"
+          >
+            <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br  rounded-xl flex items-center justify-center shadow-lg shadow-torquoise-500/30">
+              <Image
+                src="/logo/vbox.png"
+                alt="Logo"
+                className="w-10 h-10 object-contain"
+                width={40}
+                height={40}
+                priority
+              />{" "}
+            </div>
+            <span className="text-xl lg:text-2xl font-bold text-white tracking-tight">
+              VBox
+            </span>
+          </button>
         </div>
-      </div>
 
-      <div className="flex items-center space-x-2 sm:space-x-4">
-        <div className="hidden sm:flex items-center space-x-2 px-3 py-1.5 bg-cyan-500/20 border border-cyan-500/30 rounded-full">
-          <Shield className="w-4 h-4 text-cyan-400" />
-          <span className="text-xs font-medium text-cyan-400">Premium</span>
-        </div>
-        <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center cursor-pointer hover:shadow-lg hover:shadow-cyan-500/50 transition-all">
-          {profile_picture ? (
-            <img src={profile_picture} className="w-full h-full rounded-full" />
-          ) : (
-            <User className="w-4 h-4 lg:w-5 lg:h-5 text-black" />
-          )}
+        <div className="flex items-center space-x-2 sm:space-x-4">
+          <div className="hidden sm:flex items-center space-x-2 px-3 py-1.5 bg-cyan-500/20 border border-cyan-500/30 rounded-full">
+            <Shield className="w-4 h-4 text-cyan-400" />
+            <span className="text-xs font-medium text-cyan-400">Premium</span>
+          </div>
+          <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center cursor-pointer hover:shadow-lg hover:shadow-cyan-500/50 transition-all">
+            {profile_picture ? (
+              <img
+                src={profile_picture}
+                className="w-full h-full rounded-full"
+              />
+            ) : (
+              <User className="w-4 h-4 lg:w-5 lg:h-5 text-black" />
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  </header>
-);
+    </header>
+  );
+};
 
 // Mock Sidebar Component
 interface SidebarProps {
@@ -182,6 +199,7 @@ const Dashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [fileUpload, setFileUpload] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleCategoryToggle = (category: string) => {
@@ -206,6 +224,9 @@ const Dashboard: React.FC = () => {
         alert("Image size should be less than 5MB");
         return;
       }
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      setFileUpload([file]);
 
       setSelectedImage(file.name);
 
@@ -254,6 +275,18 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const updateProfilePicture = async () => {
+    setIsLoading(true);
+    try {
+      await handleUploadProfilePicture(fileUpload[0]);
+      alert("SUCCESS");
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   useEffect(() => {
     getFavorites();
   }, []);
@@ -417,8 +450,11 @@ const Dashboard: React.FC = () => {
                     {/* Upload button when image is selected */}
                     {previewImage && (
                       <div className="w-full max-w-md">
-                        <button className="w-full py-3 bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:shadow-lg hover:shadow-green-500/50 text-white font-semibold transition-all transform hover:scale-105">
-                          Upload Profile Picture
+                        <button
+                          onClick={() => updateProfilePicture()}
+                          className="w-full py-3 bg-gradient-to-r from-green-500 to-green-600 rounded-xl hover:shadow-lg hover:shadow-green-500/50 text-white font-semibold transition-all transform hover:scale-105"
+                        >
+                          {isLoading ? "Uploading" : "Upload Profile Picture"}
                         </button>
                         <p className="text-xs text-gray-400 text-center mt-2">
                           Click to save your new profile picture
