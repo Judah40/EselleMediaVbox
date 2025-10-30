@@ -70,7 +70,10 @@ const DropDownSection = ({
             <p className="text-gray-400 text-xs mt-0.5">Premium Member</p>
           </div>
 
-          <button className="w-full flex items-center space-x-3 px-4 py-2.5 text-white hover:bg-white/10 transition-colors">
+          <button
+            onClick={() => router.push("/pages/Settings")}
+            className="w-full flex items-center space-x-3 px-4 py-2.5 text-white hover:bg-white/10 transition-colors"
+          >
             <User className="h-4 w-4" />
             <span className="text-sm">View Profile</span>
           </button>
@@ -84,7 +87,10 @@ const DropDownSection = ({
               <span className="text-sm">Dashboard</span>
             </button>
           )}
-          <button className="w-full flex items-center space-x-3 px-4 py-2.5 text-white hover:bg-white/10 transition-colors">
+          <button
+            onClick={() => router.push("/pages/Settings")}
+            className="w-full flex items-center space-x-3 px-4 py-2.5 text-white hover:bg-white/10 transition-colors"
+          >
             <Settings className="h-4 w-4" />
             <span className="text-sm">Settings</span>
           </button>
