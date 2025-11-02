@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import { Sparkles, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { FcGoogle } from "react-icons/fc";
+// import { FcGoogle } from "react-icons/fc";
 import dynamic from "next/dynamic";
 
 const SignInForm = dynamic(() => import("@/app/components/forms/SignInForm"), {
@@ -88,16 +88,16 @@ function Page() {
             </div>
 
             {/* Divider */}
-            <div className="relative flex items-center py-3">
+            {/* <div className="relative flex items-center py-3">
               <div className="flex-grow border-t border-gray-700"></div>
               <span className="flex-shrink mx-3 sm:mx-4 text-gray-400 text-xs sm:text-sm font-medium">
                 Or continue with
               </span>
               <div className="flex-grow border-t border-gray-700"></div>
-            </div>
+            </div> */}
 
             {/* OAuth Section */}
-            <div className="space-y-3">
+            {/* <div className="space-y-3">
               <button className="w-full flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-3.5 bg-white/10 hover:bg-white/15 border border-white/20 hover:border-white/30 rounded-xl transition-all duration-300 group hover:scale-[1.02] active:scale-95">
                 <FcGoogle
                   size={20}
@@ -108,7 +108,7 @@ function Page() {
                 </span>
                 <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-all transform translate-x-0 group-hover:translate-x-1 flex-shrink-0" />
               </button>
-            </div>
+            </div> */}
 
             {/* Sign-up Link */}
             <div className="pt-4 sm:pt-6 border-t border-gray-800">

@@ -30,6 +30,7 @@ const InputOTPSlot = dynamic(() =>
 import { handleOTPVerification } from "@/app/api/AuthApi/api";
 // import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   pin: z.string().min(6, {
@@ -38,7 +39,7 @@ const FormSchema = z.object({
 });
 
 export default function Page() {
-  // const router = useRouter();
+  const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
   const [getPhoneNumber, setGetPhoneNumber] = useState<string>("");
@@ -54,8 +55,10 @@ export default function Page() {
     setIsLoading(true);
     handleOTPVerification(data.pin)
       .then((response) => {
-        // router.push("/pages/Auth/PasswordSetup");
+        router.push("/pages/Auth/PasswordSetup");
         Cookies.set("token", response.data.token);
+        Cookies.set("streamToken", response.data.streamToken);
+
         Cookies.set("userType", response.data.userType);
       })
       .catch(() => {})
@@ -108,7 +111,9 @@ export default function Page() {
                   </InputOTP>
                 </FormControl>
                 <FormDescription>
-                  Please enter the otp sent to{" "}
+                  We are currently unable to verify user through email of phone
+                  number due to our verification service being down please just
+                  use this otp and verify your self
                   <span className="text-white">{getPhoneNumber}</span>.
                 </FormDescription>
                 <FormMessage />

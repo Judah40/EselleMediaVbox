@@ -82,7 +82,7 @@ const Sidebar = ({
             Quick Access
           </h3>
           <div className="space-y-1">
-            {["Recently Watched", "Settings"].map((item) => (
+            {["Recently Watched"].map((item) => (
               <button
                 key={item}
                 className="w-full text-left px-4 py-2.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200"

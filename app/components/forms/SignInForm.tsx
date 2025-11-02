@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Formik, FormikHelpers, Form, Field } from "formik";
 import { signInValidationSchema } from "@/app/lib/signInValidation";
 import { handleUserLogin } from "@/app/api/AuthApi/api";
-import Link from "next/link";
+// import Link from "next/link";
 import {
   Eye,
   EyeOff,
@@ -197,12 +197,13 @@ const SignInForm = () => {
               </span>
             </label>
 
-            <Link
-              href="/forgot-password"
+            <button
+              onClick={() => alert("Coming soon")}
+              // href="/forgot-password"
               className="text-sm text-cyan-400 hover:text-cyan-300 font-medium transition-colors"
             >
               Forgot Password?
-            </Link>
+            </button>
           </div>
 
           <button
