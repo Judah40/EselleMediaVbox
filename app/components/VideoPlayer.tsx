@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Sidebar from "./SideBar";
 import Header from "./Header";
 import {
@@ -9,7 +9,11 @@ import {
   Eye,
   Calendar,
 } from "lucide-react";
-import { handleGetPostByGenre, handleGetSinglePost } from "../api/PostApi/api";
+import {
+  handleAddView,
+  handleGetPostByGenre,
+  handleGetSinglePost,
+} from "../api/PostApi/api";
 import { PostVideoData } from "../pages/Dashboard/Videos/videos.types";
 import { StreamChat, Channel as StreamChannel } from "stream-chat";
 import {
@@ -43,6 +47,9 @@ const VideoPlayer: React.FC<videoPlayerType> = ({
   const [postData, setPostData] = useState<PostVideoData | null>(null);
   const [channel, setChannel] = useState<StreamChannel | null>(null);
   const [suggestedVideos, setSuggestedVideos] = useState<PostVideoData[]>([]);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const hasViewedRef = useRef(false);
   // Initialize channel
   useEffect(() => {
     const initializeChannel = async () => {
@@ -85,7 +92,63 @@ const VideoPlayer: React.FC<videoPlayerType> = ({
   };
   useEffect(() => {
     getVideoPost();
-  }, []);
+  }, [videoId]);
+
+  //Video userEffect
+  useEffect(() => {
+    const video = videoRef.current;
+
+    if (!video || !postData?.videoUrl) {
+      return;
+    }
+
+    // Reset the viewed flag when video changes
+    hasViewedRef.current = false;
+
+    const handleTimeUpdate = async () => {
+      if (hasViewedRef.current) {
+        return;
+      }
+
+      // Ensure video has valid duration
+      if (!video.duration || isNaN(video.duration) || video.duration === 0) {
+        return;
+      }
+
+      const watchedPercentage = (video.currentTime / video.duration) * 100;
+
+      // Check if either 20 seconds OR 30% of video has been watched
+      if (video.currentTime >= 20 || watchedPercentage >= 30) {
+        hasViewedRef.current = true;
+        try {
+          await handleAddView({ postId: videoId });
+        } catch (error) {
+          console.error("❌ Error sending view:", error);
+          // Reset on error to retry
+          hasViewedRef.current = false;
+        }
+      }
+    };
+
+    const handleLoadedMetadata = () => {
+      video.addEventListener("timeupdate", handleTimeUpdate);
+    };
+
+    const handleError = (e: Event) => {
+      console.error("❌ Video error:", e);
+    };
+
+    // Add event listeners
+    video.addEventListener("loadedmetadata", handleLoadedMetadata);
+    video.addEventListener("error", handleError);
+
+    // Cleanup function
+    return () => {
+      video.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      video.removeEventListener("timeupdate", handleTimeUpdate);
+      video.removeEventListener("error", handleError);
+    };
+  }, [videoId, postData?.videoUrl]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -119,6 +182,7 @@ const VideoPlayer: React.FC<videoPlayerType> = ({
               <div className="bg-black rounded-xl overflow-hidden">
                 {postData ? (
                   <video
+                    ref={videoRef}
                     src={postData.videoUrl}
                     controls
                     className="w-full aspect-video bg-black"
@@ -142,7 +206,7 @@ const VideoPlayer: React.FC<videoPlayerType> = ({
                   <div className="flex items-center gap-4 text-sm text-gray-400">
                     <div className="flex items-center gap-1">
                       <Eye className="w-4 h-4" />
-                      <span>{postData?.likeCount || 0} views</span>
+                      <span>{postData?.viewCount || 0} views</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
@@ -256,7 +320,7 @@ const VideoPlayer: React.FC<videoPlayerType> = ({
                     </h3>
                     <p className="text-gray-400 text-xs mt-1">{video.genre}</p>
                     <div className="flex items-center gap-1 text-gray-500 text-xs mt-0.5">
-                      <span>{video.views || 0} views</span>
+                      <span>{video.viewCount || 0} views</span>
                       <span>•</span>
                       <span>{formatDate(video.updatedAt)}</span>
                     </div>

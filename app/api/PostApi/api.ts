@@ -61,3 +61,11 @@ export const handleGetAllPostsByGenre = async () => {
   const response = await apiClient.get("/post/genre");
   return response;
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//VIEW API
+
+export const handleAddView = async ({ postId }: { postId: string }) => {
+  const response = await apiClient.post(`/views/${postId}`);
+  return response;
+};
