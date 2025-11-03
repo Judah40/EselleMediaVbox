@@ -326,7 +326,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           <Tabs defaultValue="profile" className="w-full">
-            <TabsList className="flex flex-wrap gap-2 bg-transparent mb-8">
+            <TabsList className="flex flex-wrap gap-2 bg-transparent md:mb-8 mb-36">
               <TabsTrigger
                 value="profile"
                 className="flex-1 min-w-[140px] py-3 px-4 data-[state=active]:bg-gradient-to-r data-[state=active]:from-cyan-500 data-[state=active]:to-cyan-600 data-[state=active]:text-black data-[state=active]:shadow-lg data-[state=active]:shadow-cyan-500/50 bg-white/5 text-gray-400 rounded-xl border border-white/10 hover:border-cyan-500/50 transition-all"
