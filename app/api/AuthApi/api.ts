@@ -129,3 +129,29 @@ export const resetPassword = async (payload: passwordReset) => {
   const response = await apiClient.patch("/auth/password", payload);
   return response;
 };
+
+//FORGET PASSWORD
+//EMAIL VERIFICATION
+export const handleForgotPasswordEmailVerification = async (email: string) => {
+  const data = {
+    email: email,
+  };
+  const response = await apiClient.post("/auth/forget-password", data);
+  return response;
+};
+
+//RESET FORGOT PASSWORD
+export const handleResetForgotPassword = async ({
+  newPassword,
+  otp,
+}: {
+  newPassword: string;
+  otp: string;
+}) => {
+  const data = {
+    newPassword,
+    OTP: otp,
+  };
+  const response = await apiClient.patch("/auth/reset-password", data);
+  return response;
+};

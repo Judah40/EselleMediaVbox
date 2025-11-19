@@ -69,3 +69,8 @@ export const handleAddView = async ({ postId }: { postId: string }) => {
   const response = await apiClient.post(`/views/${postId}`);
   return response;
 };
+
+export const handleGetMyWatchList = async () => {
+  const response = await apiClient.get("/post/watched/all");
+  return response.data;
+};

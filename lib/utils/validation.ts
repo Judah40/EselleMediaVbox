@@ -20,3 +20,20 @@ export const userDetailsSchema = Yup.object().shape({
   dateOfBirth: Yup.date().required("Date of birth is required"),
   gender: Yup.string().required("Gender is required"),
 });
+
+export const resetPasswordValidationSchema = Yup.object({
+  otp: Yup.string()
+    .required("OTP is required")
+    .min(4, "OTP must be at least 4 characters")
+    .max(8, "OTP must not exceed 8 characters"),
+  password: Yup.string()
+    .required("Password is required")
+    .min(8, "Password must be at least 8 characters")
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    ),
+  confirmPassword: Yup.string()
+    .required("Please confirm your password")
+    .oneOf([Yup.ref("password")], "Passwords must match"),
+});

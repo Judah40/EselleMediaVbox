@@ -37,7 +37,10 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { useStreamContext } from "@/Provider/streamContext";
-import { handleInputLiveStreamData } from "@/app/api/LiveApi/api";
+import {
+  handleInputLiveStreamData,
+  handleUpdateLiveStream,
+} from "@/app/api/LiveApi/api";
 
 const apiKey = process.env.NEXT_PUBLIC_STREAM_IO_ACCESS_KEY ?? "";
 
@@ -95,13 +98,35 @@ const Livestream = ({ params }: ChannelPageProps) => {
           streamName: params.id,
           ...streamData,
         });
+
         if (saveLiveStreamData.status !== 201) {
           console.error("❌ Failed to save livestream data");
           return;
         }
+        await handleUpdateLiveStream(params.id).catch((error) => {
+          console.error(error);
+        });
         await call.goLive({ start_hls: true });
         setIsLive(true);
         setShowModal(false);
+        // You can access streamData here to send to your backend
+        // console.log("Stream Data:", streamData);
+      } catch (e) {
+        console.error("❌ Failed to go live:", e);
+      }
+    }
+  }, [call, streamData]);
+
+  const handleEndLive = useCallback(async () => {
+    if (call) {
+      try {
+        await handleUpdateLiveStream(params.id).catch((error) => {
+          console.error(error);
+        });
+
+        await call.endCall();
+        setIsLive(false);
+        setShowModal(true);
         // You can access streamData here to send to your backend
         // console.log("Stream Data:", streamData);
       } catch (e) {
@@ -312,18 +337,19 @@ const Livestream = ({ params }: ChannelPageProps) => {
                 </div>
 
                 <button
-                  onClick={() => (isLive ? null : setShowModal(true))}
-                  disabled={isLive}
+                  onClick={() =>
+                    isLive ? handleEndLive() : setShowModal(true)
+                  }
                   className={`w-full py-4 rounded-xl font-semibold text-white transition-all duration-300 ${
                     isLive
-                      ? "bg-white/10 cursor-not-allowed"
+                      ? "bg-gradient-to-r from-red-600 to-red-700 hover:shadow-lg hover:shadow-red-500/50 hover:scale-105 active:scale-95"
                       : "bg-gradient-to-r from-[#1ABC9C] to-[#16A085] hover:shadow-lg hover:shadow-[#1ABC9C]/50 hover:scale-105 active:scale-95"
                   }`}
                 >
                   {isLive ? (
                     <span className="flex items-center justify-center gap-2">
-                      <Wifi className="w-5 h-5" />
-                      Broadcasting
+                      <WifiOff className="w-5 h-5" />
+                      End Stream
                     </span>
                   ) : (
                     <span className="flex items-center justify-center gap-2">

@@ -3,7 +3,10 @@
 import React, { useState } from "react";
 import { Formik, FormikHelpers, Form, Field } from "formik";
 import { signInValidationSchema } from "@/app/lib/signInValidation";
-import { handleUserLogin } from "@/app/api/AuthApi/api";
+import {
+  handleForgotPasswordEmailVerification,
+  handleUserLogin,
+} from "@/app/api/AuthApi/api";
 // import Link from "next/link";
 import {
   Eye,
@@ -14,6 +17,8 @@ import {
 } from "lucide-react";
 import Cookies from "js-cookie";
 import { AxiosError } from "axios";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 type InputFieldProps = {
   label: string;
@@ -108,7 +113,8 @@ const SignInForm = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-
+  const [forgetPassword, setForgetPassword] = useState(false);
+  const router = useRouter();
   const handleSubmit = async (
     values: { email: string; password: string },
     { setSubmitting }: FormikHelpers<{ email: string; password: string }>
@@ -198,12 +204,112 @@ const SignInForm = () => {
             </label>
 
             <button
-              onClick={() => alert("Coming soon")}
+              type="button"
+              onClick={() => {
+                setForgetPassword(true);
+              }}
               // href="/forgot-password"
               className="text-sm text-cyan-400 hover:text-cyan-300 font-medium transition-colors"
             >
               Forgot Password?
             </button>
+
+            {forgetPassword && (
+              <Formik
+                initialValues={{ resetEmail: "" }}
+                validate={(values) => {
+                  const errors: { resetEmail?: string } = {};
+                  if (!values.resetEmail) {
+                    errors.resetEmail = "Email is required";
+                  } else if (
+                    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
+                      values.resetEmail
+                    )
+                  ) {
+                    errors.resetEmail = "Invalid email address";
+                  }
+                  return errors;
+                }}
+                onSubmit={async (values, { setSubmitting, resetForm }) => {
+                  setIsLoading(true);
+                  setStatus({ message: "", type: "success" });
+
+                  try {
+                    // Replace this with your real forgot-password API call
+                    const response =
+                      await handleForgotPasswordEmailVerification(
+                        values.resetEmail
+                      );
+
+                    router.push("/pages/Auth/ForgotPassword/ResetPassword");
+                    localStorage.setItem("otp", response.data.otp);
+
+                    // setStatus({
+                    //   message:
+                    //     "If an account with that email exists, a reset link has been sent.",
+                    //   type: "success",
+                    // });
+
+                    resetForm();
+                    // setTimeout(() => setForgetPassword(false), 1400);
+                  } catch (error) {
+                    console.error(error);
+                    setStatus({
+                      message: "Failed to send reset email. Please try again.",
+                      type: "error",
+                    });
+                  } finally {
+                    setIsLoading(false);
+                    setSubmitting(false);
+                  }
+                }}
+              >
+                {({ errors, touched, isSubmitting, handleSubmit }) => (
+                  <div className="flex-1 absolute inset-0 w-full h-full bg-gradient-to-br from-gray-900 via-slate-900 to-gray-900 backdrop-blur-md flex flex-col items-center rounded-2xl justify-center z-50 p-6">
+                    <Image
+                      src="/logo/vbox.png"
+                      width={80}
+                      height={80}
+                      alt="logo"
+                      priority
+                      className="relative z-10 hover:scale-110 transition-transform duration-300"
+                    />
+                    <p className="text-sm text-gray-300 mt-3 mb-4">
+                      Reset Password
+                    </p>
+
+                    <Form className="w-full max-w-md space-y-4">
+                      <InputField
+                        label="Email"
+                        name="resetEmail"
+                        type="email"
+                        placeholder="Enter your email"
+                        showPassword={false}
+                        error={errors.resetEmail as string | undefined}
+                        touched={!!touched.resetEmail}
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => handleSubmit()}
+                        disabled={isLoading || isSubmitting}
+                        className="mt-2 px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg transition-colors w-full"
+                      >
+                        {isLoading || isSubmitting ? "Sending..." : "Submit"}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setForgetPassword(false)}
+                        className="mt-2 px-4 py-2 text-red-500 underline rounded-lg transition-colors w-full bg-transparent"
+                      >
+                        Close
+                      </button>
+                    </Form>
+                  </div>
+                )}
+              </Formik>
+            )}
           </div>
 
           <button

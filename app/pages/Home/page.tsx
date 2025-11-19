@@ -15,6 +15,7 @@ import { handleGetAllPosts } from "@/app/api/PostApi/api";
 import Sidebar from "@/app/components/SideBar";
 import { UserAuth } from "@/useContext";
 import { getAllChannel } from "@/app/api/ChannelApi/api";
+import Image from "next/image";
 
 // Lazy load heavy components
 const ContentRow = lazy(
@@ -129,13 +130,18 @@ const Footer = React.memo(() => (
       </div>
       <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-white/5">
         <div className="flex items-center space-x-2 mb-4 md:mb-0">
-          <div className="w-8 h-8 bg-gradient-to-br from-[#1ABC9C] to-[#087e66] rounded-lg flex items-center justify-center">
-            <Play className="h-4 w-4 text-white fill-white" />
-          </div>
+          <Image
+            src="/logo/vbox.png"
+            alt="Logo"
+            className="w-10 h-10 object-contain"
+            width={40}
+            height={40}
+            priority
+          />
           <span className="text-white font-bold text-lg">StreamMax</span>
         </div>
         <p className="text-gray-400 text-sm">
-          © 2024 StreamMax. All rights reserved.
+          © 2024 Vbox. All rights reserved.
         </p>
       </div>
     </div>

@@ -21,7 +21,7 @@ interface ContentCardProps {
   content: Post;
 }
 
-const ContentCard = memo(({ content }: ContentCardProps) => {
+export const ContentCard = memo(({ content }: ContentCardProps) => {
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;

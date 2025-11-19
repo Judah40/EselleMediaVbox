@@ -31,3 +31,11 @@ export const handleGetSingleLiveStream = async (id: string) => {
   const response = await apiClient.get(`/live/${id}`);
   return response;
 };
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//UPDATE LIVE STREAM
+
+export const handleUpdateLiveStream = async (id: string) => {
+  const response = await apiClient.get(`/live/${id}`);
+  return response;
+};
